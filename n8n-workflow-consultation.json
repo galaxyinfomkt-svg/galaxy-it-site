@@ -1,0 +1,318 @@
+{
+  "name": "Galaxy IT - Consultation Form → GHL",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "galaxy-consultation",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://galaxyinfo.us"
+        }
+      },
+      "id": "webhook-consult",
+      "name": "Webhook Consultation Form",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "galaxy-consultation"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "1", "name": "name", "value": "={{ $json.body.name }}", "type": "string" },
+            { "id": "2", "name": "email", "value": "={{ $json.body.email }}", "type": "string" },
+            { "id": "3", "name": "phone", "value": "={{ $json.body.phone }}", "type": "string" },
+            { "id": "4", "name": "business", "value": "={{ $json.body.business }}", "type": "string" },
+            { "id": "5", "name": "industry", "value": "={{ $json.body.industry }}", "type": "string" },
+            { "id": "6", "name": "helpWith", "value": "={{ $json.body.helpWith }}", "type": "string" },
+            { "id": "7", "name": "message", "value": "={{ $json.body.message }}", "type": "string" },
+            { "id": "8", "name": "source", "value": "Website - Consultation Form", "type": "string" },
+            { "id": "9", "name": "firstName", "value": "={{ $json.body.name.split(' ')[0] }}", "type": "string" },
+            { "id": "10", "name": "lastName", "value": "={{ $json.body.name.split(' ').slice(1).join(' ') }}", "type": "string" }
+          ]
+        }
+      },
+      "id": "set-consult",
+      "name": "Format Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "firstName", "value": "={{ $json.firstName }}" },
+            { "name": "lastName", "value": "={{ $json.lastName }}" },
+            { "name": "email", "value": "={{ $json.email }}" },
+            { "name": "phone", "value": "={{ $json.phone }}" },
+            { "name": "companyName", "value": "={{ $json.business }}" },
+            { "name": "source", "value": "Website - Free Assessment" },
+            { "name": "tags", "value": "[\"website-lead\", \"free-assessment\", \"{{ $json.industry }}\", \"{{ $json.helpWith }}\"]" },
+            { "name": "locationId", "value": "BCczy6muFwhd63dPhKCC" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ghl-create-contact-consult",
+      "name": "GHL - Create Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 200],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SEU_CREDENTIAL_ID",
+          "name": "GHL API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/opportunities/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "pipelineId", "value": "SEU_PIPELINE_ID_AQUI" },
+            { "name": "pipelineStageId", "value": "SEU_STAGE_ID_AQUI" },
+            { "name": "locationId", "value": "BCczy6muFwhd63dPhKCC" },
+            { "name": "contactId", "value": "={{ $('GHL - Create Contact').item.json.contact.id }}" },
+            { "name": "name", "value": "={{ $('Format Data').item.json.name }} - Free Assessment" },
+            { "name": "status", "value": "open" },
+            { "name": "source", "value": "Website Free Assessment" },
+            { "name": "monetaryValue", "value": "0" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ghl-create-opportunity-consult",
+      "name": "GHL - Create Opportunity",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 100],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SEU_CREDENTIAL_ID",
+          "name": "GHL API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/={{ $('GHL - Create Contact').item.json.contact.id }}/notes",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "body", "value": "📋 Free Assessment Request\n\nBusiness: {{ $('Format Data').item.json.business }}\nIndustry: {{ $('Format Data').item.json.industry }}\nNeeds Help With: {{ $('Format Data').item.json.helpWith }}\nMessage: {{ $('Format Data').item.json.message }}" },
+            { "name": "locationId", "value": "BCczy6muFwhd63dPhKCC" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ghl-add-note-consult",
+      "name": "GHL - Add Note",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SEU_CREDENTIAL_ID",
+          "name": "GHL API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/={{ $('GHL - Create Contact').item.json.contact.id }}/tasks",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "title", "value": "Follow up - Free Assessment: {{ $('Format Data').item.json.name }}" },
+            { "name": "description", "value": "New assessment request from {{ $('Format Data').item.json.name }} ({{ $('Format Data').item.json.business }}). Industry: {{ $('Format Data').item.json.industry }}. Needs: {{ $('Format Data').item.json.helpWith }}" },
+            { "name": "dueDate", "value": "={{ new Date(Date.now() + 24*60*60*1000).toISOString() }}" },
+            { "name": "locationId", "value": "BCczy6muFwhd63dPhKCC" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ghl-create-task",
+      "name": "GHL - Create Follow-up Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 500],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SEU_CREDENTIAL_ID",
+          "name": "GHL API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/conversations/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "type", "value": "Email" },
+            { "name": "contactId", "value": "={{ $('GHL - Create Contact').item.json.contact.id }}" },
+            { "name": "subject", "value": "Your Free Growth Assessment is on the way!" },
+            { "name": "message", "value": "Hi {{ $('Format Data').item.json.firstName }},\n\nThank you for requesting your Free Growth Assessment from Galaxy IT & Marketing!\n\nHere's what happens next:\n\n1️⃣ Our team will review your business details\n2️⃣ We'll prepare a personalized growth roadmap\n3️⃣ A specialist will contact you within 24 hours to schedule your free call\n\nIn the meantime, feel free to WhatsApp us at (774) 285-2299 if you have any questions.\n\nWe're excited to help your business grow!\n\nBest regards,\nGalaxy IT & Marketing Team\nWorcester, MA\n(508) 499-9279" },
+            { "name": "locationId", "value": "BCczy6muFwhd63dPhKCC" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ghl-auto-reply-consult",
+      "name": "GHL - Auto Reply Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 100],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SEU_CREDENTIAL_ID",
+          "name": "GHL API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "SEU_SPREADSHEET_ID_AQUI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "Assessment Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ new Date().toLocaleDateString('en-US') + ' ' + new Date().toLocaleTimeString('en-US') }}",
+            "Full Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Phone": "={{ $json.phone }}",
+            "Business": "={{ $json.business }}",
+            "Industry": "={{ $json.industry }}",
+            "Needs Help With": "={{ $json.helpWith }}",
+            "Message": "={{ $json.message }}",
+            "Source": "={{ $json.source }}",
+            "GHL Contact ID": "={{ $('GHL - Create Contact').item.json.contact.id }}",
+            "Status": "New Assessment"
+          }
+        },
+        "options": {}
+      },
+      "id": "sheets-consult",
+      "name": "Google Sheets - Log Lead",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [720, 700],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SEU_GOOGLE_CREDENTIAL_ID",
+          "name": "Google Sheets Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Consultation request created successfully' }) }}"
+      },
+      "id": "respond-success-consult",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1440, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Consultation Form": {
+      "main": [
+        [{ "node": "Format Data", "type": "main", "index": 0 }]
+      ]
+    },
+    "Format Data": {
+      "main": [
+        [
+          { "node": "GHL - Create Contact", "type": "main", "index": 0 },
+          { "node": "Google Sheets - Log Lead", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "GHL - Create Contact": {
+      "main": [
+        [
+          { "node": "GHL - Create Opportunity", "type": "main", "index": 0 },
+          { "node": "GHL - Add Note", "type": "main", "index": 0 },
+          { "node": "GHL - Create Follow-up Task", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "GHL - Create Opportunity": {
+      "main": [
+        [{ "node": "GHL - Auto Reply Email", "type": "main", "index": 0 }]
+      ]
+    },
+    "GHL - Auto Reply Email": {
+      "main": [
+        [{ "node": "Respond Success", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [{ "name": "Galaxy IT" }, { "name": "GHL" }, { "name": "Lead Capture" }, { "name": "Assessment" }]
+}

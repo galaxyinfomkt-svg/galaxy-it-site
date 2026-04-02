@@ -1,0 +1,277 @@
+{
+  "name": "Galaxy IT - Contact Form → GHL",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "galaxy-contact",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://galaxyinfo.us"
+        }
+      },
+      "id": "webhook-contact",
+      "name": "Webhook Contact Form",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "galaxy-contact"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "1", "name": "firstName", "value": "={{ $json.body.firstName }}", "type": "string" },
+            { "id": "2", "name": "lastName", "value": "={{ $json.body.lastName }}", "type": "string" },
+            { "id": "3", "name": "email", "value": "={{ $json.body.email }}", "type": "string" },
+            { "id": "4", "name": "phone", "value": "={{ $json.body.phone }}", "type": "string" },
+            { "id": "5", "name": "service", "value": "={{ $json.body.service }}", "type": "string" },
+            { "id": "6", "name": "message", "value": "={{ $json.body.message }}", "type": "string" },
+            { "id": "7", "name": "source", "value": "Website - Contact Form", "type": "string" },
+            { "id": "8", "name": "fullName", "value": "={{ $json.body.firstName }} {{ $json.body.lastName }}", "type": "string" }
+          ]
+        }
+      },
+      "id": "set-contact",
+      "name": "Format Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "firstName", "value": "={{ $json.firstName }}" },
+            { "name": "lastName", "value": "={{ $json.lastName }}" },
+            { "name": "email", "value": "={{ $json.email }}" },
+            { "name": "phone", "value": "={{ $json.phone }}" },
+            { "name": "source", "value": "Website - Contact Form" },
+            { "name": "tags", "value": "[\"website-lead\", \"contact-form\", \"{{ $json.service }}\"]" },
+            { "name": "locationId", "value": "BCczy6muFwhd63dPhKCC" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ghl-create-contact",
+      "name": "GHL - Create Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 200],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SEU_CREDENTIAL_ID",
+          "name": "GHL API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/opportunities/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "pipelineId", "value": "SEU_PIPELINE_ID_AQUI" },
+            { "name": "pipelineStageId", "value": "SEU_STAGE_ID_AQUI" },
+            { "name": "locationId", "value": "BCczy6muFwhd63dPhKCC" },
+            { "name": "contactId", "value": "={{ $('GHL - Create Contact').item.json.contact.id }}" },
+            { "name": "name", "value": "={{ $('Format Data').item.json.fullName }} - Contact Form" },
+            { "name": "status", "value": "open" },
+            { "name": "source", "value": "Website Contact Form" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ghl-create-opportunity",
+      "name": "GHL - Create Opportunity",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 200],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SEU_CREDENTIAL_ID",
+          "name": "GHL API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/={{ $('GHL - Create Contact').item.json.contact.id }}/notes",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "body", "value": "📩 New Contact Form Submission\n\nService: {{ $('Format Data').item.json.service }}\nMessage: {{ $('Format Data').item.json.message }}" },
+            { "name": "locationId", "value": "BCczy6muFwhd63dPhKCC" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ghl-add-note",
+      "name": "GHL - Add Note",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 400],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SEU_CREDENTIAL_ID",
+          "name": "GHL API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/conversations/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "type", "value": "Email" },
+            { "name": "contactId", "value": "={{ $('GHL - Create Contact').item.json.contact.id }}" },
+            { "name": "subject", "value": "Thank you for contacting Galaxy IT & Marketing!" },
+            { "name": "message", "value": "Hi {{ $('Format Data').item.json.firstName }},\n\nThank you for reaching out to Galaxy IT & Marketing! We received your message and will get back to you within 24 hours.\n\nIn the meantime, feel free to WhatsApp us at (774) 285-2299 for a faster response.\n\nBest regards,\nGalaxy IT & Marketing Team" },
+            { "name": "locationId", "value": "BCczy6muFwhd63dPhKCC" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ghl-auto-reply",
+      "name": "GHL - Auto Reply Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 200],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SEU_CREDENTIAL_ID",
+          "name": "GHL API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "SEU_SPREADSHEET_ID_AQUI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "Contact Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ new Date().toLocaleDateString('en-US') + ' ' + new Date().toLocaleTimeString('en-US') }}",
+            "First Name": "={{ $json.firstName }}",
+            "Last Name": "={{ $json.lastName }}",
+            "Email": "={{ $json.email }}",
+            "Phone": "={{ $json.phone }}",
+            "Service": "={{ $json.service }}",
+            "Message": "={{ $json.message }}",
+            "Source": "={{ $json.source }}",
+            "GHL Contact ID": "={{ $('GHL - Create Contact').item.json.contact.id }}",
+            "Status": "New Lead"
+          }
+        },
+        "options": {}
+      },
+      "id": "sheets-contact",
+      "name": "Google Sheets - Log Lead",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [720, 500],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SEU_GOOGLE_CREDENTIAL_ID",
+          "name": "Google Sheets Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Contact created successfully' }) }}"
+      },
+      "id": "respond-success",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1440, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Contact Form": {
+      "main": [
+        [{ "node": "Format Data", "type": "main", "index": 0 }]
+      ]
+    },
+    "Format Data": {
+      "main": [
+        [
+          { "node": "GHL - Create Contact", "type": "main", "index": 0 },
+          { "node": "Google Sheets - Log Lead", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "GHL - Create Contact": {
+      "main": [
+        [
+          { "node": "GHL - Create Opportunity", "type": "main", "index": 0 },
+          { "node": "GHL - Add Note", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "GHL - Create Opportunity": {
+      "main": [
+        [{ "node": "GHL - Auto Reply Email", "type": "main", "index": 0 }]
+      ]
+    },
+    "GHL - Auto Reply Email": {
+      "main": [
+        [{ "node": "Respond Success", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [{ "name": "Galaxy IT" }, { "name": "GHL" }, { "name": "Lead Capture" }]
+}

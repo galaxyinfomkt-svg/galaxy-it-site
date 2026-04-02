@@ -1,0 +1,191 @@
+{
+  "name": "Galaxy IT - Consultation Form > GHL + Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "galaxy-consultation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-consult",
+      "name": "Webhook Consultation Form",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "galaxy-consultation"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "1", "name": "name", "value": "={{ $json.body.name }}", "type": "string" },
+            { "id": "2", "name": "email", "value": "={{ $json.body.email }}", "type": "string" },
+            { "id": "3", "name": "phone", "value": "={{ $json.body.phone }}", "type": "string" },
+            { "id": "4", "name": "business", "value": "={{ $json.body.business }}", "type": "string" },
+            { "id": "5", "name": "industry", "value": "={{ $json.body.industry }}", "type": "string" },
+            { "id": "6", "name": "helpWith", "value": "={{ $json.body.helpWith }}", "type": "string" },
+            { "id": "7", "name": "message", "value": "={{ $json.body.message }}", "type": "string" },
+            { "id": "8", "name": "source", "value": "Website - Free Assessment", "type": "string" },
+            { "id": "9", "name": "firstName", "value": "={{ $json.body.name.split(' ')[0] }}", "type": "string" },
+            { "id": "10", "name": "lastName", "value": "={{ $json.body.name.split(' ').slice(1).join(' ') }}", "type": "string" },
+            { "id": "11", "name": "date", "value": "={{ new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}) }}", "type": "string" }
+          ]
+        }
+      },
+      "id": "set-consult",
+      "name": "Format Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rest.gohighlevel.com/v1/contacts/",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6IlpwbEh0N0pzQjdlMUEyRzhScm03IiwidmVyc2lvbiI6MSwiaWF0IjoxNzczNDQwMDY0OTgzLCJzdWIiOiI0eW9wSmw1ODVCRk1acG50eXg4RiJ9.SGPfA8zzIe5GMxx4aeHSFqj92u7HTGJ-qzceuWb8hbw" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"firstName\":\"{{ $json.firstName }}\",\"lastName\":\"{{ $json.lastName }}\",\"email\":\"{{ $json.email }}\",\"phone\":\"{{ $json.phone }}\",\"companyName\":\"{{ $json.business }}\",\"source\":\"Website - Free Assessment\",\"tags\":[\"website-lead\",\"free-assessment\",\"{{ $json.industry }}\",\"{{ $json.helpWith }}\"]}",
+        "options": {}
+      },
+      "id": "ghl-create-contact-c",
+      "name": "GHL - Create Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://rest.gohighlevel.com/v1/contacts/{{ $json.contact.id }}/notes/",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6IlpwbEh0N0pzQjdlMUEyRzhScm03IiwidmVyc2lvbiI6MSwiaWF0IjoxNzczNDQwMDY0OTgzLCJzdWIiOiI0eW9wSmw1ODVCRk1acG50eXg4RiJ9.SGPfA8zzIe5GMxx4aeHSFqj92u7HTGJ-qzceuWb8hbw" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"body\":\"Free Assessment Request\\n\\nBusiness: {{ $('Format Data').item.json.business }}\\nIndustry: {{ $('Format Data').item.json.industry }}\\nNeeds Help With: {{ $('Format Data').item.json.helpWith }}\\nMessage: {{ $('Format Data').item.json.message }}\"}",
+        "options": {}
+      },
+      "id": "ghl-add-note-c",
+      "name": "GHL - Add Note",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://rest.gohighlevel.com/v1/contacts/{{ $('GHL - Create Contact').item.json.contact.id }}/tasks/",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6IlpwbEh0N0pzQjdlMUEyRzhScm03IiwidmVyc2lvbiI6MSwiaWF0IjoxNzczNDQwMDY0OTgzLCJzdWIiOiI0eW9wSmw1ODVCRk1acG50eXg4RiJ9.SGPfA8zzIe5GMxx4aeHSFqj92u7HTGJ-qzceuWb8hbw" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"title\":\"Follow up - Free Assessment: {{ $('Format Data').item.json.name }}\",\"description\":\"Assessment request from {{ $('Format Data').item.json.name }} ({{ $('Format Data').item.json.business }}). Industry: {{ $('Format Data').item.json.industry }}. Needs: {{ $('Format Data').item.json.helpWith }}\",\"dueDate\":\"{{ new Date(Date.now() + 24*60*60*1000).toISOString() }}\"}",
+        "options": {}
+      },
+      "id": "ghl-create-task-c",
+      "name": "GHL - Create Follow-up Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 500]
+    },
+    {
+      "parameters": {
+        "fromEmail": "galaxyinfomkt@gmail.com",
+        "toEmail": "info@galaxyinfo.us, galaxyinfomkt@gmail.com",
+        "subject": "=New Assessment Lead: {{ $('Format Data').item.json.name }} | {{ $('Format Data').item.json.business }}",
+        "emailFormat": "html",
+        "html": "=<div style=\"font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;background:#f5f5f5;\">\n  <div style=\"background:linear-gradient(135deg,#0d1b2a 0%,#1a237e 100%);padding:32px 40px;text-align:center;border-radius:8px 8px 0 0;\">\n    <img src=\"https://galaxyinfo.us/images/og-image.jpg\" alt=\"Galaxy IT\" style=\"max-width:180px;margin-bottom:12px;\" />\n    <h1 style=\"color:#ffd700;font-size:22px;margin:0;font-weight:700;\">New Free Assessment Request</h1>\n    <p style=\"color:rgba(255,255,255,0.7);font-size:13px;margin:8px 0 0;\">{{ $('Format Data').item.json.date }}</p>\n  </div>\n  <div style=\"background:#ffffff;padding:32px 40px;\">\n    <div style=\"background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-left:4px solid #2e7d32;padding:14px 18px;border-radius:0 6px 6px 0;margin-bottom:24px;\">\n      <p style=\"margin:0;color:#1b5e20;font-size:13px;font-weight:600;\">HIGH PRIORITY - Free Assessment Lead</p>\n      <p style=\"margin:4px 0 0;color:#2e7d32;font-size:12px;\">Follow up within 24 hours</p>\n    </div>\n    <h2 style=\"color:#1a237e;font-size:18px;margin:0 0 20px;border-bottom:2px solid #ffd700;padding-bottom:12px;\">Lead Information</h2>\n    <table style=\"width:100%;border-collapse:collapse;\">\n      <tr style=\"border-bottom:1px solid #eee;\"><td style=\"padding:12px 0;color:#6b7280;font-size:13px;width:140px;\">Full Name</td><td style=\"padding:12px 0;color:#333;font-size:14px;font-weight:600;\">{{ $('Format Data').item.json.name }}</td></tr>\n      <tr style=\"border-bottom:1px solid #eee;\"><td style=\"padding:12px 0;color:#6b7280;font-size:13px;\">Email</td><td style=\"padding:12px 0;\"><a href=\"mailto:{{ $('Format Data').item.json.email }}\" style=\"color:#1a237e;text-decoration:none;font-size:14px;\">{{ $('Format Data').item.json.email }}</a></td></tr>\n      <tr style=\"border-bottom:1px solid #eee;\"><td style=\"padding:12px 0;color:#6b7280;font-size:13px;\">Phone</td><td style=\"padding:12px 0;\"><a href=\"tel:{{ $('Format Data').item.json.phone }}\" style=\"color:#1a237e;text-decoration:none;font-size:14px;\">{{ $('Format Data').item.json.phone }}</a></td></tr>\n      <tr style=\"border-bottom:1px solid #eee;\"><td style=\"padding:12px 0;color:#6b7280;font-size:13px;\">Business</td><td style=\"padding:12px 0;color:#333;font-size:14px;font-weight:600;\">{{ $('Format Data').item.json.business }}</td></tr>\n      <tr style=\"border-bottom:1px solid #eee;\"><td style=\"padding:12px 0;color:#6b7280;font-size:13px;\">Industry</td><td style=\"padding:12px 0;\"><span style=\"background:#e8eaf6;color:#1a237e;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;\">{{ $('Format Data').item.json.industry }}</span></td></tr>\n      <tr style=\"border-bottom:1px solid #eee;\"><td style=\"padding:12px 0;color:#6b7280;font-size:13px;\">Needs Help With</td><td style=\"padding:12px 0;\"><span style=\"background:#e8f5e9;color:#2e7d32;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;\">{{ $('Format Data').item.json.helpWith }}</span></td></tr>\n      <tr><td style=\"padding:12px 0;color:#6b7280;font-size:13px;vertical-align:top;\">Message</td><td style=\"padding:12px 0;color:#333;font-size:14px;line-height:1.6;\">{{ $('Format Data').item.json.message }}</td></tr>\n    </table>\n    <div style=\"margin-top:24px;text-align:center;\">\n      <a href=\"https://app.gohighlevel.com/v2/location/ZplHt7JsB7e1A2G8Rrm7/contacts/\" style=\"display:inline-block;background:linear-gradient(135deg,#2e7d32,#1b5e20);color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:600;font-size:14px;\">View in GHL</a>\n      <a href=\"https://wa.me/{{ $('Format Data').item.json.phone }}\" style=\"display:inline-block;background:#25D366;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:600;font-size:14px;margin-left:8px;\">WhatsApp Lead</a>\n    </div>\n  </div>\n  <div style=\"background:#0d1b2a;padding:20px 40px;text-align:center;border-radius:0 0 8px 8px;\">\n    <p style=\"color:rgba(255,255,255,0.5);font-size:11px;margin:0;\">Galaxy IT & Marketing | Worcester, MA | (508) 499-9279</p>\n    <p style=\"color:rgba(255,255,255,0.3);font-size:10px;margin:6px 0 0;\">Automated notification from website assessment form</p>\n  </div>\n</div>",
+        "options": {}
+      },
+      "id": "email-notify-c",
+      "name": "Email - Notify Team",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [960, 700],
+      "credentials": {
+        "smtp": {
+          "id": "2ei5OJfzS1oCZZ8e",
+          "name": "Gmail SMTP - Galaxy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "mode": "url", "value": "" },
+        "sheetName": { "__rl": true, "mode": "list", "value": "Assessment Leads" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $('Format Data').item.json.date }}",
+            "Full Name": "={{ $('Format Data').item.json.name }}",
+            "Email": "={{ $('Format Data').item.json.email }}",
+            "Phone": "={{ $('Format Data').item.json.phone }}",
+            "Business": "={{ $('Format Data').item.json.business }}",
+            "Industry": "={{ $('Format Data').item.json.industry }}",
+            "Needs Help With": "={{ $('Format Data').item.json.helpWith }}",
+            "Message": "={{ $('Format Data').item.json.message }}",
+            "Source": "={{ $('Format Data').item.json.source }}",
+            "Status": "New Assessment"
+          }
+        },
+        "options": {}
+      },
+      "id": "sheets-consult",
+      "name": "Google Sheets - Log Lead",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [720, 600]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true }) }}"
+      },
+      "id": "respond-ok-c",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1200, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Consultation Form": {
+      "main": [[{ "node": "Format Data", "type": "main", "index": 0 }]]
+    },
+    "Format Data": {
+      "main": [[
+        { "node": "GHL - Create Contact", "type": "main", "index": 0 },
+        { "node": "Google Sheets - Log Lead", "type": "main", "index": 0 }
+      ]]
+    },
+    "GHL - Create Contact": {
+      "main": [[
+        { "node": "GHL - Add Note", "type": "main", "index": 0 },
+        { "node": "GHL - Create Follow-up Task", "type": "main", "index": 0 },
+        { "node": "Email - Notify Team", "type": "main", "index": 0 }
+      ]]
+    },
+    "GHL - Add Note": {
+      "main": [[{ "node": "Respond Success", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}
