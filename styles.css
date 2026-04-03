@@ -1415,10 +1415,10 @@ h6 {
 }
 
 .contact-form-wrap {
-  background: var(--neutral-white);
+  background: transparent;
   border-radius: var(--radius-md);
   padding: 40px;
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
 }
 
 .contact-form-wrap h2 {
@@ -2464,10 +2464,10 @@ h6 {
     min-width: 0;
 }
 .hero-form-side .contact-form-wrap {
-    background: #fff;
+    background: transparent;
     border-radius: 16px;
     padding: 32px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+    box-shadow: none;
 }
 @media (min-width: 1024px) {
     .hero-grid {
