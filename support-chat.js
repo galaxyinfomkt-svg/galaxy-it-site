@@ -5,7 +5,7 @@
    ============================================ */
 
 const GALAXY_ASSIST_CONFIG = {
-    webhookUrl: 'https://n8n.galaxyinfo.us/webhook/galaxy-assist',
+    webhookUrl: '/api/galaxy-assist',
     timeoutMs: 15000,
     systemPrompt: `You are Galaxy Assist, the AI support agent for Galaxy IT & Marketing (Worcester, MA). You specialize in helping clients use Bee Pro Hub — our white-labeled GoHighLevel (GHL) platform.
 
