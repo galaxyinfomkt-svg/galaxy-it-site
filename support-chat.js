@@ -54,219 +54,139 @@ RESPONSE GUIDELINES:
 };
 
 /* ---- Built-in Knowledge Base (works without webhook) ---- */
-const KNOWLEDGE_BASE = {
-
-    // ===== CONTACTS & CRM =====
-    contacts: {
-        keywords: ['contact', 'contato', 'contacto', 'lead', 'crm', 'add contact', 'import', 'importar', 'smart list', 'lista', 'tag', 'custom field', 'campo', 'pipeline', 'opportunity', 'oportunidade', 'oportunidad'],
-        answers: {
-            en: {
-                'add contact': "To add a new contact: Go to <b>Contacts</b> in the left menu → click <b>+ Add Contact</b> (top right) → fill in Name, Email, Phone → click <b>Save</b>. You can also add tags and assign to a pipeline right away.",
-                'import': "To import contacts: Go to <b>Contacts</b> → click <b>Import</b> (top right) → upload your CSV file → map the columns to the correct fields → click <b>Import</b>. Make sure your CSV has headers like Name, Email, Phone.",
-                'smart list': "Smart Lists filter your contacts automatically. Go to <b>Contacts</b> → <b>Smart Lists</b> tab → click <b>+ Create Smart List</b> → set your filter conditions (tags, dates, pipeline stage, etc.) → Save. The list updates automatically as contacts match your criteria.",
-                'tag': "To add tags: Open a contact → click <b>Tags</b> section → type and add your tag. To bulk-tag: select multiple contacts from the list → click <b>Actions</b> → <b>Add Tag</b>. Tags are essential for automations and segmentation.",
-                'custom field': "To create custom fields: Go to <b>Settings</b> → <b>Custom Fields</b> → click <b>+ Add Field</b> → choose the type (text, dropdown, date, etc.) → name it → Save. Custom fields appear in contact profiles and can be used in automations.",
-                'pipeline': "To set up a pipeline: Go to <b>Opportunities</b> → <b>Pipelines</b> → click <b>+ Create Pipeline</b> → add your stages (e.g., New Lead, Contacted, Proposal, Won, Lost) → Save. Drag contacts between stages to track progress.",
-                'default': "Your Bee Pro Hub CRM is your command center. Go to <b>Contacts</b> to see all your leads. You can filter by tags, create Smart Lists, manage pipelines, and track every interaction. Need help with something specific?"
-            },
-            es: {
-                'default': "Tu CRM Bee Pro Hub es tu centro de comando. Ve a <b>Contacts</b> para ver todos tus leads. Puedes filtrar por tags, crear Smart Lists, gestionar pipelines y rastrear cada interacción. ¿Necesitas ayuda con algo específico?"
-            },
-            pt: {
-                'default': "Seu CRM Bee Pro Hub é seu centro de comando. Vá em <b>Contacts</b> pra ver todos os seus leads. Você pode filtrar por tags, criar Smart Lists, gerenciar pipelines e rastrear cada interação. Precisa de ajuda com algo específico?"
-            }
+/* Each entry has phrases (multi-word, scored higher) and single keywords (scored lower) */
+const KNOWLEDGE_BASE = [
+    {
+        id: 'review-request',
+        phrases: ['review request', 'request review', 'send review', 'ask review', 'get review', 'pedido de avaliação', 'pedir avaliação', 'enviar avaliação', 'solicitar reseña', 'pedir reseña', 'enviar reseña', 'solicitud de reseña', 'pedido de review', 'pedir review'],
+        keywords: ['review', 'avaliação', 'reseña', 'reputation', 'reputação', 'rating', 'estrela', 'star'],
+        answer: {
+            en: "To send review requests:<br><b>Step 1:</b> Go to <b>Reputation</b> in the left menu<br><b>Step 2:</b> Click <b>Requests</b> tab<br><b>Step 3:</b> Click <b>Send Request</b><br><b>Step 4:</b> Select the contacts you want to send to<br><b>Step 5:</b> Customize the SMS or Email message<br><b>Step 6:</b> Click <b>Send</b><br><br>Pro tip: Automate this! Create a workflow with trigger <b>\"Appointment Completed\"</b> → Action: <b>Send Review Request</b>. Reviews come in automatically.",
+            es: "Para enviar solicitudes de reseña:<br><b>Paso 1:</b> Ve a <b>Reputation</b> en el menú izquierdo<br><b>Paso 2:</b> Clic en la pestaña <b>Requests</b><br><b>Paso 3:</b> Clic en <b>Send Request</b><br><b>Paso 4:</b> Selecciona los contactos<br><b>Paso 5:</b> Personaliza el mensaje SMS o Email<br><b>Paso 6:</b> Clic en <b>Send</b><br><br>Pro tip: ¡Automatiza esto! Crea un workflow con trigger <b>\"Appointment Completed\"</b> → Acción: <b>Send Review Request</b>.",
+            pt: "Pra enviar pedidos de avaliação:<br><b>Passo 1:</b> Vá em <b>Reputation</b> no menu lateral<br><b>Passo 2:</b> Clique na aba <b>Requests</b><br><b>Passo 3:</b> Clique em <b>Send Request</b><br><b>Passo 4:</b> Selecione os contatos<br><b>Passo 5:</b> Personalize a mensagem por SMS ou Email<br><b>Passo 6:</b> Clique em <b>Send</b><br><br>Dica: Automatize isso! Crie um workflow com trigger <b>\"Appointment Completed\"</b> → Ação: <b>Send Review Request</b>. As avaliações chegam automaticamente."
         }
     },
-
-    // ===== CONVERSATIONS / INBOX =====
-    conversations: {
-        keywords: ['conversation', 'conversa', 'conversación', 'inbox', 'message', 'mensagem', 'mensaje', 'sms', 'email', 'whatsapp', 'facebook', 'instagram', 'dm', 'chat', 'template', 'snippet', 'respond', 'responder', 'reply'],
-        answers: {
-            en: {
-                'sms': "To send an SMS: Go to <b>Conversations</b> → select or search for a contact → choose the <b>SMS</b> channel at the bottom → type your message → hit Send. Make sure the contact has a valid phone number.",
-                'email': "To send an email from conversations: Go to <b>Conversations</b> → select a contact → switch to <b>Email</b> channel → compose your message (you can use templates) → Send. For bulk emails, use the <b>Email Marketing</b> section instead.",
-                'whatsapp': "WhatsApp messages appear in your <b>Conversations</b> inbox automatically. To reply, select the conversation → make sure <b>WhatsApp</b> is selected as the channel → type and send. Note: WhatsApp has a 24-hour reply window for non-template messages.",
-                'template': "To create message templates: Go to <b>Marketing</b> → <b>Templates</b> → click <b>+ New Template</b> → choose SMS or Email → write your template with merge fields like {{contact.first_name}} → Save. Templates save time on repetitive messages.",
-                'default': "Your <b>Conversations</b> inbox unifies all channels — SMS, Email, WhatsApp, Facebook, Instagram DM, and Google Chat — in one place. Click any conversation to see the full history and reply from any channel."
-            },
-            es: {
-                'default': "Tu bandeja de <b>Conversations</b> unifica todos los canales — SMS, Email, WhatsApp, Facebook, Instagram DM y Google Chat — en un solo lugar. Haz clic en cualquier conversación para ver el historial completo y responder desde cualquier canal."
-            },
-            pt: {
-                'default': "Sua caixa de <b>Conversations</b> unifica todos os canais — SMS, Email, WhatsApp, Facebook, Instagram DM e Google Chat — em um só lugar. Clique em qualquer conversa pra ver o histórico completo e responder de qualquer canal."
-            }
+    {
+        id: 'respond-review',
+        phrases: ['respond review', 'reply review', 'answer review', 'responder avaliação', 'responder reseña', 'responder review'],
+        keywords: ['respond', 'reply', 'responder'],
+        answer: {
+            en: "To respond to a Google review:<br><b>Step 1:</b> Go to <b>Reputation</b> in the left menu<br><b>Step 2:</b> Find the review in the list<br><b>Step 3:</b> Click on it to expand<br><b>Step 4:</b> Type your response<br><b>Step 5:</b> Click <b>Reply</b><br><br>Tip: Always respond within 24 hours — it improves your local SEO and shows clients you care.",
+            es: "Para responder una reseña de Google:<br><b>Paso 1:</b> Ve a <b>Reputation</b> en el menú<br><b>Paso 2:</b> Encuentra la reseña<br><b>Paso 3:</b> Clic para expandir<br><b>Paso 4:</b> Escribe tu respuesta<br><b>Paso 5:</b> Clic en <b>Reply</b><br><br>Tip: Responde dentro de 24 horas — mejora tu SEO local.",
+            pt: "Pra responder uma avaliação do Google:<br><b>Passo 1:</b> Vá em <b>Reputation</b> no menu lateral<br><b>Passo 2:</b> Encontre a avaliação na lista<br><b>Passo 3:</b> Clique pra expandir<br><b>Passo 4:</b> Escreva sua resposta<br><b>Passo 5:</b> Clique em <b>Reply</b><br><br>Dica: Responda em até 24 horas — melhora seu SEO local e mostra que você se importa."
         }
     },
-
-    // ===== CALENDARS & APPOINTMENTS =====
-    calendars: {
-        keywords: ['calendar', 'calendário', 'calendario', 'appointment', 'agendamento', 'cita', 'booking', 'agendar', 'schedule', 'reminder', 'lembrete', 'recordatorio', 'availability', 'disponibilidade'],
-        answers: {
-            en: {
-                'create': "To create a booking calendar: Go to <b>Calendars</b> → click <b>+ Create Calendar</b> → choose type (Round Robin, Collective, Service, etc.) → set your availability, duration, and buffer time → customize the booking form → Save and share the link.",
-                'reminder': "To set up appointment reminders: Go to <b>Calendars</b> → edit your calendar → scroll to <b>Notifications</b> → enable reminders → set timing (e.g., 24h before, 1h before) → choose SMS, Email, or both. This reduces no-shows significantly.",
-                'default': "Your <b>Calendars</b> section lets you create booking pages for clients. Go to <b>Calendars</b> in the left menu to see all your calendars, upcoming appointments, and manage availability. You can share booking links directly with clients."
-            },
-            es: {
-                'default': "Tu sección de <b>Calendars</b> te permite crear páginas de reserva para clientes. Ve a <b>Calendars</b> en el menú izquierdo para ver todos tus calendarios, citas próximas y gestionar disponibilidad."
-            },
-            pt: {
-                'default': "Sua seção de <b>Calendars</b> permite criar páginas de agendamento para clientes. Vá em <b>Calendars</b> no menu lateral pra ver todos os seus calendários, compromissos futuros e gerenciar disponibilidade."
-            }
+    {
+        id: 'contacts-crm',
+        phrases: ['add contact', 'import contact', 'smart list', 'manage contact', 'manage lead', 'adicionar contato', 'importar contato', 'gerenciar contato', 'agregar contacto', 'importar contacto', 'gestionar contacto'],
+        keywords: ['contact', 'contato', 'contacto', 'lead', 'crm', 'import', 'importar', 'smart list', 'tag', 'pipeline'],
+        answer: {
+            en: "Your CRM is in <b>Contacts</b> in the left menu. Here's what you can do:<br>• <b>Add contact:</b> Click <b>+ Add Contact</b> → fill Name, Email, Phone → Save<br>• <b>Import:</b> Click <b>Import</b> → upload CSV → map columns → Import<br>• <b>Smart Lists:</b> Click <b>Smart Lists</b> tab → <b>+ Create</b> → set filters (tags, dates, pipeline stage)<br>• <b>Tags:</b> Open a contact → Tags section → type and add. Bulk: select multiple → Actions → Add Tag<br>• <b>Pipeline:</b> Go to <b>Opportunities</b> → Pipelines → create stages (New, Contacted, Won, Lost)",
+            es: "Tu CRM está en <b>Contacts</b> en el menú izquierdo. Lo que puedes hacer:<br>• <b>Agregar contacto:</b> Clic en <b>+ Add Contact</b> → llena Nombre, Email, Teléfono → Save<br>• <b>Importar:</b> Clic en <b>Import</b> → sube CSV → mapea columnas → Import<br>• <b>Smart Lists:</b> Pestaña <b>Smart Lists</b> → <b>+ Create</b> → configura filtros<br>• <b>Tags:</b> Abre un contacto → sección Tags → agrega. En masa: selecciona varios → Actions → Add Tag<br>• <b>Pipeline:</b> Ve a <b>Opportunities</b> → Pipelines → crea etapas",
+            pt: "Seu CRM fica em <b>Contacts</b> no menu lateral. O que você pode fazer:<br>• <b>Adicionar contato:</b> Clique em <b>+ Add Contact</b> → preencha Nome, Email, Telefone → Save<br>• <b>Importar:</b> Clique em <b>Import</b> → suba o CSV → mapeie colunas → Import<br>• <b>Smart Lists:</b> Aba <b>Smart Lists</b> → <b>+ Create</b> → configure filtros (tags, datas, etapa do pipeline)<br>• <b>Tags:</b> Abra um contato → seção Tags → digite e adicione. Em massa: selecione vários → Actions → Add Tag<br>• <b>Pipeline:</b> Vá em <b>Opportunities</b> → Pipelines → crie etapas (Novo, Contatado, Ganho, Perdido)"
         }
     },
-
-    // ===== AUTOMATIONS & WORKFLOWS =====
-    automations: {
-        keywords: ['automation', 'automação', 'automatización', 'workflow', 'fluxo', 'flujo', 'trigger', 'gatilho', 'disparador', 'action', 'ação', 'acción', 'follow-up', 'followup', 'sequence', 'sequência', 'secuencia', 'if else', 'wait', 'esperar'],
-        answers: {
-            en: {
-                'create': "To create a workflow: Go to <b>Automation</b> → <b>Workflows</b> → click <b>+ Create Workflow</b> → start from scratch or use a recipe → add a <b>Trigger</b> (e.g., Form Submitted, Tag Added) → add <b>Actions</b> (Send SMS, Send Email, Add Tag, etc.) → toggle to <b>Publish</b> when ready.",
-                'trigger': "Available triggers include: Form Submitted, Pipeline Stage Changed, Tag Added/Removed, Appointment Booked, Contact Created, Birthday, Custom Date, Invoice Paid, and more. Pick the trigger that matches when you want the automation to start.",
-                'follow-up': "To create a follow-up sequence: Create a workflow → Trigger: <b>Tag Added</b> (e.g., 'new-lead') → Action 1: Send Email → Add <b>Wait</b> (e.g., 2 days) → Action 2: Send SMS → Add <b>Wait</b> (1 day) → Action 3: Send Email. This drips messages over time automatically.",
-                'default': "Automations run your business on autopilot. Go to <b>Automation</b> → <b>Workflows</b> to see all your active workflows. Each workflow has a trigger (what starts it) and actions (what happens). You can add conditions (if/else) to create smart branching logic."
-            },
-            es: {
-                'default': "Las automatizaciones operan tu negocio en piloto automático. Ve a <b>Automation</b> → <b>Workflows</b> para ver todos tus flujos activos. Cada workflow tiene un trigger (qué lo inicia) y acciones (qué pasa). Puedes agregar condiciones (if/else) para crear lógica inteligente."
-            },
-            pt: {
-                'default': "As automações rodam seu negócio no automático. Vá em <b>Automation</b> → <b>Workflows</b> pra ver todos os seus fluxos ativos. Cada workflow tem um trigger (o que inicia) e ações (o que acontece). Você pode adicionar condições (if/else) pra criar lógica inteligente."
-            }
+    {
+        id: 'conversations',
+        phrases: ['send message', 'send sms', 'send email', 'reply message', 'enviar mensagem', 'enviar sms', 'responder mensagem', 'enviar mensaje', 'responder mensaje', 'unified inbox', 'caixa de entrada'],
+        keywords: ['conversation', 'conversa', 'conversación', 'inbox', 'mensagem', 'mensaje', 'sms', 'whatsapp', 'chat'],
+        answer: {
+            en: "To send a message to a lead:<br><b>Step 1:</b> Go to <b>Conversations</b> in the left menu<br><b>Step 2:</b> Search for the contact<br><b>Step 3:</b> Select the channel at the bottom: <b>SMS</b>, <b>Email</b>, or <b>WhatsApp</b><br><b>Step 4:</b> Type your message (or use a template)<br><b>Step 5:</b> Hit <b>Send</b><br><br>All channels — SMS, Email, WhatsApp, Facebook, Instagram DM — are unified in one inbox.",
+            es: "Para enviar un mensaje a un lead:<br><b>Paso 1:</b> Ve a <b>Conversations</b> en el menú<br><b>Paso 2:</b> Busca el contacto<br><b>Paso 3:</b> Selecciona el canal abajo: <b>SMS</b>, <b>Email</b>, o <b>WhatsApp</b><br><b>Paso 4:</b> Escribe tu mensaje (o usa una plantilla)<br><b>Paso 5:</b> Clic en <b>Send</b><br><br>Todos los canales están unificados en una bandeja.",
+            pt: "Pra enviar uma mensagem pra um lead:<br><b>Passo 1:</b> Vá em <b>Conversations</b> no menu lateral<br><b>Passo 2:</b> Procure o contato<br><b>Passo 3:</b> Selecione o canal embaixo: <b>SMS</b>, <b>Email</b>, ou <b>WhatsApp</b><br><b>Passo 4:</b> Escreva sua mensagem (ou use um template)<br><b>Passo 5:</b> Clique em <b>Send</b><br><br>Todos os canais — SMS, Email, WhatsApp, Facebook, Instagram DM — ficam numa caixa de entrada só."
         }
     },
-
-    // ===== FUNNELS & WEBSITES =====
-    funnels: {
-        keywords: ['funnel', 'funil', 'embudo', 'website', 'site', 'sitio', 'landing page', 'página', 'pagina', 'page', 'builder', 'construtor', 'editor', 'domain', 'domínio', 'dominio', 'dns'],
-        answers: {
-            en: {
-                'edit': "To edit your website/funnel: Go to <b>Sites</b> → <b>Funnels</b> or <b>Websites</b> → click on your project → click a page to open the builder → drag and drop elements, edit text, change images → click <b>Save</b> (top right). Always preview before publishing.",
-                'domain': "To connect a custom domain: Go to <b>Settings</b> → <b>Domains</b> → click <b>+ Add Domain</b> → enter your domain → follow the DNS instructions (add the CNAME record to your domain provider) → wait for verification (can take up to 48h).",
-                'default': "Your website and funnels live in <b>Sites</b> in the left menu. The drag-and-drop builder lets you edit pages visually — no coding needed. You can create landing pages, multi-step funnels, full websites, and blog posts."
-            },
-            es: {
-                'default': "Tu sitio web y embudos están en <b>Sites</b> en el menú izquierdo. El constructor drag-and-drop te permite editar páginas visualmente — sin código. Puedes crear landing pages, embudos multi-paso, sitios web completos y posts de blog."
-            },
-            pt: {
-                'default': "Seu site e funis ficam em <b>Sites</b> no menu lateral. O construtor drag-and-drop permite editar páginas visualmente — sem código. Você pode criar landing pages, funis multi-etapas, sites completos e posts de blog."
-            }
+    {
+        id: 'automations',
+        phrases: ['create automation', 'create workflow', 'follow up', 'follow-up', 'criar automação', 'criar workflow', 'crear automatización', 'crear workflow', 'drip campaign'],
+        keywords: ['automation', 'automação', 'automatización', 'workflow', 'trigger', 'gatilho', 'sequence', 'sequência'],
+        answer: {
+            en: "To create an automation:<br><b>Step 1:</b> Go to <b>Automation</b> → <b>Workflows</b><br><b>Step 2:</b> Click <b>+ Create Workflow</b><br><b>Step 3:</b> Add a <b>Trigger</b> (e.g., Form Submitted, Tag Added, Contact Created)<br><b>Step 4:</b> Add <b>Actions</b> (Send Email, Send SMS, Add Tag, Wait, If/Else)<br><b>Step 5:</b> Toggle to <b>Publish</b> when ready<br><br>Example follow-up: Trigger \"Tag Added\" → Send Email → Wait 2 days → Send SMS → Wait 1 day → Send Email.",
+            es: "Para crear una automatización:<br><b>Paso 1:</b> Ve a <b>Automation</b> → <b>Workflows</b><br><b>Paso 2:</b> Clic en <b>+ Create Workflow</b><br><b>Paso 3:</b> Agrega un <b>Trigger</b> (ej: Form Submitted, Tag Added)<br><b>Paso 4:</b> Agrega <b>Actions</b> (Send Email, Send SMS, Add Tag, Wait, If/Else)<br><b>Paso 5:</b> Actívalo con <b>Publish</b><br><br>Ejemplo: Trigger \"Tag Added\" → Send Email → Wait 2 días → Send SMS.",
+            pt: "Pra criar uma automação:<br><b>Passo 1:</b> Vá em <b>Automation</b> → <b>Workflows</b><br><b>Passo 2:</b> Clique em <b>+ Create Workflow</b><br><b>Passo 3:</b> Adicione um <b>Trigger</b> (ex: Form Submitted, Tag Added, Contact Created)<br><b>Passo 4:</b> Adicione <b>Actions</b> (Send Email, Send SMS, Add Tag, Wait, If/Else)<br><b>Passo 5:</b> Ative com <b>Publish</b><br><br>Exemplo de follow-up: Trigger \"Tag Added\" → Send Email → Wait 2 dias → Send SMS → Wait 1 dia → Send Email."
         }
     },
-
-    // ===== REPUTATION & REVIEWS =====
-    reputation: {
-        keywords: ['review', 'avaliação', 'reseña', 'reputation', 'reputação', 'reputación', 'google review', 'star', 'estrela', 'estrella', 'rating', 'request review', 'solicitar', 'feedback'],
-        answers: {
-            en: {
-                'request': "To send review requests: Go to <b>Reputation</b> → <b>Requests</b> → click <b>Send Request</b> → select contacts → customize the message → Send. You can also automate this: create a workflow triggered by \"Invoice Paid\" or \"Appointment Completed\" → Action: Send Review Request.",
-                'default': "Manage your online reputation in <b>Reputation</b> section. You can monitor Google reviews, send review requests via SMS/Email, and set up auto-responses. Tip: automate review requests after completed appointments for consistent 5-star ratings."
-            },
-            es: {
-                'default': "Gestiona tu reputación online en la sección <b>Reputation</b>. Puedes monitorear reseñas de Google, enviar solicitudes de reseña por SMS/Email y configurar respuestas automáticas."
-            },
-            pt: {
-                'default': "Gerencie sua reputação online na seção <b>Reputation</b>. Você pode monitorar avaliações do Google, enviar pedidos de avaliação por SMS/Email e configurar respostas automáticas."
-            }
+    {
+        id: 'calendars',
+        phrases: ['booking calendar', 'set up calendar', 'create calendar', 'appointment reminder', 'configurar calendário', 'criar calendário', 'configurar calendario', 'crear calendario', 'agendar chamada'],
+        keywords: ['calendar', 'calendário', 'calendario', 'appointment', 'agendamento', 'booking', 'reminder', 'lembrete', 'disponibilidade', 'availability'],
+        answer: {
+            en: "To set up a booking calendar:<br><b>Step 1:</b> Go to <b>Calendars</b> in the left menu<br><b>Step 2:</b> Click <b>+ Create Calendar</b><br><b>Step 3:</b> Choose type (Simple, Round Robin, Service, Class)<br><b>Step 4:</b> Set available days, hours, duration, and buffer time<br><b>Step 5:</b> Customize the booking form<br><b>Step 6:</b> Save and share the booking link<br><br>For reminders: Edit calendar → Notifications → enable SMS/Email reminders (e.g., 24h and 1h before).",
+            es: "Para configurar un calendario de reservas:<br><b>Paso 1:</b> Ve a <b>Calendars</b> en el menú<br><b>Paso 2:</b> Clic en <b>+ Create Calendar</b><br><b>Paso 3:</b> Elige tipo (Simple, Round Robin, Service)<br><b>Paso 4:</b> Configura días, horas, duración y buffer<br><b>Paso 5:</b> Personaliza el formulario<br><b>Paso 6:</b> Guarda y comparte el link<br><br>Recordatorios: Editar calendario → Notifications → activa SMS/Email.",
+            pt: "Pra configurar um calendário de agendamento:<br><b>Passo 1:</b> Vá em <b>Calendars</b> no menu lateral<br><b>Passo 2:</b> Clique em <b>+ Create Calendar</b><br><b>Passo 3:</b> Escolha o tipo (Simple, Round Robin, Service, Class)<br><b>Passo 4:</b> Configure dias, horários, duração e intervalo entre agendamentos<br><b>Passo 5:</b> Personalize o formulário de reserva<br><b>Passo 6:</b> Salve e compartilhe o link<br><br>Pra lembretes: Edite o calendário → Notifications → ative lembretes por SMS/Email (ex: 24h e 1h antes)."
         }
     },
-
-    // ===== REPORTING & DASHBOARDS =====
-    reporting: {
-        keywords: ['report', 'relatório', 'informe', 'dashboard', 'painel', 'panel', 'analytics', 'analítica', 'metric', 'métrica', 'performance', 'desempenho', 'rendimiento', 'roi', 'attribution', 'atribuição', 'atribución'],
-        answers: {
-            en: {
-                'default': "Your dashboards are in <b>Reporting</b> in the left menu. You'll find: <b>Attribution Report</b> (where your leads come from), <b>Google & Facebook Ads</b> performance, <b>Appointment Report</b>, and <b>Call Report</b>. Each report can be filtered by date range. Look at Attribution to understand which channels bring the most leads."
-            },
-            es: {
-                'default': "Tus dashboards están en <b>Reporting</b> en el menú izquierdo. Encontrarás: <b>Attribution Report</b> (de dónde vienen tus leads), rendimiento de <b>Google & Facebook Ads</b>, <b>Appointment Report</b> y <b>Call Report</b>."
-            },
-            pt: {
-                'default': "Seus dashboards ficam em <b>Reporting</b> no menu lateral. Você vai encontrar: <b>Attribution Report</b> (de onde vêm seus leads), desempenho de <b>Google & Facebook Ads</b>, <b>Appointment Report</b> e <b>Call Report</b>."
-            }
+    {
+        id: 'website-funnel',
+        phrases: ['edit website', 'edit funnel', 'edit page', 'build funnel', 'connect domain', 'editar site', 'editar funil', 'editar página', 'editar sitio', 'editar embudo', 'conectar domínio', 'conectar dominio'],
+        keywords: ['website', 'site', 'sitio', 'funnel', 'funil', 'embudo', 'landing page', 'builder', 'domain', 'domínio', 'dns'],
+        answer: {
+            en: "To edit your website or funnel:<br><b>Step 1:</b> Go to <b>Sites</b> in the left menu<br><b>Step 2:</b> Click <b>Websites</b> or <b>Funnels</b><br><b>Step 3:</b> Click on your project<br><b>Step 4:</b> Click the page you want to edit<br><b>Step 5:</b> The drag-and-drop builder opens — edit text, images, buttons, sections<br><b>Step 6:</b> Click <b>Save</b> (top right). Always preview before publishing.<br><br>For domains: <b>Settings</b> → <b>Domains</b> → <b>+ Add Domain</b> → add CNAME record at your DNS provider.",
+            es: "Para editar tu sitio web o embudo:<br><b>Paso 1:</b> Ve a <b>Sites</b> en el menú<br><b>Paso 2:</b> Clic en <b>Websites</b> o <b>Funnels</b><br><b>Paso 3:</b> Clic en tu proyecto<br><b>Paso 4:</b> Clic en la página a editar<br><b>Paso 5:</b> El builder drag-and-drop se abre — edita texto, imágenes, botones<br><b>Paso 6:</b> Clic en <b>Save</b>. Siempre previsualiza antes de publicar.",
+            pt: "Pra editar seu site ou funil:<br><b>Passo 1:</b> Vá em <b>Sites</b> no menu lateral<br><b>Passo 2:</b> Clique em <b>Websites</b> ou <b>Funnels</b><br><b>Passo 3:</b> Clique no seu projeto<br><b>Passo 4:</b> Clique na página que quer editar<br><b>Passo 5:</b> O builder drag-and-drop abre — edite textos, imagens, botões, seções<br><b>Passo 6:</b> Clique em <b>Save</b> (canto superior direito). Sempre visualize antes de publicar.<br><br>Pra domínios: <b>Settings</b> → <b>Domains</b> → <b>+ Add Domain</b> → adicione o CNAME no seu provedor de DNS."
         }
     },
-
-    // ===== GOOGLE BUSINESS PROFILE =====
-    gbp: {
-        keywords: ['google business', 'gbp', 'google meu negócio', 'google my business', 'gmb', 'perfil google', 'perfil de negocio', 'google post', 'google photo', 'business profile'],
-        answers: {
-            en: {
-                'post': "To create a Google Business post: You can do this directly from Bee Pro Hub. Go to <b>Marketing</b> → <b>Social Planner</b> → click <b>+ New Post</b> → select your GBP account → write your post with image → Schedule or Post Now.",
-                'default': "You can manage your Google Business Profile from Bee Pro Hub. Use <b>Social Planner</b> to schedule GBP posts, <b>Reputation</b> to monitor and respond to reviews, and <b>Reporting</b> to track performance. For profile edits (address, hours, categories), go directly to business.google.com."
-            },
-            es: {
-                'default': "Puedes gestionar tu Google Business Profile desde Bee Pro Hub. Usa <b>Social Planner</b> para programar posts, <b>Reputation</b> para monitorear y responder reseñas, y <b>Reporting</b> para rastrear rendimiento."
-            },
-            pt: {
-                'default': "Você pode gerenciar seu Google Business Profile pelo Bee Pro Hub. Use o <b>Social Planner</b> pra agendar posts, <b>Reputation</b> pra monitorar e responder avaliações, e <b>Reporting</b> pra acompanhar desempenho."
-            }
+    {
+        id: 'reports',
+        phrases: ['read report', 'check report', 'view dashboard', 'see report', 'attribution report', 'ver relatório', 'ler relatório', 'checar relatório', 'ver reporte', 'leer reporte', 'check ranking', 'ver ranking'],
+        keywords: ['report', 'relatório', 'informe', 'reporte', 'dashboard', 'painel', 'analytics', 'attribution', 'ranking', 'performance', 'desempenho'],
+        answer: {
+            en: "To read your reports:<br><b>Step 1:</b> Go to <b>Reporting</b> in the left menu<br><b>Step 2:</b> Choose a report type:<br>• <b>Attribution Report</b> — where your leads come from (Google, Facebook, organic, referral)<br>• <b>Google Ads</b> / <b>Facebook Ads</b> — ad performance, spend, conversions<br>• <b>Appointment Report</b> — bookings, no-shows, completed<br>• <b>Call Report</b> — calls received, missed, duration<br><b>Step 3:</b> Filter by date range to see trends<br><br>Start with Attribution to understand which channels bring the most leads.",
+            es: "Para leer tus reportes:<br><b>Paso 1:</b> Ve a <b>Reporting</b> en el menú<br><b>Paso 2:</b> Elige un tipo:<br>• <b>Attribution Report</b> — de dónde vienen tus leads<br>• <b>Google Ads / Facebook Ads</b> — rendimiento de anuncios<br>• <b>Appointment Report</b> — reservas, no-shows<br>• <b>Call Report</b> — llamadas recibidas, perdidas<br><b>Paso 3:</b> Filtra por rango de fechas<br><br>Empieza con Attribution para entender qué canales traen más leads.",
+            pt: "Pra ler seus relatórios:<br><b>Passo 1:</b> Vá em <b>Reporting</b> no menu lateral<br><b>Passo 2:</b> Escolha o tipo de relatório:<br>• <b>Attribution Report</b> — de onde vêm seus leads (Google, Facebook, orgânico, referência)<br>• <b>Google Ads / Facebook Ads</b> — desempenho dos anúncios, gastos, conversões<br>• <b>Appointment Report</b> — agendamentos, faltas, concluídos<br>• <b>Call Report</b> — chamadas recebidas, perdidas, duração<br><b>Passo 3:</b> Filtre por período pra ver tendências<br><br>Comece pelo Attribution pra entender quais canais trazem mais leads."
         }
     },
-
-    // ===== PAYMENTS & INVOICING =====
-    payments: {
-        keywords: ['payment', 'pagamento', 'pago', 'invoice', 'fatura', 'factura', 'stripe', 'subscription', 'assinatura', 'suscripción', 'product', 'produto', 'producto', 'price', 'preço', 'precio'],
-        answers: {
-            en: {
-                'default': "Payments are managed in <b>Payments</b> section. You can: create <b>Products</b> and price lists, send <b>Invoices</b> to clients, generate <b>Payment Links</b>, and set up <b>Subscriptions</b> for recurring billing. Everything connects to your Stripe account under <b>Settings</b> → <b>Payments</b> → <b>Stripe</b>."
-            },
-            es: {
-                'default': "Los pagos se gestionan en la sección <b>Payments</b>. Puedes: crear <b>Products</b> y listas de precios, enviar <b>Invoices</b>, generar <b>Payment Links</b> y configurar <b>Subscriptions</b> para cobros recurrentes."
-            },
-            pt: {
-                'default': "Pagamentos são gerenciados na seção <b>Payments</b>. Você pode: criar <b>Products</b> e listas de preço, enviar <b>Invoices</b>, gerar <b>Payment Links</b> e configurar <b>Subscriptions</b> pra cobranças recorrentes."
-            }
+    {
+        id: 'gbp',
+        phrases: ['google business', 'business profile', 'google post', 'google photo', 'add photo gbp', 'foto google', 'post google', 'google meu negócio', 'perfil google', 'perfil de negocio'],
+        keywords: ['gbp', 'gmb', 'google business', 'business profile'],
+        answer: {
+            en: "Managing your Google Business Profile:<br>• <b>Post updates:</b> Go to <b>Marketing</b> → <b>Social Planner</b> → <b>+ New Post</b> → select your GBP account → add text + image → Post Now or Schedule<br>• <b>Add photos:</b> Same flow, or go directly to business.google.com → Photos → + Add Photo<br>• <b>Respond to reviews:</b> Go to <b>Reputation</b> → click a review → type reply → Reply<br>• <b>Track performance:</b> Go to <b>Reporting</b> to see how your profile is performing<br>• <b>Edit info (hours, address):</b> Go directly to business.google.com",
+            es: "Gestionando tu Google Business Profile:<br>• <b>Publicar:</b> Ve a <b>Marketing</b> → <b>Social Planner</b> → <b>+ New Post</b> → selecciona tu cuenta GBP → agrega texto + imagen<br>• <b>Fotos:</b> Mismo flujo, o ve directo a business.google.com → Photos<br>• <b>Responder reseñas:</b> Ve a <b>Reputation</b> → clic en reseña → escribe → Reply<br>• <b>Rendimiento:</b> Ve a <b>Reporting</b><br>• <b>Editar info:</b> Ve a business.google.com",
+            pt: "Gerenciando seu Google Business Profile:<br>• <b>Postar atualizações:</b> Vá em <b>Marketing</b> → <b>Social Planner</b> → <b>+ New Post</b> → selecione sua conta GBP → adicione texto + imagem → Poste ou Agende<br>• <b>Adicionar fotos:</b> Mesmo fluxo, ou vá direto em business.google.com → Photos → + Add Photo<br>• <b>Responder avaliações:</b> Vá em <b>Reputation</b> → clique na avaliação → escreva → Reply<br>• <b>Ver desempenho:</b> Vá em <b>Reporting</b><br>• <b>Editar info (horário, endereço):</b> Vá direto em business.google.com"
         }
     },
-
-    // ===== SOCIAL PLANNER =====
-    social: {
-        keywords: ['social', 'post', 'publicação', 'publicación', 'schedule post', 'agendar post', 'programar', 'facebook post', 'instagram post', 'social planner'],
-        answers: {
-            en: {
-                'default': "Schedule and manage social posts in <b>Marketing</b> → <b>Social Planner</b>. Connect your accounts (Facebook, Instagram, Google Business, LinkedIn, TikTok) → click <b>+ New Post</b> → write your caption, add media → select accounts → choose date/time or post now. The calendar view shows all scheduled posts."
-            },
-            es: {
-                'default': "Programa y gestiona posts sociales en <b>Marketing</b> → <b>Social Planner</b>. Conecta tus cuentas → clic en <b>+ New Post</b> → escribe tu caption, agrega media → selecciona cuentas → elige fecha/hora o publica ahora."
-            },
-            pt: {
-                'default': "Agende e gerencie posts sociais em <b>Marketing</b> → <b>Social Planner</b>. Conecte suas contas → clique em <b>+ New Post</b> → escreva sua legenda, adicione mídia → selecione contas → escolha data/hora ou poste agora."
-            }
+    {
+        id: 'payments',
+        phrases: ['send invoice', 'create invoice', 'payment link', 'enviar fatura', 'criar fatura', 'enviar factura', 'crear factura', 'link de pagamento', 'link de pago'],
+        keywords: ['payment', 'pagamento', 'pago', 'invoice', 'fatura', 'factura', 'stripe', 'subscription', 'assinatura'],
+        answer: {
+            en: "To send an invoice:<br><b>Step 1:</b> Go to <b>Payments</b> → <b>Invoices</b><br><b>Step 2:</b> Click <b>+ New Invoice</b><br><b>Step 3:</b> Add client, line items, amounts, due date<br><b>Step 4:</b> Click <b>Send</b> — client gets email with payment link<br><br>Make sure Stripe is connected: <b>Settings</b> → <b>Payments</b> → <b>Stripe</b>. You can also create <b>Payment Links</b> and <b>Subscriptions</b> for recurring billing.",
+            es: "Para enviar una factura:<br><b>Paso 1:</b> Ve a <b>Payments</b> → <b>Invoices</b><br><b>Paso 2:</b> Clic en <b>+ New Invoice</b><br><b>Paso 3:</b> Agrega cliente, líneas, montos, vencimiento<br><b>Paso 4:</b> Clic en <b>Send</b> — el cliente recibe email con link de pago<br><br>Asegúrate que Stripe esté conectado: <b>Settings</b> → <b>Payments</b> → <b>Stripe</b>.",
+            pt: "Pra enviar uma fatura:<br><b>Passo 1:</b> Vá em <b>Payments</b> → <b>Invoices</b><br><b>Passo 2:</b> Clique em <b>+ New Invoice</b><br><b>Passo 3:</b> Adicione cliente, itens, valores, data de vencimento<br><b>Passo 4:</b> Clique em <b>Send</b> — o cliente recebe email com link de pagamento<br><br>Certifique-se que o Stripe está conectado: <b>Settings</b> → <b>Payments</b> → <b>Stripe</b>. Você também pode criar <b>Payment Links</b> e <b>Subscriptions</b> pra cobranças recorrentes."
         }
     },
-
-    // ===== FORMS & SURVEYS =====
-    forms: {
-        keywords: ['form', 'formulário', 'formulario', 'survey', 'pesquisa', 'encuesta', 'submission', 'envio', 'envío', 'field', 'campo'],
-        answers: {
-            en: {
-                'default': "Create and manage forms in <b>Sites</b> → <b>Forms</b>. Click <b>+ New Form</b> → drag and drop fields (name, email, phone, custom fields) → set up notifications → grab the embed code or share the link. All submissions go to <b>Contacts</b> automatically and can trigger workflows."
-            },
-            es: {
-                'default': "Crea y gestiona formularios en <b>Sites</b> → <b>Forms</b>. Clic en <b>+ New Form</b> → arrastra y suelta campos → configura notificaciones → copia el código embed o comparte el link. Todos los envíos van a <b>Contacts</b> automáticamente."
-            },
-            pt: {
-                'default': "Crie e gerencie formulários em <b>Sites</b> → <b>Forms</b>. Clique em <b>+ New Form</b> → arraste e solte campos → configure notificações → copie o código embed ou compartilhe o link. Todos os envios vão pra <b>Contacts</b> automaticamente."
-            }
+    {
+        id: 'social',
+        phrases: ['schedule post', 'social media post', 'post facebook', 'post instagram', 'agendar post', 'programar post', 'publicar post'],
+        keywords: ['social planner', 'social', 'publicação', 'publicación', 'facebook', 'instagram', 'linkedin', 'tiktok'],
+        answer: {
+            en: "To schedule a social media post:<br><b>Step 1:</b> Go to <b>Marketing</b> → <b>Social Planner</b><br><b>Step 2:</b> Click <b>+ New Post</b><br><b>Step 3:</b> Write your caption, add images or video<br><b>Step 4:</b> Select accounts (Facebook, Instagram, Google, LinkedIn, TikTok)<br><b>Step 5:</b> Choose date and time (or Post Now)<br><b>Step 6:</b> Click <b>Schedule</b><br><br>The calendar view shows all your scheduled posts.",
+            es: "Para programar un post en redes:<br><b>Paso 1:</b> Ve a <b>Marketing</b> → <b>Social Planner</b><br><b>Paso 2:</b> Clic en <b>+ New Post</b><br><b>Paso 3:</b> Escribe el caption, agrega imágenes o video<br><b>Paso 4:</b> Selecciona cuentas (Facebook, Instagram, Google, LinkedIn, TikTok)<br><b>Paso 5:</b> Elige fecha y hora<br><b>Paso 6:</b> Clic en <b>Schedule</b>",
+            pt: "Pra agendar um post nas redes sociais:<br><b>Passo 1:</b> Vá em <b>Marketing</b> → <b>Social Planner</b><br><b>Passo 2:</b> Clique em <b>+ New Post</b><br><b>Passo 3:</b> Escreva a legenda, adicione imagens ou vídeo<br><b>Passo 4:</b> Selecione as contas (Facebook, Instagram, Google, LinkedIn, TikTok)<br><b>Passo 5:</b> Escolha data e hora (ou Poste Agora)<br><b>Passo 6:</b> Clique em <b>Schedule</b><br><br>A visualização de calendário mostra todos os posts agendados."
         }
     },
-
-    // ===== MEMBERSHIP / COURSES =====
-    membership: {
-        keywords: ['membership', 'course', 'curso', 'community', 'comunidade', 'comunidad', 'offer', 'oferta', 'drip', 'content', 'conteúdo', 'contenido', 'lesson', 'aula', 'lección'],
-        answers: {
-            en: {
-                'default': "Create courses and memberships in <b>Memberships</b>. Click <b>+ New Product</b> → add categories and lessons → upload videos, text, or files → set up offers (free, one-time payment, or subscription) → share with your audience. You can drip content over time and track student progress."
-            },
-            es: {
-                'default': "Crea cursos y membresías en <b>Memberships</b>. Clic en <b>+ New Product</b> → agrega categorías y lecciones → sube videos, texto o archivos → configura ofertas (gratis, pago único o suscripción) → comparte con tu audiencia."
-            },
-            pt: {
-                'default': "Crie cursos e memberships em <b>Memberships</b>. Clique em <b>+ New Product</b> → adicione categorias e aulas → faça upload de vídeos, texto ou arquivos → configure ofertas (grátis, pagamento único ou assinatura) → compartilhe com seu público."
-            }
+    {
+        id: 'forms',
+        phrases: ['create form', 'build form', 'form submission', 'criar formulário', 'crear formulario'],
+        keywords: ['form', 'formulário', 'formulario', 'survey', 'pesquisa', 'encuesta'],
+        answer: {
+            en: "To create a form:<br><b>Step 1:</b> Go to <b>Sites</b> → <b>Forms</b><br><b>Step 2:</b> Click <b>+ New Form</b><br><b>Step 3:</b> Drag and drop fields (name, email, phone, custom fields)<br><b>Step 4:</b> Set up notifications<br><b>Step 5:</b> Grab the embed code or share the direct link<br><br>All submissions go to <b>Contacts</b> automatically and can trigger workflows.",
+            es: "Para crear un formulario:<br><b>Paso 1:</b> Ve a <b>Sites</b> → <b>Forms</b><br><b>Paso 2:</b> Clic en <b>+ New Form</b><br><b>Paso 3:</b> Arrastra campos (nombre, email, teléfono)<br><b>Paso 4:</b> Configura notificaciones<br><b>Paso 5:</b> Copia el código embed o comparte el link<br><br>Los envíos van a <b>Contacts</b> automáticamente.",
+            pt: "Pra criar um formulário:<br><b>Passo 1:</b> Vá em <b>Sites</b> → <b>Forms</b><br><b>Passo 2:</b> Clique em <b>+ New Form</b><br><b>Passo 3:</b> Arraste e solte campos (nome, email, telefone, campos personalizados)<br><b>Passo 4:</b> Configure notificações<br><b>Passo 5:</b> Copie o código embed ou compartilhe o link direto<br><br>Todos os envios vão pra <b>Contacts</b> automaticamente e podem disparar workflows."
+        }
+    },
+    {
+        id: 'membership',
+        phrases: ['create course', 'create membership', 'criar curso', 'crear curso', 'membership area'],
+        keywords: ['membership', 'course', 'curso', 'community', 'comunidade', 'lesson', 'aula'],
+        answer: {
+            en: "To create courses/memberships:<br><b>Step 1:</b> Go to <b>Memberships</b><br><b>Step 2:</b> Click <b>+ New Product</b><br><b>Step 3:</b> Add categories and lessons<br><b>Step 4:</b> Upload videos, text, or files<br><b>Step 5:</b> Set up offers (free, one-time payment, or subscription)<br><b>Step 6:</b> Share with your audience<br><br>You can drip content over time and track student progress.",
+            es: "Para crear cursos/membresías:<br><b>Paso 1:</b> Ve a <b>Memberships</b><br><b>Paso 2:</b> Clic en <b>+ New Product</b><br><b>Paso 3:</b> Agrega categorías y lecciones<br><b>Paso 4:</b> Sube videos, texto o archivos<br><b>Paso 5:</b> Configura ofertas (gratis, pago único o suscripción)<br><b>Paso 6:</b> Comparte con tu audiencia",
+            pt: "Pra criar cursos/memberships:<br><b>Passo 1:</b> Vá em <b>Memberships</b><br><b>Passo 2:</b> Clique em <b>+ New Product</b><br><b>Passo 3:</b> Adicione categorias e aulas<br><b>Passo 4:</b> Faça upload de vídeos, texto ou arquivos<br><b>Passo 5:</b> Configure ofertas (grátis, pagamento único ou assinatura)<br><b>Passo 6:</b> Compartilhe com seu público<br><br>Você pode liberar conteúdo ao longo do tempo (drip) e acompanhar o progresso dos alunos."
         }
     }
-};
+];
 
 /* ---- Chat Logic ---- */
 (function () {
@@ -350,34 +270,33 @@ const KNOWLEDGE_BASE = {
         var bestMatch = null;
         var bestScore = 0;
 
-        for (var category in KNOWLEDGE_BASE) {
-            var kb = KNOWLEDGE_BASE[category];
+        for (var i = 0; i < KNOWLEDGE_BASE.length; i++) {
+            var entry = KNOWLEDGE_BASE[i];
             var score = 0;
 
-            // Check keyword matches
-            for (var i = 0; i < kb.keywords.length; i++) {
-                if (q.indexOf(kb.keywords[i].toLowerCase()) !== -1) {
-                    score += kb.keywords[i].length; // longer keyword = better match
+            // Phrases get high score (10 points each) — they're specific
+            for (var p = 0; p < entry.phrases.length; p++) {
+                if (q.indexOf(entry.phrases[p].toLowerCase()) !== -1) {
+                    score += 10;
+                }
+            }
+
+            // Single keywords get low score (1 point each) — only used as tiebreaker
+            for (var k = 0; k < entry.keywords.length; k++) {
+                if (q.indexOf(entry.keywords[k].toLowerCase()) !== -1) {
+                    score += 1;
                 }
             }
 
             if (score > bestScore) {
                 bestScore = score;
-                bestMatch = kb;
+                bestMatch = entry;
             }
         }
 
+        // Require at least one phrase match (10+) or 3+ keyword matches
         if (bestMatch && bestScore >= 3) {
-            var langAnswers = bestMatch.answers[lang] || bestMatch.answers.en;
-
-            // Try to find a specific sub-answer
-            for (var key in langAnswers) {
-                if (key !== 'default' && q.indexOf(key) !== -1) {
-                    return langAnswers[key];
-                }
-            }
-
-            return langAnswers['default'] || bestMatch.answers.en['default'];
+            return bestMatch.answer[lang] || bestMatch.answer.en;
         }
 
         return null;
