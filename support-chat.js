@@ -282,12 +282,46 @@ const KNOWLEDGE_BASE = {
     var conversationHistory = [];
     var isSending = false;
 
-    function getLang() {
+    function getUiLang() {
         return localStorage.getItem('galaxy-lang') || 'en';
     }
 
+    // Detect language of the user's message
+    var _lastDetectedLang = null;
+    function detectLang(text) {
+        var t = (text || '').toLowerCase();
+        // Portuguese indicators
+        var pt = /\b(como|meu|minha|onde|qual|quero|preciso|posso|está|estou|fazer|ajuda|por que|porque|não|sim|obrigad|relatório|contato|avaliação|página|configurar|enviar|agendar|cadastr|adicionar)\b/;
+        // Spanish indicators
+        var es = /\b(cómo|dónde|cuál|quiero|necesito|puedo|estoy|hacer|ayuda|por qué|porque|informe|contacto|evaluación|página|configurar|enviar|agendar|agregar|reseña)\b/;
+        // English indicators
+        var en = /\b(how|what|where|which|want|need|can|do|does|help|why|report|contact|review|page|set up|send|schedule|add|create|my|the|is|are)\b/;
+
+        var ptScore = (t.match(pt) || []).length;
+        var esScore = (t.match(es) || []).length;
+        var enScore = (t.match(en) || []).length;
+
+        if (ptScore > esScore && ptScore > enScore) return 'pt';
+        if (esScore > ptScore && esScore > enScore) return 'es';
+        if (enScore > 0) return 'en';
+        return getUiLang(); // fallback to UI language
+    }
+
+    function getLang(text) {
+        if (text) {
+            _lastDetectedLang = detectLang(text);
+        }
+        return _lastDetectedLang || getUiLang();
+    }
+
     function getScheduleLink() {
-        return "<a href='#schedule-call' class='chat-cta-link'><i class='fas fa-calendar-check'></i> Schedule a call with our team</a>";
+        var lang = getLang();
+        var labels = {
+            en: "Schedule a call with our team",
+            es: "Agenda una llamada con nuestro equipo",
+            pt: "Agende uma chamada com nosso time"
+        };
+        return "<a href='#schedule-call' class='chat-cta-link'><i class='fas fa-calendar-check'></i> " + (labels[lang] || labels.en) + "</a>";
     }
 
     function getFallbackMessage() {
@@ -385,6 +419,9 @@ const KNOWLEDGE_BASE = {
         isSending = true;
         chatSend.disabled = true;
         chatInput.value = '';
+
+        // Detect language from user's message
+        getLang(text);
 
         addMessage(text, 'user');
         showTyping();
