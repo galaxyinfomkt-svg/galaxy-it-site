@@ -277,7 +277,7 @@ const KNOWLEDGE_BASE = {
     var chatSend = document.getElementById('chatSend');
     var heroSearchForm = document.getElementById('heroSearchForm');
     var heroSearchInput = document.getElementById('heroSearchInput');
-    var topicCards = document.querySelectorAll('.topic-card[data-topic]');
+    var topicCards = document.querySelectorAll('.topic-card[data-topic-key]');
 
     var conversationHistory = [];
     var isSending = false;
@@ -518,11 +518,13 @@ const KNOWLEDGE_BASE = {
         });
     }
 
-    // Topic cards
+    // Topic cards — get translated question from i18n
     topicCards.forEach(function (card) {
         card.addEventListener('click', function () {
-            var topic = card.getAttribute('data-topic');
-            if (topic) {
+            var key = card.getAttribute('data-topic-key');
+            if (key && typeof translations !== 'undefined') {
+                var lang = getUiLang();
+                var topic = (translations[lang] && translations[lang][key]) || (translations.en && translations.en[key]) || key;
                 scrollToChat();
                 setTimeout(function () {
                     sendMessage(topic);
