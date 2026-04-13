@@ -1,0 +1,240 @@
+{
+  "name": "Galaxy Assist — Escalation & Tickets",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "galaxy-escalation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-escalation",
+      "name": "Webhook — Escalation",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "galaxy-escalation"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "name",
+              "name": "clientName",
+              "value": "={{ $json.body.clientName || 'Unknown Client' }}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "clientEmail",
+              "value": "={{ $json.body.clientEmail || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "issue",
+              "name": "issueSummary",
+              "value": "={{ $json.body.issueSummary }}",
+              "type": "string"
+            },
+            {
+              "id": "category",
+              "name": "category",
+              "value": "={{ $json.body.category || 'general' }}",
+              "type": "string"
+            },
+            {
+              "id": "priority",
+              "name": "priority",
+              "value": "={{ $json.body.priority || 'normal' }}",
+              "type": "string"
+            },
+            {
+              "id": "history",
+              "name": "chatHistory",
+              "value": "={{ $json.body.chatHistory || 'No prior chat' }}",
+              "type": "string"
+            },
+            {
+              "id": "ts",
+              "name": "timestamp",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            },
+            {
+              "id": "ticketId",
+              "name": "ticketId",
+              "value": "=GX-{{ Math.floor(Date.now() / 1000).toString(36).toUpperCase() }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "extract-ticket",
+      "name": "Extract & Create Ticket ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "id": "urgent-check",
+              "leftValue": "={{ $json.priority }}",
+              "rightValue": "urgent",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "id": "check-priority",
+      "name": "Is Urgent?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.twilio.com/2010-04-01/Accounts/{{ $env.TWILIO_ACCOUNT_SID }}/Messages.json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twilioApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "To",
+              "value": "={{ $env.LUIZ_PHONE }}"
+            },
+            {
+              "name": "From",
+              "value": "={{ $env.TWILIO_PHONE }}"
+            },
+            {
+              "name": "Body",
+              "value": "=URGENT TICKET {{ $json.ticketId }}\nClient: {{ $json.clientName }}\nIssue: {{ $json.issueSummary }}\nCategory: {{ $json.category }}\nTime: {{ $json.timestamp }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "sms-urgent-luiz",
+      "name": "SMS Urgent → Luiz",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 200],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $env.TEAM_EMAIL || 'info@galaxyinfo.us' }}",
+        "subject": "=[Galaxy Assist] Ticket {{ $json.ticketId }} — {{ $json.category }} ({{ $json.priority }})",
+        "emailType": "text",
+        "message": "=New support ticket created\n\nTicket ID: {{ $json.ticketId }}\nClient: {{ $json.clientName }} ({{ $json.clientEmail }})\nCategory: {{ $json.category }}\nPriority: {{ $json.priority }}\nTimestamp: {{ $json.timestamp }}\n\n--- Issue Summary ---\n{{ $json.issueSummary }}\n\n--- Chat History ---\n{{ $json.chatHistory }}\n\n---\nGalaxy Assist — Automated Ticket System",
+        "options": {}
+      },
+      "id": "email-team",
+      "name": "Email Team — Ticket Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [900, 400],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": { "__rl": true, "mode": "list", "value": "" },
+        "sheetName": { "__rl": true, "mode": "list", "value": "Tickets" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ticketId": "={{ $json.ticketId }}",
+            "timestamp": "={{ $json.timestamp }}",
+            "clientName": "={{ $json.clientName }}",
+            "clientEmail": "={{ $json.clientEmail }}",
+            "category": "={{ $json.category }}",
+            "priority": "={{ $json.priority }}",
+            "issueSummary": "={{ $json.issueSummary }}",
+            "status": "open",
+            "resolvedBy": "",
+            "resolvedAt": ""
+          }
+        },
+        "options": {}
+      },
+      "id": "log-ticket-sheets",
+      "name": "Log Ticket → Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1120, 300],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ticketId: $json.ticketId, status: 'created' }) }}",
+        "options": {}
+      },
+      "id": "respond-ticket",
+      "name": "Respond — Ticket Created",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Webhook — Escalation": {
+      "main": [
+        [{ "node": "Extract & Create Ticket ID", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract & Create Ticket ID": {
+      "main": [
+        [{ "node": "Is Urgent?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Is Urgent?": {
+      "main": [
+        [
+          { "node": "SMS Urgent → Luiz", "type": "main", "index": 0 },
+          { "node": "Email Team — Ticket Notification", "type": "main", "index": 0 },
+          { "node": "Log Ticket → Google Sheets", "type": "main", "index": 0 }
+        ],
+        [
+          { "node": "Email Team — Ticket Notification", "type": "main", "index": 0 },
+          { "node": "Log Ticket → Google Sheets", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "SMS Urgent → Luiz": {
+      "main": [
+        [{ "node": "Respond — Ticket Created", "type": "main", "index": 0 }]
+      ]
+    },
+    "Email Team — Ticket Notification": {
+      "main": [
+        []
+      ]
+    },
+    "Log Ticket → Google Sheets": {
+      "main": [
+        [{ "node": "Respond — Ticket Created", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    { "name": "galaxy-assist" },
+    { "name": "escalation" }
+  ]
+}

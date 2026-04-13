@@ -1,0 +1,230 @@
+{
+  "name": "Galaxy Assist — AI Chat",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "galaxy-assist",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://galaxyinfo.us,https://www.galaxyinfo.us,http://localhost:3000"
+        }
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook — galaxy-assist",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "galaxy-assist"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "msg",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "lang",
+              "name": "language",
+              "value": "={{ $json.body.language || 'en' }}",
+              "type": "string"
+            },
+            {
+              "id": "sys",
+              "name": "systemPrompt",
+              "value": "={{ $json.body.systemPrompt }}",
+              "type": "string"
+            },
+            {
+              "id": "hist",
+              "name": "history",
+              "value": "={{ JSON.stringify($json.body.history || []) }}",
+              "type": "string"
+            },
+            {
+              "id": "ts",
+              "name": "timestamp",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            },
+            {
+              "id": "ip",
+              "name": "clientIp",
+              "value": "={{ $json.headers['x-forwarded-for'] || $json.headers['x-real-ip'] || 'unknown' }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "extract-data",
+      "name": "Extract Request Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $env.ANTHROPIC_API_KEY }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 1024,\n  \"system\": {{ JSON.stringify($json.systemPrompt) }},\n  \"messages\": [\n    ...{{ $json.history }},\n    { \"role\": \"user\", \"content\": {{ JSON.stringify($json.message) }} }\n  ]\n}",
+        "options": {
+          "timeout": 12000
+        }
+      },
+      "id": "claude-api",
+      "name": "Claude API — Generate Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "reply",
+              "name": "text",
+              "value": "={{ $json.content[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "tokens",
+              "name": "tokensUsed",
+              "value": "={{ $json.usage.input_tokens + $json.usage.output_tokens }}",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "format-response",
+      "name": "Format AI Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ text: $json.text }) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-success",
+      "name": "Respond — AI Answer",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ text: '', error: 'AI processing failed' }) }}",
+        "options": {
+          "responseCode": 500,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-error",
+      "name": "Respond — Error Fallback",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1120, 500]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": { "__rl": true, "mode": "list", "value": "" },
+        "sheetName": { "__rl": true, "mode": "list", "value": "Sheet1" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $('Extract Request Data').item.json.timestamp }}",
+            "language": "={{ $('Extract Request Data').item.json.language }}",
+            "question": "={{ $('Extract Request Data').item.json.message }}",
+            "answer": "={{ $json.text }}",
+            "tokens": "={{ $json.tokensUsed }}",
+            "ip": "={{ $('Extract Request Data').item.json.clientIp }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "log-to-sheets",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1120, 100],
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Webhook — galaxy-assist": {
+      "main": [
+        [{ "node": "Extract Request Data", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract Request Data": {
+      "main": [
+        [{ "node": "Claude API — Generate Response", "type": "main", "index": 0 }]
+      ]
+    },
+    "Claude API — Generate Response": {
+      "main": [
+        [{ "node": "Format AI Response", "type": "main", "index": 0 }]
+      ]
+    },
+    "Format AI Response": {
+      "main": [
+        [
+          { "node": "Respond — AI Answer", "type": "main", "index": 0 },
+          { "node": "Log to Google Sheets", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": [
+    { "name": "galaxy-assist" },
+    { "name": "production" }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "name": "Galaxy Assist — Monthly Support Report",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtDay": 1,
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "schedule-monthly",
+      "name": "Schedule — 1st of Month 8AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "documentId": { "__rl": true, "mode": "list", "value": "" },
+        "sheetName": { "__rl": true, "mode": "list", "value": "Sheet1" },
+        "returnAll": true,
+        "options": {}
+      },
+      "id": "read-chat-logs",
+      "name": "Read Chat Logs",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [460, 200],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "documentId": { "__rl": true, "mode": "list", "value": "" },
+        "sheetName": { "__rl": true, "mode": "list", "value": "Tickets" },
+        "returnAll": true,
+        "options": {}
+      },
+      "id": "read-tickets",
+      "name": "Read Tickets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [460, 400],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "merge-data",
+      "name": "Merge Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $env.ANTHROPIC_API_KEY }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 2048,\n  \"system\": \"You are a support analytics assistant for Galaxy IT & Marketing. Generate a monthly support report from the provided data. Include: total conversations, most common topics, resolution rate (AI vs scheduled calls), peak hours, language breakdown, and recommendations. Format as a clean text report with sections and bullet points. Write in English.\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Generate the monthly support report for last month based on this data:\\n\\nChat Logs: {{ JSON.stringify($json) }}\\n\\nInclude actionable recommendations for reducing ticket volume.\"\n    }\n  ]\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "ai-generate-report",
+      "name": "AI — Generate Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $env.LUIZ_EMAIL || 'info@galaxyinfo.us' }}",
+        "subject": "=Galaxy Assist — Monthly Support Report ({{ new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' }) }})",
+        "emailType": "text",
+        "message": "={{ $json.content[0].text }}\n\n---\nGenerated automatically by Galaxy Assist on {{ new Date().toISOString() }}",
+        "options": {}
+      },
+      "id": "email-report",
+      "name": "Email Report → Luiz",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1120, 300],
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Schedule — 1st of Month 8AM": {
+      "main": [
+        [
+          { "node": "Read Chat Logs", "type": "main", "index": 0 },
+          { "node": "Read Tickets", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Read Chat Logs": {
+      "main": [
+        [{ "node": "Merge Data", "type": "main", "index": 0 }]
+      ]
+    },
+    "Read Tickets": {
+      "main": [
+        [{ "node": "Merge Data", "type": "main", "index": 1 }]
+      ]
+    },
+    "Merge Data": {
+      "main": [
+        [{ "node": "AI — Generate Report", "type": "main", "index": 0 }]
+      ]
+    },
+    "AI — Generate Report": {
+      "main": [
+        [{ "node": "Email Report → Luiz", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    { "name": "galaxy-assist" },
+    { "name": "reporting" }
+  ]
+}

@@ -1,0 +1,225 @@
+{
+  "name": "Galaxy Assist — Appointment Notifications",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "galaxy-appointment",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-appointment",
+      "name": "Webhook — New Appointment",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "galaxy-appointment"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "name",
+              "name": "clientName",
+              "value": "={{ $json.body.contact_name || $json.body.clientName || 'Client' }}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "clientEmail",
+              "value": "={{ $json.body.contact_email || $json.body.clientEmail || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "phone",
+              "name": "clientPhone",
+              "value": "={{ $json.body.contact_phone || $json.body.clientPhone || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "date",
+              "name": "appointmentDate",
+              "value": "={{ $json.body.appointment_date || $json.body.date || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "time",
+              "name": "appointmentTime",
+              "value": "={{ $json.body.appointment_time || $json.body.time || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "duration",
+              "name": "duration",
+              "value": "={{ $json.body.duration || '30 min' }}",
+              "type": "string"
+            },
+            {
+              "id": "issue",
+              "name": "issueSummary",
+              "value": "={{ $json.body.notes || $json.body.issueSummary || 'No summary provided' }}",
+              "type": "string"
+            },
+            {
+              "id": "ts",
+              "name": "createdAt",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "extract-appointment",
+      "name": "Extract Appointment Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $env.ANTHROPIC_API_KEY }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5-20251001\",\n  \"max_tokens\": 300,\n  \"system\": \"You are a support ticket summarizer for Galaxy IT & Marketing. Given the client info and issue description, write a 2-3 sentence briefing for the support team. Be concise and actionable. Include what the client likely needs help with and any preparation the team should do before the call. Write in English.\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Client: {{ $json.clientName }}\\nEmail: {{ $json.clientEmail }}\\nPhone: {{ $json.clientPhone }}\\nAppointment: {{ $json.appointmentDate }} at {{ $json.appointmentTime }} ({{ $json.duration }})\\nIssue/Notes: {{ $json.issueSummary }}\"\n    }\n  ]\n}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "ai-summarize",
+      "name": "AI — Summarize Issue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "summary",
+              "name": "aiSummary",
+              "value": "={{ $json.content[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true
+      },
+      "id": "merge-summary",
+      "name": "Add AI Summary",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $env.TEAM_EMAIL || 'info@galaxyinfo.us' }}",
+        "subject": "=New Support Call Booked — {{ $('Extract Appointment Data').item.json.clientName }} ({{ $('Extract Appointment Data').item.json.appointmentDate }})",
+        "emailType": "text",
+        "message": "=NEW SUPPORT CALL BOOKED\n================================\n\nClient: {{ $('Extract Appointment Data').item.json.clientName }}\nEmail: {{ $('Extract Appointment Data').item.json.clientEmail }}\nPhone: {{ $('Extract Appointment Data').item.json.clientPhone }}\nDate: {{ $('Extract Appointment Data').item.json.appointmentDate }}\nTime: {{ $('Extract Appointment Data').item.json.appointmentTime }}\nDuration: {{ $('Extract Appointment Data').item.json.duration }}\n\n--- AI BRIEFING ---\n{{ $json.aiSummary }}\n\n--- CLIENT NOTES ---\n{{ $('Extract Appointment Data').item.json.issueSummary }}\n\n================================\nGalaxy Assist — Automated Notification",
+        "options": {}
+      },
+      "id": "email-team-appointment",
+      "name": "Email Team — Call Briefing",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1120, 200],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "https://api.twilio.com/2010-04-01/Accounts/{{ $env.TWILIO_ACCOUNT_SID }}/Messages.json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twilioApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "To",
+              "value": "={{ $env.LUIZ_PHONE }}"
+            },
+            {
+              "name": "From",
+              "value": "={{ $env.TWILIO_PHONE }}"
+            },
+            {
+              "name": "Body",
+              "value": "=NEW CALL BOOKED\n{{ $('Extract Appointment Data').item.json.clientName }}\n{{ $('Extract Appointment Data').item.json.appointmentDate }} {{ $('Extract Appointment Data').item.json.appointmentTime }}\n\n{{ $json.aiSummary }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "sms-luiz-appointment",
+      "name": "SMS → Luiz (New Call)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 400],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'notified', summary: $json.aiSummary }) }}",
+        "options": {}
+      },
+      "id": "respond-appointment",
+      "name": "Respond — OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Webhook — New Appointment": {
+      "main": [
+        [{ "node": "Extract Appointment Data", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract Appointment Data": {
+      "main": [
+        [{ "node": "AI — Summarize Issue", "type": "main", "index": 0 }]
+      ]
+    },
+    "AI — Summarize Issue": {
+      "main": [
+        [{ "node": "Add AI Summary", "type": "main", "index": 0 }]
+      ]
+    },
+    "Add AI Summary": {
+      "main": [
+        [
+          { "node": "Email Team — Call Briefing", "type": "main", "index": 0 },
+          { "node": "SMS → Luiz (New Call)", "type": "main", "index": 0 },
+          { "node": "Respond — OK", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    { "name": "galaxy-assist" },
+    { "name": "appointments" }
+  ]
+}

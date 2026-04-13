@@ -1741,6 +1741,7 @@ ${otherServices.map((osKey, i) => {
                     <h4 data-i18n="footer_company">Company</h4>
                     <a href="/about" data-i18n="footer_about">About Us</a>
                     <a href="/contact" data-i18n="nav_contact">Contact</a>
+                    <a href="/support" data-i18n="footer_support">Help Center</a>
                     <a href="/consultation" data-i18n="nav_cta">Free Assessment</a>
                 </div>
                 <div class="footer-col">
@@ -1759,6 +1760,9 @@ ${otherServices.map((osKey, i) => {
             </div>
         </div>
     </footer>
+
+    <!-- Get Support Button -->
+    <a href="/support" class="get-support-btn" data-i18n="support_get_btn"><i class="fas fa-headset"></i> Get Support</a>
 
     <!-- WhatsApp Chat Widget -->
     <div class="whatsapp-widget" id="whatsappWidget">
