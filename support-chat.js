@@ -455,16 +455,6 @@ const KNOWLEDGE_BASE = [
         return (topic.answer[lang] || topic.answer.en);
     }
 
-    function getFallbackMessage() {
-        var lang = getLang();
-        var msgs = {
-            en: "Hmm, I'm not sure about that specific question. Here's what I can help you with — just ask naturally:<br><br>• Contacts, leads, tags, Smart Lists, pipeline<br>• Conversations (SMS, email, WhatsApp)<br>• Reports, dashboards, analytics<br>• Google Business Profile, reviews<br>• Calendars, booking, reminders<br>• Payments, invoices, Stripe<br>• Team members, permissions, settings<br>• Templates, tasks, notes<br>• Mobile app, notifications, password<br>• Website edits, automations (via our team)<br><br>Or if you prefer, " + getScheduleLink() + ".",
-            es: "Hmm, no estoy seguro sobre esa pregunta específica. Esto es lo que puedo ayudarte — pregunta naturalmente:<br><br>• Contactos, leads, tags, Smart Lists, pipeline<br>• Conversaciones (SMS, email, WhatsApp)<br>• Reportes, dashboards, analíticas<br>• Google Business Profile, reseñas<br>• Calendarios, reservas, recordatorios<br>• Pagos, facturas, Stripe<br>• Equipo, permisos, configuraciones<br>• Plantillas, tareas, notas<br>• App móvil, notificaciones, contraseña<br>• Ediciones web, automatizaciones (vía nuestro equipo)<br><br>O si prefieres, " + getScheduleLink() + ".",
-            pt: "Hmm, não tenho certeza sobre essa pergunta específica. Aqui está o que posso te ajudar — pode perguntar naturalmente:<br><br>• Contatos, leads, tags, Smart Lists, pipeline<br>• Conversas (SMS, email, WhatsApp)<br>• Relatórios, dashboards, analytics<br>• Google Business Profile, avaliações<br>• Calendários, agendamento, lembretes<br>• Pagamentos, faturas, Stripe<br>• Equipe, permissões, configurações<br>• Templates, tarefas, notas<br>• App no celular, notificações, senha<br>• Edições de site, automações (via nosso time)<br><br>Ou se preferir, " + getScheduleLink() + "."
-        };
-        return msgs[lang] || msgs.en;
-    }
-
     /* ---- Send Message ---- */
     async function sendMessage(text) {
         if (!text || !text.trim() || isSending) return;
@@ -521,13 +511,46 @@ const KNOWLEDGE_BASE = [
 
         // 2) Local knowledge base with context
         if (!replied) {
-            hideTyping();
             var topic = findTopic(text);
             if (topic) {
+                hideTyping();
                 addMessage(getAnswer(topic), 'bot', true);
-            } else {
-                addMessage(getFallbackMessage(), 'bot', true);
+                replied = true;
             }
+        }
+
+        // 3) Search GHL documentation online
+        if (!replied) {
+            try {
+                var searchResp = await fetch('/api/ghl-search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: text, language: getLang() })
+                });
+
+                if (searchResp.ok) {
+                    var searchData = await searchResp.json();
+                    if (searchData && searchData.text) {
+                        hideTyping();
+                        addMessage(searchData.text, 'bot', true);
+                        replied = true;
+                    }
+                }
+            } catch (e) {
+                // Search failed — use fallback
+            }
+        }
+
+        // 4) Fallback
+        if (!replied) {
+            hideTyping();
+            var lang = getLang();
+            var noAnswer = {
+                en: "I wasn't able to find a specific answer for that. This might be something our team can help with directly — just send a message to the <b>WhatsApp group</b> describing what you need, or " + getScheduleLink() + " and we'll figure it out together.",
+                es: "No pude encontrar una respuesta específica para eso. Esto puede ser algo que nuestro equipo pueda ayudarte directamente — manda un mensaje al <b>grupo de WhatsApp</b> describiendo lo que necesitas, o " + getScheduleLink() + " y lo resolvemos juntos.",
+                pt: "Não consegui encontrar uma resposta específica pra isso. Pode ser algo que nosso time consiga te ajudar diretamente — manda uma mensagem no <b>grupo do WhatsApp</b> descrevendo o que precisa, ou " + getScheduleLink() + " e a gente resolve junto."
+            };
+            addMessage(noAnswer[lang] || noAnswer.en, 'bot', true);
         }
 
         isSending = false;
