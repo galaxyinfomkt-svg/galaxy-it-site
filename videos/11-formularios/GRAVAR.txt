@@ -1,0 +1,13 @@
+VIDEO: Formulários
+Duração sugerida: 3 min
+
+O QUE MOSTRAR:
+- Como acessar Sites > Forms
+- Como criar formulário (+ New Form)
+- Como adicionar campos (arrastar e soltar)
+- Como configurar notificações
+- Como pegar código embed ou link
+- Como ver envios (submissions)
+
+CAMINHO NO BEE PRO HUB:
+Menu lateral > Sites > Forms

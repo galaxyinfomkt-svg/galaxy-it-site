@@ -1,0 +1,14 @@
+VIDEO: Relatórios e Dashboards
+Duração sugerida: 4 min
+
+O QUE MOSTRAR:
+- Como acessar Reporting
+- Attribution Report — de onde vêm os leads
+- Google Ads / Facebook Ads — desempenho de anúncios
+- Appointment Report — agendamentos e faltas
+- Call Report — chamadas recebidas e perdidas
+- Como filtrar por período (data)
+- Como interpretar os números
+
+CAMINHO NO BEE PRO HUB:
+Menu lateral > Reporting

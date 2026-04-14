@@ -1,0 +1,14 @@
+VIDEO: Conversas e Inbox Unificado
+Duração sugerida: 4-5 min
+
+O QUE MOSTRAR:
+- Como acessar Conversations
+- Como procurar um contato
+- Como trocar de canal (SMS, Email, WhatsApp)
+- Como enviar mensagem
+- Como usar templates salvos
+- Como ver status de entrega/leitura
+- Como responder mensagem de Facebook/Instagram DM
+
+CAMINHO NO BEE PRO HUB:
+Menu lateral > Conversations

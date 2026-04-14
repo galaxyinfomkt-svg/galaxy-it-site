@@ -1,0 +1,11 @@
+VIDEO: Automações e Workflows
+Duração sugerida: 2 min
+
+O QUE MOSTRAR:
+- Explicar que automações são criadas pelo time
+- Como solicitar automação nova (WhatsApp)
+- O que informar: o que automatizar, quando disparar, que ação fazer
+- Exemplos: follow-up de leads, pedido de review automático, lembretes
+- Mostrar onde ficam (Automation > Workflows) — só pra referência
+
+NOTA: Cliente NÃO cria automação sozinho. Sempre via WhatsApp.

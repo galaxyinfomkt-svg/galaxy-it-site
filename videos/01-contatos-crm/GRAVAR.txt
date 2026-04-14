@@ -1,0 +1,14 @@
+VIDEO: Contatos e CRM
+Duração sugerida: 3-4 min
+
+O QUE MOSTRAR:
+- Como adicionar um contato novo (+ Add Contact)
+- Como importar contatos via CSV (botão Import)
+- Como criar Smart List com filtros
+- Como adicionar tags (individual e em massa)
+- Como criar campos personalizados (Settings > Custom Fields)
+- Como ver o perfil completo de um contato (histórico, notas, tags)
+- Como criar e gerenciar Pipeline (Opportunities)
+
+CAMINHO NO BEE PRO HUB:
+Menu lateral > Contacts

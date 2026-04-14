@@ -1,0 +1,13 @@
+VIDEO: Social Planner
+Duração sugerida: 3 min
+
+O QUE MOSTRAR:
+- Como acessar Marketing > Social Planner
+- Como criar novo post (+ New Post)
+- Como adicionar imagem/vídeo
+- Como selecionar contas (Facebook, Instagram, Google, LinkedIn)
+- Como agendar post (escolher data/hora)
+- Como ver calendário de posts agendados
+
+CAMINHO NO BEE PRO HUB:
+Menu lateral > Marketing > Social Planner

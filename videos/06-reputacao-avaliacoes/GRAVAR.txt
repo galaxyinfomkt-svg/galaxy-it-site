@@ -1,0 +1,13 @@
+VIDEO: Reputação e Avaliações
+Duração sugerida: 3 min
+
+O QUE MOSTRAR:
+- Como acessar seção Reputation
+- Como ver todas as avaliações
+- Como responder uma avaliação
+- Como enviar pedido de avaliação (Requests > Send Request)
+- Como selecionar contatos e personalizar mensagem
+- Dica: pedir pro time automatizar pedidos de review
+
+CAMINHO NO BEE PRO HUB:
+Menu lateral > Reputation

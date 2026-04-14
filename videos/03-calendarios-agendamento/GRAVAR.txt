@@ -1,0 +1,13 @@
+VIDEO: Calendários e Agendamento
+Duração sugerida: 3 min
+
+O QUE MOSTRAR:
+- Como ver calendários existentes
+- Como criar calendário novo (+ Create Calendar)
+- Como configurar disponibilidade (dias, horários, duração)
+- Como configurar lembretes automáticos (Notifications)
+- Como compartilhar link de agendamento com cliente
+- Como ver agendamentos marcados
+
+CAMINHO NO BEE PRO HUB:
+Menu lateral > Calendars

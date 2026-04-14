@@ -1,0 +1,14 @@
+VIDEO: Pagamentos e Faturamento
+Duração sugerida: 4 min
+
+O QUE MOSTRAR:
+- Como acessar seção Payments
+- Como criar fatura (Invoices > + New Invoice)
+- Como adicionar itens, valores e vencimento
+- Como enviar fatura pro cliente
+- Como criar Payment Link
+- Como configurar Stripe (Settings > Payments > Stripe)
+- Como criar assinatura recorrente (Subscriptions)
+
+CAMINHO NO BEE PRO HUB:
+Menu lateral > Payments
