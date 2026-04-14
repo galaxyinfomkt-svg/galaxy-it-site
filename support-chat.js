@@ -53,8 +53,9 @@ RESPONSE GUIDELINES:
 - For GBP questions: mention both the Bee Pro Hub path AND business.google.com when relevant`
 };
 
-/* ---- Built-in Knowledge Base (works without webhook) ---- */
-/* Each entry has phrases (multi-word, scored higher) and single keywords (scored lower) */
+/* ---- Built-in Knowledge Base ---- */
+/* phrases = 10pts, keywords = 1pt. Covers all GHL features. */
+/* Items marked team:true → redirect to WhatsApp group */
 const KNOWLEDGE_BASE = [
     {
         id: 'review-request',
@@ -185,6 +186,182 @@ const KNOWLEDGE_BASE = [
             es: "Para crear cursos/membresías:<br><b>Paso 1:</b> Ve a <b>Memberships</b><br><b>Paso 2:</b> Clic en <b>+ New Product</b><br><b>Paso 3:</b> Agrega categorías y lecciones<br><b>Paso 4:</b> Sube videos, texto o archivos<br><b>Paso 5:</b> Configura ofertas (gratis, pago único o suscripción)<br><b>Paso 6:</b> Comparte con tu audiencia",
             pt: "Pra criar cursos/memberships:<br><b>Passo 1:</b> Vá em <b>Memberships</b><br><b>Passo 2:</b> Clique em <b>+ New Product</b><br><b>Passo 3:</b> Adicione categorias e aulas<br><b>Passo 4:</b> Faça upload de vídeos, texto ou arquivos<br><b>Passo 5:</b> Configure ofertas (grátis, pagamento único ou assinatura)<br><b>Passo 6:</b> Compartilhe com seu público<br><br>Você pode liberar conteúdo ao longo do tempo (drip) e acompanhar o progresso dos alunos."
         }
+    },
+    // ===== TEAM / USERS =====
+    {
+        id: 'team-users',
+        phrases: ['add team', 'add user', 'add member', 'add employee', 'add staff', 'adicionar pessoa', 'adicionar membro', 'adicionar equipe', 'adicionar usuário', 'agregar persona', 'agregar miembro', 'agregar usuario', 'agregar equipo', 'invite user', 'convidar usuário', 'invitar usuario', 'minha equipe', 'mi equipo', 'my team', 'team member', 'membro da equipe', 'miembro del equipo', 'remove user', 'remover usuário', 'user permissions', 'permissões', 'permisos'],
+        keywords: ['team', 'equipe', 'equipo', 'user', 'usuário', 'usuario', 'member', 'membro', 'miembro', 'staff', 'employee', 'funcionário', 'empleado', 'permission', 'permissão', 'permiso', 'role', 'cargo'],
+        answer: {
+            en: "To add a team member:<br><b>Step 1:</b> Go to <b>Settings</b> (gear icon, bottom left)<br><b>Step 2:</b> Click <b>My Staff</b> (or <b>Team</b>)<br><b>Step 3:</b> Click <b>+ Add Employee</b><br><b>Step 4:</b> Enter their name, email, and phone<br><b>Step 5:</b> Set their <b>Role</b> (Admin or User) and permissions<br><b>Step 6:</b> Click <b>Save</b> — they'll receive an invite email<br><br>To manage permissions: Edit the user → toggle which sections they can access (Contacts, Conversations, Calendars, etc.).",
+            es: "Para agregar un miembro al equipo:<br><b>Paso 1:</b> Ve a <b>Settings</b> (ícono de engranaje, abajo a la izquierda)<br><b>Paso 2:</b> Clic en <b>My Staff</b> (o <b>Team</b>)<br><b>Paso 3:</b> Clic en <b>+ Add Employee</b><br><b>Paso 4:</b> Ingresa nombre, email y teléfono<br><b>Paso 5:</b> Define el <b>Rol</b> (Admin o User) y permisos<br><b>Paso 6:</b> Clic en <b>Save</b> — recibirán un email de invitación<br><br>Para gestionar permisos: Edita el usuario → activa/desactiva secciones.",
+            pt: "Pra adicionar alguém na equipe:<br><b>Passo 1:</b> Vá em <b>Settings</b> (ícone de engrenagem, canto inferior esquerdo)<br><b>Passo 2:</b> Clique em <b>My Staff</b> (ou <b>Team</b>)<br><b>Passo 3:</b> Clique em <b>+ Add Employee</b><br><b>Passo 4:</b> Preencha nome, email e telefone da pessoa<br><b>Passo 5:</b> Defina o <b>Role</b> (Admin ou User) e as permissões<br><b>Passo 6:</b> Clique em <b>Save</b> — a pessoa recebe um email de convite<br><br>Pra gerenciar permissões: Edite o usuário → ative/desative quais seções ele pode acessar (Contacts, Conversations, Calendars, etc.)."
+        }
+    },
+    // ===== SETTINGS =====
+    {
+        id: 'settings',
+        phrases: ['business settings', 'account settings', 'company settings', 'configurações da conta', 'configurações do negócio', 'configuraciones de cuenta', 'change business info', 'mudar informações', 'cambiar información', 'business name', 'nome da empresa', 'nombre de empresa', 'timezone', 'fuso horário', 'zona horaria'],
+        keywords: ['settings', 'configuração', 'configuración', 'config', 'account', 'conta', 'cuenta'],
+        answer: {
+            en: "To access your account settings:<br><b>Step 1:</b> Click <b>Settings</b> (gear icon, bottom left)<br><b>Step 2:</b> Click <b>Business Profile</b> to update:<br>• Business name, address, phone, email<br>• Logo and branding<br>• Timezone and language<br>• Business hours<br><br>Other important settings:<br>• <b>My Staff</b> — manage team members<br>• <b>Domains</b> — connect custom domains<br>• <b>Integrations</b> — connect Google, Facebook, Stripe, etc.<br>• <b>Phone Numbers</b> — manage your business phone lines",
+            es: "Para acceder a configuraciones:<br><b>Paso 1:</b> Clic en <b>Settings</b> (engranaje, abajo a la izquierda)<br><b>Paso 2:</b> Clic en <b>Business Profile</b> para actualizar:<br>• Nombre, dirección, teléfono, email<br>• Logo y marca<br>• Zona horaria e idioma<br><br>Otras configuraciones:<br>• <b>My Staff</b> — gestionar equipo<br>• <b>Domains</b> — conectar dominios<br>• <b>Integrations</b> — conectar Google, Facebook, Stripe",
+            pt: "Pra acessar as configurações da conta:<br><b>Passo 1:</b> Clique em <b>Settings</b> (ícone de engrenagem, canto inferior esquerdo)<br><b>Passo 2:</b> Clique em <b>Business Profile</b> pra atualizar:<br>• Nome da empresa, endereço, telefone, email<br>• Logo e identidade visual<br>• Fuso horário e idioma<br>• Horário de funcionamento<br><br>Outras configurações importantes:<br>• <b>My Staff</b> — gerenciar equipe<br>• <b>Domains</b> — conectar domínios personalizados<br>• <b>Integrations</b> — conectar Google, Facebook, Stripe, etc.<br>• <b>Phone Numbers</b> — gerenciar seus números de telefone"
+        }
+    },
+    // ===== PHONE / CALL TRACKING =====
+    {
+        id: 'phone-calls',
+        phrases: ['phone number', 'call tracking', 'missed call', 'text back', 'número de telefone', 'número de teléfono', 'rastreamento de chamada', 'chamada perdida', 'llamada perdida', 'voicemail', 'make a call', 'fazer ligação', 'hacer llamada', 'buy phone number', 'comprar número', 'faço ligação', 'faço chamada', 'ligar pelo sistema', 'ligação pelo sistema', 'hago llamada', 'llamar por el sistema', 'gravar chamada', 'grabar llamada', 'record call'],
+        keywords: ['phone', 'telefone', 'teléfono', 'call', 'chamada', 'llamada', 'voicemail', 'ring', 'ligação', 'ligar'],
+        answer: {
+            en: "Phone & call features in Bee Pro Hub:<br>• <b>View calls:</b> Go to <b>Reporting</b> → <b>Call Reporting</b> for all call history<br>• <b>Make a call:</b> Open a contact → click the <b>phone icon</b> → call connects through your Bee Pro Hub number<br>• <b>Missed Call Text-Back:</b> Go to <b>Settings</b> → <b>Phone Numbers</b> → enable auto-text when calls are missed<br>• <b>Voicemail:</b> Set up under <b>Settings</b> → <b>Phone Numbers</b> → edit number → voicemail settings<br>• <b>Call recording:</b> Enable in <b>Settings</b> → <b>Phone Numbers</b> → toggle recording on",
+            es: "Funciones de teléfono en Bee Pro Hub:<br>• <b>Ver llamadas:</b> Ve a <b>Reporting</b> → <b>Call Reporting</b><br>• <b>Hacer llamada:</b> Abre un contacto → clic en el <b>ícono de teléfono</b><br>• <b>Texto automático por llamada perdida:</b> <b>Settings</b> → <b>Phone Numbers</b> → activa auto-texto<br>• <b>Buzón de voz:</b> <b>Settings</b> → <b>Phone Numbers</b> → edita número → voicemail<br>• <b>Grabación:</b> <b>Settings</b> → <b>Phone Numbers</b> → activa grabación",
+            pt: "Funcionalidades de telefone no Bee Pro Hub:<br>• <b>Ver chamadas:</b> Vá em <b>Reporting</b> → <b>Call Reporting</b> pra todo o histórico<br>• <b>Fazer ligação:</b> Abra um contato → clique no <b>ícone de telefone</b> → a ligação conecta pelo seu número do Bee Pro Hub<br>• <b>Texto automático por chamada perdida:</b> <b>Settings</b> → <b>Phone Numbers</b> → ative o auto-text<br>• <b>Correio de voz:</b> Configure em <b>Settings</b> → <b>Phone Numbers</b> → edite o número → voicemail<br>• <b>Gravação de chamada:</b> Ative em <b>Settings</b> → <b>Phone Numbers</b> → ligue a gravação"
+        }
+    },
+    // ===== TAGS =====
+    {
+        id: 'tags',
+        phrases: ['add tag', 'create tag', 'remove tag', 'bulk tag', 'adicionar tag', 'criar tag', 'remover tag', 'agregar tag', 'crear tag', 'eliminar tag', 'tag contacts', 'tag em massa', 'tags in bulk'],
+        keywords: ['tag', 'tags', 'etiqueta'],
+        answer: {
+            en: "Managing tags:<br>• <b>Add tag to one contact:</b> Open the contact → <b>Tags</b> section → type tag name → press Enter<br>• <b>Bulk add tags:</b> Go to <b>Contacts</b> → select multiple (checkboxes) → click <b>Actions</b> → <b>Add Tag</b><br>• <b>Remove tag:</b> Open contact → click the <b>X</b> next to the tag<br>• <b>See all tags:</b> Go to <b>Settings</b> → <b>Tags</b> (some versions) or filter contacts by tag<br><br>Tags are key for segmentation and automations. Use them to organize leads by source, status, or interest.",
+            es: "Gestión de tags:<br>• <b>Agregar tag a un contacto:</b> Abre el contacto → sección <b>Tags</b> → escribe el nombre → Enter<br>• <b>Tags en masa:</b> Ve a <b>Contacts</b> → selecciona varios → <b>Actions</b> → <b>Add Tag</b><br>• <b>Eliminar tag:</b> Abre el contacto → clic en la <b>X</b> del tag<br><br>Los tags son clave para segmentación y automatizaciones.",
+            pt: "Gerenciamento de tags:<br>• <b>Adicionar tag em um contato:</b> Abra o contato → seção <b>Tags</b> → digite o nome da tag → Enter<br>• <b>Tags em massa:</b> Vá em <b>Contacts</b> → selecione vários (checkbox) → clique em <b>Actions</b> → <b>Add Tag</b><br>• <b>Remover tag:</b> Abra o contato → clique no <b>X</b> ao lado da tag<br><br>Tags são essenciais pra segmentação e automações. Use pra organizar leads por fonte, status ou interesse."
+        }
+    },
+    // ===== OPPORTUNITIES / PIPELINE =====
+    {
+        id: 'pipeline',
+        phrases: ['create pipeline', 'manage pipeline', 'opportunity', 'deal stage', 'move deal', 'criar pipeline', 'gerenciar pipeline', 'oportunidade', 'crear pipeline', 'gestionar pipeline', 'oportunidad', 'etapa do funil', 'etapa del embudo', 'pipeline stage', 'mover lead', 'como movo lead', 'como movo um lead', 'como muevo lead', 'mover no pipeline', 'mover en pipeline', 'funil de vendas', 'embudo de ventas', 'sales pipeline'],
+        keywords: ['pipeline', 'opportunity', 'oportunidade', 'oportunidad', 'deal', 'stage', 'etapa'],
+        answer: {
+            en: "Managing your pipeline:<br>• <b>View pipeline:</b> Go to <b>Opportunities</b> in the left menu → select your pipeline<br>• <b>Move a deal:</b> Drag and drop the contact card between stages<br>• <b>Add opportunity:</b> Click <b>+ Add Opportunity</b> → select contact → set stage and value<br>• <b>Create pipeline:</b> <b>Opportunities</b> → <b>Pipelines</b> tab → <b>+ Create Pipeline</b> → add stages (e.g., New Lead, Contacted, Proposal, Won, Lost)<br><br>Each stage shows how many deals and total value. Use this to track your sales progress.",
+            es: "Gestión del pipeline:<br>• <b>Ver pipeline:</b> Ve a <b>Opportunities</b> → selecciona tu pipeline<br>• <b>Mover deal:</b> Arrastra la tarjeta entre etapas<br>• <b>Agregar oportunidad:</b> <b>+ Add Opportunity</b> → selecciona contacto → define etapa y valor<br>• <b>Crear pipeline:</b> <b>Opportunities</b> → <b>Pipelines</b> → <b>+ Create Pipeline</b> → agrega etapas",
+            pt: "Gerenciamento do pipeline:<br>• <b>Ver pipeline:</b> Vá em <b>Opportunities</b> no menu lateral → selecione seu pipeline<br>• <b>Mover um deal:</b> Arraste e solte o card do contato entre as etapas<br>• <b>Adicionar oportunidade:</b> Clique em <b>+ Add Opportunity</b> → selecione contato → defina etapa e valor<br>• <b>Criar pipeline:</b> <b>Opportunities</b> → aba <b>Pipelines</b> → <b>+ Create Pipeline</b> → adicione etapas (ex: Novo Lead, Contatado, Proposta, Ganho, Perdido)<br><br>Cada etapa mostra quantos deals e valor total. Use pra acompanhar o progresso de vendas."
+        }
+    },
+    // ===== TEMPLATES (EMAIL/SMS) =====
+    {
+        id: 'templates',
+        phrases: ['create template', 'email template', 'sms template', 'message template', 'criar template', 'criar modelo', 'crear plantilla', 'plantilla de email', 'plantilla de sms', 'modelo de email', 'modelo de mensagem', 'como crio template', 'como crio modelo', 'como creo plantilla', 'template de sms', 'template de email', 'como faço template'],
+        keywords: ['template', 'modelo', 'plantilla', 'snippet'],
+        answer: {
+            en: "To create message templates:<br><b>Step 1:</b> Go to <b>Marketing</b> → <b>Templates</b><br><b>Step 2:</b> Click <b>+ New Template</b><br><b>Step 3:</b> Choose type: <b>Email</b> or <b>SMS</b><br><b>Step 4:</b> Write your message — use merge fields like <b>{{contact.first_name}}</b> for personalization<br><b>Step 5:</b> Click <b>Save</b><br><br>Use templates in Conversations to reply faster, or in Workflows for automated messages.",
+            es: "Para crear plantillas de mensaje:<br><b>Paso 1:</b> Ve a <b>Marketing</b> → <b>Templates</b><br><b>Paso 2:</b> Clic en <b>+ New Template</b><br><b>Paso 3:</b> Elige tipo: <b>Email</b> o <b>SMS</b><br><b>Paso 4:</b> Escribe tu mensaje — usa campos como <b>{{contact.first_name}}</b><br><b>Paso 5:</b> Clic en <b>Save</b>",
+            pt: "Pra criar templates de mensagem:<br><b>Passo 1:</b> Vá em <b>Marketing</b> → <b>Templates</b><br><b>Passo 2:</b> Clique em <b>+ New Template</b><br><b>Passo 3:</b> Escolha o tipo: <b>Email</b> ou <b>SMS</b><br><b>Passo 4:</b> Escreva sua mensagem — use campos como <b>{{contact.first_name}}</b> pra personalizar<br><b>Passo 5:</b> Clique em <b>Save</b><br><br>Use templates no Conversations pra responder mais rápido, ou em Workflows pra mensagens automáticas."
+        }
+    },
+    // ===== EMAIL MARKETING / CAMPAIGNS =====
+    {
+        id: 'email-marketing',
+        phrases: ['email campaign', 'email marketing', 'send campaign', 'bulk email', 'mass email', 'email em massa', 'campanha de email', 'campaña de email', 'enviar campanha', 'enviar campaña', 'newsletter'],
+        keywords: ['campaign', 'campanha', 'campaña', 'newsletter', 'bulk email', 'mass email', 'email marketing'],
+        answer: {
+            en: "To send an email campaign:<br><b>Step 1:</b> Go to <b>Marketing</b> → <b>Emails</b><br><b>Step 2:</b> Click <b>+ Create Campaign</b><br><b>Step 3:</b> Choose a template or start from scratch<br><b>Step 4:</b> Design your email with the drag-and-drop builder<br><b>Step 5:</b> Select recipients (Smart List, tag, or all contacts)<br><b>Step 6:</b> Schedule or <b>Send Now</b><br><br>Check open rates and clicks in the campaign analytics after sending.",
+            es: "Para enviar una campaña de email:<br><b>Paso 1:</b> Ve a <b>Marketing</b> → <b>Emails</b><br><b>Paso 2:</b> Clic en <b>+ Create Campaign</b><br><b>Paso 3:</b> Elige plantilla o empieza de cero<br><b>Paso 4:</b> Diseña con el builder drag-and-drop<br><b>Paso 5:</b> Selecciona destinatarios (Smart List, tag, o todos)<br><b>Paso 6:</b> Programa o <b>Send Now</b>",
+            pt: "Pra enviar uma campanha de email:<br><b>Passo 1:</b> Vá em <b>Marketing</b> → <b>Emails</b><br><b>Passo 2:</b> Clique em <b>+ Create Campaign</b><br><b>Passo 3:</b> Escolha um template ou comece do zero<br><b>Passo 4:</b> Monte seu email com o builder drag-and-drop<br><b>Passo 5:</b> Selecione destinatários (Smart List, tag, ou todos os contatos)<br><b>Passo 6:</b> Agende ou clique em <b>Send Now</b><br><br>Acompanhe taxas de abertura e cliques na análise da campanha depois de enviar."
+        }
+    },
+    // ===== INTEGRATIONS =====
+    {
+        id: 'integrations',
+        phrases: ['connect google', 'connect facebook', 'connect stripe', 'connect instagram', 'connect whatsapp', 'integration', 'conectar google', 'conectar facebook', 'conectar stripe', 'conectar instagram', 'conectar whatsapp', 'integração', 'integración', 'conecto meu google', 'conecto mi google', 'conecto meu facebook', 'conecto mi facebook', 'como integro', 'como conecto'],
+        keywords: ['integration', 'integração', 'integración', 'connect', 'conectar', 'sync', 'sincronizar', 'google', 'facebook', 'stripe', 'zoom'],
+        answer: {
+            en: "To connect integrations:<br><b>Step 1:</b> Go to <b>Settings</b> → <b>Integrations</b><br><b>Step 2:</b> Find the service you want to connect:<br>• <b>Google</b> — for GMB, Google Ads, and Calendar sync<br>• <b>Facebook</b> — for Facebook Ads, Messenger, and Instagram<br>• <b>Stripe</b> — for payments and invoicing<br>• <b>WhatsApp</b> — for WhatsApp messaging (requires business API)<br>• <b>Zoom/Google Meet</b> — for calendar video call links<br><b>Step 3:</b> Click <b>Connect</b> and follow the authorization steps",
+            es: "Para conectar integraciones:<br><b>Paso 1:</b> Ve a <b>Settings</b> → <b>Integrations</b><br><b>Paso 2:</b> Encuentra el servicio:<br>• <b>Google</b> — para GMB, Google Ads, Calendar<br>• <b>Facebook</b> — para Ads, Messenger, Instagram<br>• <b>Stripe</b> — para pagos<br>• <b>WhatsApp</b> — para mensajería<br><b>Paso 3:</b> Clic en <b>Connect</b> y sigue la autorización",
+            pt: "Pra conectar integrações:<br><b>Passo 1:</b> Vá em <b>Settings</b> → <b>Integrations</b><br><b>Passo 2:</b> Encontre o serviço que quer conectar:<br>• <b>Google</b> — pra GMB, Google Ads e sincronizar Calendar<br>• <b>Facebook</b> — pra Facebook Ads, Messenger e Instagram<br>• <b>Stripe</b> — pra pagamentos e faturamento<br>• <b>WhatsApp</b> — pra mensagens (requer API business)<br>• <b>Zoom/Google Meet</b> — pra links de videochamada no calendário<br><b>Passo 3:</b> Clique em <b>Connect</b> e siga os passos de autorização"
+        }
+    },
+    // ===== NOTIFICATIONS =====
+    {
+        id: 'notifications',
+        phrases: ['notification settings', 'email notification', 'sms notification', 'push notification', 'configurar notificação', 'configurar notificación', 'not receiving notification', 'não recebo notificação', 'no recibo notificación', 'turn off notification', 'desativar notificação'],
+        keywords: ['notification', 'notificação', 'notificación', 'alert', 'alerta', 'notify', 'notificar'],
+        answer: {
+            en: "To manage notifications:<br><b>Step 1:</b> Click your <b>profile icon</b> (top right) → <b>Notifications</b><br><b>Step 2:</b> Configure which events trigger notifications:<br>• New lead/contact created<br>• New conversation message<br>• Appointment booked/cancelled<br>• Task assigned<br>• Review received<br><b>Step 3:</b> Choose delivery: <b>Email</b>, <b>SMS</b>, <b>In-App</b>, or <b>Desktop Push</b><br><br>Not receiving notifications? Check your spam folder and make sure browser notifications are enabled.",
+            es: "Para gestionar notificaciones:<br><b>Paso 1:</b> Clic en tu <b>ícono de perfil</b> (arriba a la derecha) → <b>Notifications</b><br><b>Paso 2:</b> Configura qué eventos disparan notificaciones<br><b>Paso 3:</b> Elige entrega: <b>Email</b>, <b>SMS</b>, <b>In-App</b>, o <b>Push</b>",
+            pt: "Pra gerenciar notificações:<br><b>Passo 1:</b> Clique no seu <b>ícone de perfil</b> (canto superior direito) → <b>Notifications</b><br><b>Passo 2:</b> Configure quais eventos disparam notificação:<br>• Novo lead/contato criado<br>• Nova mensagem em conversas<br>• Agendamento marcado/cancelado<br>• Tarefa atribuída<br>• Avaliação recebida<br><b>Passo 3:</b> Escolha o tipo: <b>Email</b>, <b>SMS</b>, <b>In-App</b>, ou <b>Push no Desktop</b><br><br>Não está recebendo notificações? Cheque a pasta de spam e verifique se as notificações do navegador estão ativadas."
+        }
+    },
+    // ===== MOBILE APP =====
+    {
+        id: 'mobile-app',
+        phrases: ['mobile app', 'app celular', 'aplicativo', 'aplicación', 'download app', 'baixar app', 'descargar app', 'phone app', 'app no celular', 'usar no celular'],
+        keywords: ['mobile', 'celular', 'app', 'aplicativo', 'aplicación', 'iphone', 'android'],
+        answer: {
+            en: "Bee Pro Hub has a mobile app!<br><br><b>Download:</b> Search for <b>\"LeadConnector\"</b> (or your branded app name) on the App Store (iPhone) or Google Play (Android)<br><br>With the app you can:<br>• View and reply to conversations (SMS, email, WhatsApp)<br>• See contact details and notes<br>• Get push notifications for new leads and messages<br>• View your calendar and appointments<br>• Make and receive calls through your business number",
+            es: "¡Bee Pro Hub tiene app móvil!<br><br><b>Descarga:</b> Busca <b>\"LeadConnector\"</b> en App Store (iPhone) o Google Play (Android)<br><br>Con la app puedes:<br>• Ver y responder conversaciones<br>• Ver contactos y notas<br>• Recibir notificaciones push<br>• Ver calendario y citas<br>• Hacer y recibir llamadas",
+            pt: "O Bee Pro Hub tem app pro celular!<br><br><b>Baixe:</b> Procure <b>\"LeadConnector\"</b> (ou o nome do seu app) na App Store (iPhone) ou Google Play (Android)<br><br>Com o app você pode:<br>• Ver e responder conversas (SMS, email, WhatsApp)<br>• Ver detalhes e notas dos contatos<br>• Receber notificações push de novos leads e mensagens<br>• Ver seu calendário e agendamentos<br>• Fazer e receber ligações pelo seu número comercial"
+        }
+    },
+    // ===== CUSTOM FIELDS =====
+    {
+        id: 'custom-fields',
+        phrases: ['custom field', 'create field', 'campo personalizado', 'campo customizado', 'criar campo', 'crear campo', 'add field', 'adicionar campo', 'agregar campo'],
+        keywords: ['custom field', 'campo', 'field'],
+        answer: {
+            en: "To create custom fields:<br><b>Step 1:</b> Go to <b>Settings</b> → <b>Custom Fields</b><br><b>Step 2:</b> Click <b>+ Add Field</b><br><b>Step 3:</b> Choose field type: Text, Number, Dropdown, Date, Checkbox, etc.<br><b>Step 4:</b> Name it (e.g., \"Service Type\", \"Budget\", \"Referral Source\")<br><b>Step 5:</b> Click <b>Save</b><br><br>Custom fields appear in contact profiles, forms, and can be used in automations and merge fields.",
+            es: "Para crear campos personalizados:<br><b>Paso 1:</b> Ve a <b>Settings</b> → <b>Custom Fields</b><br><b>Paso 2:</b> Clic en <b>+ Add Field</b><br><b>Paso 3:</b> Elige tipo: Text, Number, Dropdown, Date, Checkbox, etc.<br><b>Paso 4:</b> Nómbralo (ej: \"Tipo de Servicio\", \"Presupuesto\")<br><b>Paso 5:</b> Clic en <b>Save</b>",
+            pt: "Pra criar campos personalizados:<br><b>Passo 1:</b> Vá em <b>Settings</b> → <b>Custom Fields</b><br><b>Passo 2:</b> Clique em <b>+ Add Field</b><br><b>Passo 3:</b> Escolha o tipo: Text, Number, Dropdown, Date, Checkbox, etc.<br><b>Passo 4:</b> Dê um nome (ex: \"Tipo de Serviço\", \"Orçamento\", \"Fonte de Indicação\")<br><b>Passo 5:</b> Clique em <b>Save</b><br><br>Campos personalizados aparecem no perfil do contato, formulários, e podem ser usados em automações e campos de mesclagem."
+        }
+    },
+    // ===== TASKS =====
+    {
+        id: 'tasks',
+        phrases: ['create task', 'assign task', 'task list', 'criar tarefa', 'atribuir tarefa', 'crear tarea', 'asignar tarea', 'my tasks', 'minhas tarefas', 'mis tareas', 'to-do', 'todo'],
+        keywords: ['task', 'tarefa', 'tarea', 'todo', 'to-do'],
+        answer: {
+            en: "To manage tasks:<br>• <b>Create task:</b> Open a contact → <b>Tasks</b> tab → <b>+ Add Task</b> → set title, due date, assign to team member<br>• <b>View all tasks:</b> Go to <b>Contacts</b> → filter by tasks, or check the dashboard<br>• <b>Complete task:</b> Click the checkbox next to the task<br><br>Tasks help you track follow-ups and assign work to team members. You can also create tasks automatically through workflows.",
+            es: "Para gestionar tareas:<br>• <b>Crear tarea:</b> Abre un contacto → pestaña <b>Tasks</b> → <b>+ Add Task</b> → define título, fecha, asigna a un miembro<br>• <b>Ver todas:</b> Ve a <b>Contacts</b> → filtra por tareas<br>• <b>Completar:</b> Clic en el checkbox de la tarea",
+            pt: "Pra gerenciar tarefas:<br>• <b>Criar tarefa:</b> Abra um contato → aba <b>Tasks</b> → <b>+ Add Task</b> → defina título, data, e atribua a um membro da equipe<br>• <b>Ver todas as tarefas:</b> Vá em <b>Contacts</b> → filtre por tarefas, ou veja no dashboard<br>• <b>Concluir tarefa:</b> Clique no checkbox ao lado da tarefa<br><br>Tarefas ajudam a acompanhar follow-ups e distribuir trabalho. Você também pode criar tarefas automaticamente por workflows."
+        }
+    },
+    // ===== NOTES =====
+    {
+        id: 'notes',
+        phrases: ['add note', 'contact note', 'adicionar nota', 'agregar nota', 'anotação', 'anotación', 'notas do contato', 'notas del contacto', 'como adiciono nota', 'como agrego nota', 'nota no contato', 'nota num contato', 'nota en contacto', 'fazer anotação', 'note on contact'],
+        keywords: ['note', 'nota', 'anotação', 'anotación'],
+        answer: {
+            en: "To add a note to a contact:<br><b>Step 1:</b> Go to <b>Contacts</b> → open the contact<br><b>Step 2:</b> Click the <b>Notes</b> tab<br><b>Step 3:</b> Click <b>+ Add Note</b><br><b>Step 4:</b> Type your note and click <b>Save</b><br><br>Notes are visible to all team members and help keep a record of conversations, preferences, and important details about the client.",
+            es: "Para agregar una nota a un contacto:<br><b>Paso 1:</b> Ve a <b>Contacts</b> → abre el contacto<br><b>Paso 2:</b> Clic en la pestaña <b>Notes</b><br><b>Paso 3:</b> Clic en <b>+ Add Note</b><br><b>Paso 4:</b> Escribe y clic en <b>Save</b>",
+            pt: "Pra adicionar uma nota a um contato:<br><b>Passo 1:</b> Vá em <b>Contacts</b> → abra o contato<br><b>Passo 2:</b> Clique na aba <b>Notes</b><br><b>Passo 3:</b> Clique em <b>+ Add Note</b><br><b>Passo 4:</b> Escreva sua nota e clique em <b>Save</b><br><br>As notas ficam visíveis pra toda a equipe e ajudam a registrar conversas, preferências e detalhes importantes sobre o cliente."
+        }
+    },
+    // ===== PASSWORD / LOGIN =====
+    {
+        id: 'login-password',
+        phrases: ['reset password', 'forgot password', 'change password', 'cant login', 'cannot login', 'trocar senha', 'esqueci senha', 'mudar senha', 'não consigo entrar', 'cambiar contraseña', 'olvidé contraseña', 'no puedo entrar', 'my password', 'minha senha', 'mi contraseña'],
+        keywords: ['password', 'senha', 'contraseña', 'login', 'entrar', 'access', 'acesso', 'acceso'],
+        answer: {
+            en: "If you forgot your password or can't log in:<br><b>Step 1:</b> Go to the Bee Pro Hub login page<br><b>Step 2:</b> Click <b>\"Forgot Password?\"</b><br><b>Step 3:</b> Enter your email<br><b>Step 4:</b> Check your inbox (and spam) for the reset link<br><b>Step 5:</b> Click the link and create a new password<br><br>To change your password when logged in: Click your <b>profile icon</b> (top right) → <b>Profile</b> → <b>Change Password</b>.<br><br>Still can't access? Contact our team on the WhatsApp group.",
+            es: "Si olvidaste tu contraseña:<br><b>Paso 1:</b> Ve a la página de login<br><b>Paso 2:</b> Clic en <b>\"Forgot Password?\"</b><br><b>Paso 3:</b> Ingresa tu email<br><b>Paso 4:</b> Revisa tu inbox (y spam) para el link<br><b>Paso 5:</b> Clic en el link y crea nueva contraseña<br><br>¿Aún no puedes entrar? Contacta nuestro equipo por WhatsApp.",
+            pt: "Se esqueceu sua senha ou não consegue entrar:<br><b>Passo 1:</b> Vá na página de login do Bee Pro Hub<br><b>Passo 2:</b> Clique em <b>\"Forgot Password?\"</b><br><b>Passo 3:</b> Digite seu email<br><b>Passo 4:</b> Veja sua caixa de entrada (e spam) pro link de reset<br><b>Passo 5:</b> Clique no link e crie uma senha nova<br><br>Pra trocar a senha quando já está logado: Clique no seu <b>ícone de perfil</b> (canto superior direito) → <b>Profile</b> → <b>Change Password</b>.<br><br>Ainda não consegue acessar? Fale com nosso time no grupo do WhatsApp."
+        }
+    },
+    // ===== PLAN / BILLING =====
+    {
+        id: 'plan-billing',
+        phrases: ['my plan', 'billing', 'meu plano', 'mi plan', 'upgrade plan', 'trocar plano', 'cambiar plan', 'what plan', 'qual plano', 'qué plan', 'plan includes', 'plano inclui', 'plan incluye', 'cancel plan', 'cancelar plano', 'cancelar plan'],
+        keywords: ['plan', 'plano', 'billing', 'cobrança', 'cobro', 'upgrade', 'cancel', 'cancelar', 'price', 'preço', 'precio'],
+        answer: {
+            en: "About your plan:<br>• All clients have <b>unlimited access to Galaxy Assist</b> (this AI) 24/7<br>• <b>Pro</b> and <b>Complete</b> plan clients can also schedule <b>1-on-1 calls</b> with our team<br><br>To check your plan or discuss changes, contact our team:<br>• <b>WhatsApp group</b> — for quick questions<br>• <b>Email:</b> info@galaxyinfo.us<br>• Or <a href='#schedule-call'>schedule a call</a> if you're on Pro/Complete",
+            es: "Sobre tu plan:<br>• Todos los clientes tienen <b>acceso ilimitado a Galaxy Assist</b> (esta IA) 24/7<br>• Clientes <b>Pro</b> y <b>Complete</b> también pueden agendar <b>llamadas 1-a-1</b> con nuestro equipo<br><br>Para consultar tu plan o cambios, contacta nuestro equipo por <b>WhatsApp</b> o email: info@galaxyinfo.us",
+            pt: "Sobre seu plano:<br>• Todos os clientes têm <b>acesso ilimitado ao Galaxy Assist</b> (essa IA) 24/7<br>• Clientes dos planos <b>Pro</b> e <b>Complete</b> também podem agendar <b>chamadas 1-a-1</b> com nosso time<br><br>Pra consultar seu plano ou discutir mudanças, fale com nosso time:<br>• <b>Grupo do WhatsApp</b> — pra perguntas rápidas<br>• <b>Email:</b> info@galaxyinfo.us<br>• Ou <a href='#schedule-call'>agende uma chamada</a> se está no Pro/Complete"
+        }
+    },
+    // ===== GREETINGS =====
+    {
+        id: 'greeting',
+        phrases: ['oi tudo bem', 'olá tudo bem', 'ola tudo bem', 'bom dia', 'boa tarde', 'boa noite', 'hello', 'hi there', 'hey', 'good morning', 'good afternoon', 'hola', 'buenos días', 'buenas tardes', 'buenas noches', 'hola que tal', 'oi', 'olá'],
+        keywords: [],
+        answer: {
+            en: "Hi there! 👋 I'm Galaxy Assist, your Bee Pro Hub support AI. I can help you with:<br><br>• <b>Contacts, CRM, Tags, Pipeline</b><br>• <b>Conversations</b> (SMS, Email, WhatsApp)<br>• <b>Reports & Dashboards</b><br>• <b>Google Business Profile & Reviews</b><br>• <b>Calendars & Booking</b><br>• <b>Payments & Invoicing</b><br>• <b>Team, Settings, Password</b><br>• <b>Templates, Tasks, Notes</b><br>• <b>Mobile App</b><br>• And more!<br><br>What do you need help with?",
+            es: "¡Hola! 👋 Soy Galaxy Assist, tu IA de soporte para Bee Pro Hub. Puedo ayudarte con:<br><br>• <b>Contactos, CRM, Tags, Pipeline</b><br>• <b>Conversaciones</b> (SMS, Email, WhatsApp)<br>• <b>Reportes y Dashboards</b><br>• <b>Google Business Profile y Reseñas</b><br>• <b>Calendarios y Reservas</b><br>• <b>Pagos y Facturación</b><br>• <b>Equipo, Configuraciones, Contraseña</b><br>• <b>Plantillas, Tareas, Notas</b><br>• <b>App Móvil</b><br>• ¡Y más!<br><br>¿En qué puedo ayudarte?",
+            pt: "Oi! 👋 Sou o Galaxy Assist, sua IA de suporte do Bee Pro Hub. Posso te ajudar com:<br><br>• <b>Contatos, CRM, Tags, Pipeline</b><br>• <b>Conversas</b> (SMS, Email, WhatsApp)<br>• <b>Relatórios e Dashboards</b><br>• <b>Google Business Profile e Avaliações</b><br>• <b>Calendários e Agendamento</b><br>• <b>Pagamentos e Faturamento</b><br>• <b>Equipe, Configurações, Senha</b><br>• <b>Templates, Tarefas, Notas</b><br>• <b>App no Celular</b><br>• E mais!<br><br>No que precisa de ajuda?"
+        }
     }
 ];
 
@@ -218,12 +395,19 @@ const KNOWLEDGE_BASE = [
 
     function getFallbackMessage() {
         var lang = getLang();
-        var messages = {
-            en: "I couldn't find a specific answer for that. Try rephrasing, or " + getScheduleLink() + " for personalized help.",
-            es: "No encontré una respuesta específica. Intenta reformular, o " + getScheduleLink() + " para ayuda personalizada.",
-            pt: "Não encontrei uma resposta específica pra isso. Tente reformular, ou " + getScheduleLink() + " pra ajuda personalizada."
+        var topicNames = {
+            en: ['Contacts & CRM', 'Conversations (SMS/Email/WhatsApp)', 'Calendars & Booking', 'Reports & Dashboards', 'Google Business Profile', 'Reputation & Reviews', 'Payments & Invoicing', 'Templates', 'Team & Users', 'Settings', 'Tags', 'Pipeline', 'Password & Login', 'Plan & Billing', 'Website edits (via WhatsApp)', 'Automations (via WhatsApp)'],
+            es: ['Contactos y CRM', 'Conversaciones (SMS/Email/WhatsApp)', 'Calendarios y Reservas', 'Reportes y Dashboards', 'Google Business Profile', 'Reputación y Reseñas', 'Pagos y Facturación', 'Plantillas', 'Equipo y Usuarios', 'Configuraciones', 'Tags', 'Pipeline', 'Contraseña y Acceso', 'Plan y Facturación', 'Ediciones web (vía WhatsApp)', 'Automatizaciones (vía WhatsApp)'],
+            pt: ['Contatos e CRM', 'Conversas (SMS/Email/WhatsApp)', 'Calendários e Agendamento', 'Relatórios e Dashboards', 'Google Business Profile', 'Reputação e Avaliações', 'Pagamentos e Faturamento', 'Templates', 'Equipe e Usuários', 'Configurações', 'Tags', 'Pipeline', 'Senha e Acesso', 'Plano e Cobrança', 'Edições de site (via WhatsApp)', 'Automações (via WhatsApp)']
         };
-        return messages[lang] || messages.en;
+        var topics = topicNames[lang] || topicNames.en;
+        var topicList = topics.map(function(t) { return '• ' + t; }).join('<br>');
+        var msgs = {
+            en: "I didn't find an exact match, but I can help with these topics:<br><br>" + topicList + "<br><br>Try asking about one of these, or " + getScheduleLink() + " for personalized help.",
+            es: "No encontré una respuesta exacta, pero puedo ayudarte con estos temas:<br><br>" + topicList + "<br><br>Intenta preguntar sobre uno de estos, o " + getScheduleLink() + " para ayuda personalizada.",
+            pt: "Não encontrei uma resposta exata, mas posso ajudar com esses temas:<br><br>" + topicList + "<br><br>Tente perguntar sobre um desses, ou " + getScheduleLink() + " pra ajuda personalizada."
+        };
+        return msgs[lang] || msgs.en;
     }
 
     function scrollChatToBottom() {
