@@ -89,6 +89,10 @@
       "destination": "/support.html"
     },
     {
+      "source": "/tutorials",
+      "destination": "/tutorials.html"
+    },
+    {
       "source": "/crm-automation-worcester-ma",
       "destination": "/cities/crm-automation-worcester-ma.html"
     },
