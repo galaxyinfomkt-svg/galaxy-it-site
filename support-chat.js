@@ -381,7 +381,7 @@ const KNOWLEDGE_BASE = [
     var chatSend = document.getElementById('chatSend');
     var heroSearchForm = document.getElementById('heroSearchForm');
     var heroSearchInput = document.getElementById('heroSearchInput');
-    var topicCards = document.querySelectorAll('.topic-card[data-topic-key]');
+    var topicCards = document.querySelectorAll('[data-topic-key]');
 
     var conversationHistory = [];
     var isSending = false;
