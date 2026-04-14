@@ -62,9 +62,9 @@ const KNOWLEDGE_BASE = [
         phrases: ['review request', 'request review', 'send review', 'ask review', 'get review', 'get more review', 'pedido de avaliação', 'pedir avaliação', 'enviar avaliação', 'solicitar reseña', 'pedir reseña', 'enviar reseña', 'solicitud de reseña', 'pedido de review', 'pedir review', 'como peço review', 'como pedir review', 'como envio review', 'como consigo review', 'como pedir avaliação', 'como peço avaliação', 'como consigo avaliação', 'como solicito reseña', 'como pido reseña'],
         keywords: ['review', 'avaliação', 'reseña', 'reputation', 'reputação', 'rating', 'estrela', 'star'],
         answer: {
-            en: "To send review requests:<br><b>Step 1:</b> Go to <b>Reputation</b> in the left menu<br><b>Step 2:</b> Click <b>Requests</b> tab<br><b>Step 3:</b> Click <b>Send Request</b><br><b>Step 4:</b> Select the contacts you want to send to<br><b>Step 5:</b> Customize the SMS or Email message<br><b>Step 6:</b> Click <b>Send</b><br><br>Pro tip: Automate this! Create a workflow with trigger <b>\"Appointment Completed\"</b> → Action: <b>Send Review Request</b>. Reviews come in automatically.",
-            es: "Para enviar solicitudes de reseña:<br><b>Paso 1:</b> Ve a <b>Reputation</b> en el menú izquierdo<br><b>Paso 2:</b> Clic en la pestaña <b>Requests</b><br><b>Paso 3:</b> Clic en <b>Send Request</b><br><b>Paso 4:</b> Selecciona los contactos<br><b>Paso 5:</b> Personaliza el mensaje SMS o Email<br><b>Paso 6:</b> Clic en <b>Send</b><br><br>Pro tip: ¡Automatiza esto! Crea un workflow con trigger <b>\"Appointment Completed\"</b> → Acción: <b>Send Review Request</b>.",
-            pt: "Pra enviar pedidos de avaliação:<br><b>Passo 1:</b> Vá em <b>Reputation</b> no menu lateral<br><b>Passo 2:</b> Clique na aba <b>Requests</b><br><b>Passo 3:</b> Clique em <b>Send Request</b><br><b>Passo 4:</b> Selecione os contatos<br><b>Passo 5:</b> Personalize a mensagem por SMS ou Email<br><b>Passo 6:</b> Clique em <b>Send</b><br><br>Dica: Automatize isso! Crie um workflow com trigger <b>\"Appointment Completed\"</b> → Ação: <b>Send Review Request</b>. As avaliações chegam automaticamente."
+            en: "Sure! To send review requests, go to <b>Reputation</b> on the left menu, then click the <b>Requests</b> tab. From there, hit <b>Send Request</b>, pick the contacts you want, customize your SMS or email message, and send it off. The cool part? You can automate this — ask our team to set up a workflow that sends review requests automatically after every appointment.",
+            es: "¡Claro! Para enviar solicitudes de reseña, ve a <b>Reputation</b> en el menú izquierdo y haz clic en la pestaña <b>Requests</b>. Desde ahí, dale a <b>Send Request</b>, elige los contactos, personaliza el mensaje por SMS o email, y envía. Lo mejor es que esto se puede automatizar — pide a nuestro equipo que configure un workflow que envíe solicitudes automáticas después de cada cita.",
+            pt: "Claro! Pra enviar pedidos de avaliação, vai em <b>Reputation</b> no menu lateral e clica na aba <b>Requests</b>. Daí é só clicar em <b>Send Request</b>, escolher os contatos, personalizar a mensagem (pode ser SMS ou email) e enviar. O mais legal é que dá pra automatizar isso — pede pro nosso time configurar um workflow que envia pedidos de review automaticamente depois de cada atendimento."
         }
     },
     {
@@ -72,9 +72,9 @@ const KNOWLEDGE_BASE = [
         phrases: ['respond review', 'reply review', 'answer review', 'responder avaliação', 'responder reseña', 'responder review', 'como respondo avaliação', 'como respondo review', 'como respondo reseña', 'responder uma avaliação', 'reply to review', 'respond to review', 'respondo uma avaliação', 'respondo avaliação', 'respondo reseña', 'respondo review', 'reply a review'],
         keywords: [],
         answer: {
-            en: "To respond to a Google review:<br><b>Step 1:</b> Go to <b>Reputation</b> in the left menu<br><b>Step 2:</b> Find the review in the list<br><b>Step 3:</b> Click on it to expand<br><b>Step 4:</b> Type your response<br><b>Step 5:</b> Click <b>Reply</b><br><br>Tip: Always respond within 24 hours — it improves your local SEO and shows clients you care.",
-            es: "Para responder una reseña de Google:<br><b>Paso 1:</b> Ve a <b>Reputation</b> en el menú<br><b>Paso 2:</b> Encuentra la reseña<br><b>Paso 3:</b> Clic para expandir<br><b>Paso 4:</b> Escribe tu respuesta<br><b>Paso 5:</b> Clic en <b>Reply</b><br><br>Tip: Responde dentro de 24 horas — mejora tu SEO local.",
-            pt: "Pra responder uma avaliação do Google:<br><b>Passo 1:</b> Vá em <b>Reputation</b> no menu lateral<br><b>Passo 2:</b> Encontre a avaliação na lista<br><b>Passo 3:</b> Clique pra expandir<br><b>Passo 4:</b> Escreva sua resposta<br><b>Passo 5:</b> Clique em <b>Reply</b><br><br>Dica: Responda em até 24 horas — melhora seu SEO local e mostra que você se importa."
+            en: "To reply to a Google review, open <b>Reputation</b> on the left menu — you'll see all your reviews right there. Click on the one you want to respond to, type your reply, and hit <b>Reply</b>. Quick tip: try to respond within 24 hours. Google notices that, and it actually helps your local ranking!",
+            es: "Para responder una reseña de Google, abre <b>Reputation</b> en el menú izquierdo — verás todas tus reseñas ahí. Haz clic en la que quieras responder, escribe tu respuesta y dale <b>Reply</b>. Un consejo: intenta responder dentro de 24 horas. Google lo nota y ayuda a tu posicionamiento local.",
+            pt: "Pra responder uma avaliação do Google, abre <b>Reputation</b> no menu lateral — vai ver todas as avaliações ali. Clica na que quer responder, escreve sua resposta e clica em <b>Reply</b>. Uma dica: tenta responder em até 24 horas. O Google percebe isso e ajuda no seu posicionamento local!"
         }
     },
     {
@@ -82,9 +82,9 @@ const KNOWLEDGE_BASE = [
         phrases: ['add contact', 'import contact', 'smart list', 'manage contact', 'manage lead', 'adicionar contato', 'importar contato', 'gerenciar contato', 'agregar contacto', 'importar contacto', 'gestionar contacto', 'como adiciono contato', 'como importo contato', 'como crio smart list', 'como adiciono tag', 'como gerencio lead', 'como agrego contacto', 'como importo contacto', 'create smart list', 'add tag', 'bulk tag', 'criar tag', 'crear tag'],
         keywords: ['contact', 'contato', 'contacto', 'lead', 'crm', 'import', 'importar', 'smart list', 'tag', 'pipeline'],
         answer: {
-            en: "Your CRM is in <b>Contacts</b> in the left menu. Here's what you can do:<br>• <b>Add contact:</b> Click <b>+ Add Contact</b> → fill Name, Email, Phone → Save<br>• <b>Import:</b> Click <b>Import</b> → upload CSV → map columns → Import<br>• <b>Smart Lists:</b> Click <b>Smart Lists</b> tab → <b>+ Create</b> → set filters (tags, dates, pipeline stage)<br>• <b>Tags:</b> Open a contact → Tags section → type and add. Bulk: select multiple → Actions → Add Tag<br>• <b>Pipeline:</b> Go to <b>Opportunities</b> → Pipelines → create stages (New, Contacted, Won, Lost)",
-            es: "Tu CRM está en <b>Contacts</b> en el menú izquierdo. Lo que puedes hacer:<br>• <b>Agregar contacto:</b> Clic en <b>+ Add Contact</b> → llena Nombre, Email, Teléfono → Save<br>• <b>Importar:</b> Clic en <b>Import</b> → sube CSV → mapea columnas → Import<br>• <b>Smart Lists:</b> Pestaña <b>Smart Lists</b> → <b>+ Create</b> → configura filtros<br>• <b>Tags:</b> Abre un contacto → sección Tags → agrega. En masa: selecciona varios → Actions → Add Tag<br>• <b>Pipeline:</b> Ve a <b>Opportunities</b> → Pipelines → crea etapas",
-            pt: "Seu CRM fica em <b>Contacts</b> no menu lateral. O que você pode fazer:<br>• <b>Adicionar contato:</b> Clique em <b>+ Add Contact</b> → preencha Nome, Email, Telefone → Save<br>• <b>Importar:</b> Clique em <b>Import</b> → suba o CSV → mapeie colunas → Import<br>• <b>Smart Lists:</b> Aba <b>Smart Lists</b> → <b>+ Create</b> → configure filtros (tags, datas, etapa do pipeline)<br>• <b>Tags:</b> Abra um contato → seção Tags → digite e adicione. Em massa: selecione vários → Actions → Add Tag<br>• <b>Pipeline:</b> Vá em <b>Opportunities</b> → Pipelines → crie etapas (Novo, Contatado, Ganho, Perdido)"
+            en: "Your CRM lives in <b>Contacts</b> on the left menu — that's where all your leads are. You can add a new contact by clicking <b>+ Add Contact</b> at the top right, or import a whole list via CSV using the <b>Import</b> button. If you want to organize them, try creating a <b>Smart List</b> — it automatically filters contacts by tags, dates, or pipeline stage. Need to tag people in bulk? Select multiple contacts with the checkboxes, click <b>Actions</b>, then <b>Add Tag</b>. What specifically do you need to do?",
+            es: "Tu CRM está en <b>Contacts</b> en el menú izquierdo — ahí están todos tus leads. Puedes agregar un contacto nuevo con <b>+ Add Contact</b> arriba a la derecha, o importar una lista completa por CSV con el botón <b>Import</b>. Para organizarlos, crea una <b>Smart List</b> — filtra automáticamente por tags, fechas o etapa del pipeline. ¿Necesitas poner tags en masa? Selecciona varios contactos, clic en <b>Actions</b> → <b>Add Tag</b>. ¿Qué necesitas hacer específicamente?",
+            pt: "Seu CRM fica em <b>Contacts</b> no menu lateral — é onde ficam todos os seus leads. Pra adicionar alguém novo, clica em <b>+ Add Contact</b> no canto superior direito. Pra importar uma lista inteira, usa o botão <b>Import</b> e sobe um CSV. Se quiser organizar, cria uma <b>Smart List</b> — ela filtra os contatos automaticamente por tags, datas ou etapa do pipeline. Precisa colocar tag em vários de uma vez? Seleciona os contatos com as caixinhas, clica em <b>Actions</b> → <b>Add Tag</b>. O que especificamente você precisa fazer?"
         }
     },
     {
@@ -92,9 +92,9 @@ const KNOWLEDGE_BASE = [
         phrases: ['send message', 'send sms', 'send email', 'reply message', 'enviar mensagem', 'enviar sms', 'responder mensagem', 'enviar mensaje', 'responder mensaje', 'unified inbox', 'caixa de entrada', 'como envio mensagem', 'como envio sms', 'como respondo mensagem', 'como mando mensagem', 'como envío mensaje', 'como mando mensaje', 'como respondo um lead', 'como falo com lead', 'message a lead', 'message lead'],
         keywords: ['conversation', 'conversa', 'conversación', 'inbox', 'mensagem', 'mensaje', 'sms', 'whatsapp', 'chat'],
         answer: {
-            en: "To send a message to a lead:<br><b>Step 1:</b> Go to <b>Conversations</b> in the left menu<br><b>Step 2:</b> Search for the contact<br><b>Step 3:</b> Select the channel at the bottom: <b>SMS</b>, <b>Email</b>, or <b>WhatsApp</b><br><b>Step 4:</b> Type your message (or use a template)<br><b>Step 5:</b> Hit <b>Send</b><br><br>All channels — SMS, Email, WhatsApp, Facebook, Instagram DM — are unified in one inbox.",
-            es: "Para enviar un mensaje a un lead:<br><b>Paso 1:</b> Ve a <b>Conversations</b> en el menú<br><b>Paso 2:</b> Busca el contacto<br><b>Paso 3:</b> Selecciona el canal abajo: <b>SMS</b>, <b>Email</b>, o <b>WhatsApp</b><br><b>Paso 4:</b> Escribe tu mensaje (o usa una plantilla)<br><b>Paso 5:</b> Clic en <b>Send</b><br><br>Todos los canales están unificados en una bandeja.",
-            pt: "Pra enviar uma mensagem pra um lead:<br><b>Passo 1:</b> Vá em <b>Conversations</b> no menu lateral<br><b>Passo 2:</b> Procure o contato<br><b>Passo 3:</b> Selecione o canal embaixo: <b>SMS</b>, <b>Email</b>, ou <b>WhatsApp</b><br><b>Passo 4:</b> Escreva sua mensagem (ou use um template)<br><b>Passo 5:</b> Clique em <b>Send</b><br><br>Todos os canais — SMS, Email, WhatsApp, Facebook, Instagram DM — ficam numa caixa de entrada só."
+            en: "Go to <b>Conversations</b> on the left menu — that's your unified inbox where all messages come in. Search for the contact, then at the bottom you'll see channel options: <b>SMS</b>, <b>Email</b>, or <b>WhatsApp</b>. Pick the one you want, type your message (you can use saved templates too), and hit send. Everything — SMS, email, WhatsApp, Facebook DMs, Instagram DMs — all comes into this one place, so you never miss anything.",
+            es: "Ve a <b>Conversations</b> en el menú izquierdo — es tu bandeja unificada donde llegan todos los mensajes. Busca el contacto, y abajo verás las opciones de canal: <b>SMS</b>, <b>Email</b>, o <b>WhatsApp</b>. Elige el que quieras, escribe tu mensaje (puedes usar plantillas guardadas también), y envía. Todo — SMS, email, WhatsApp, Facebook DMs, Instagram DMs — llega a este mismo lugar.",
+            pt: "Vai em <b>Conversations</b> no menu lateral — é sua caixa de entrada unificada onde chegam todas as mensagens. Procura o contato, e lá embaixo vai ver as opções de canal: <b>SMS</b>, <b>Email</b>, ou <b>WhatsApp</b>. Escolhe o que quer, escreve sua mensagem (pode usar templates salvos também), e envia. Tudo — SMS, email, WhatsApp, Facebook DMs, Instagram DMs — chega nesse mesmo lugar, então você nunca perde nada."
         }
     },
     {
@@ -102,9 +102,9 @@ const KNOWLEDGE_BASE = [
         phrases: ['create automation', 'create workflow', 'follow up', 'follow-up', 'criar automação', 'criar workflow', 'crear automatización', 'crear workflow', 'drip campaign', 'como crio automação', 'como crio workflow', 'como faço follow up', 'como creo automatización', 'como creo workflow', 'build automation', 'set up automation', 'configurar automação'],
         keywords: ['automation', 'automação', 'automatización', 'workflow', 'trigger', 'gatilho', 'sequence', 'sequência'],
         answer: {
-            en: "Automations and workflows are set up by our team to make sure everything works correctly.<br><br>To request a new automation or changes to an existing one:<br><b>Send a message to our WhatsApp group</b> explaining:<br>• What you want to automate (e.g., follow-up for new leads, review requests, reminders)<br>• When it should trigger (e.g., after form submission, after appointment)<br>• What actions it should take (e.g., send SMS, send email)<br><br>Our team will build and activate it for you.",
-            es: "Las automatizaciones y workflows los configura nuestro equipo para asegurar que todo funcione correctamente.<br><br>Para solicitar una nueva automatización o cambios:<br><b>Envía un mensaje a nuestro grupo de WhatsApp</b> explicando:<br>• Qué quieres automatizar (ej: follow-up de nuevos leads, solicitud de reseñas)<br>• Cuándo debe activarse (ej: después de un formulario, después de una cita)<br>• Qué acciones debe hacer (ej: enviar SMS, enviar email)<br><br>Nuestro equipo lo construye y activa por ti.",
-            pt: "As automações e workflows são configurados pelo nosso time pra garantir que tudo funcione certinho.<br><br>Pra solicitar uma automação nova ou alterações:<br><b>Mande uma mensagem no grupo do WhatsApp</b> explicando:<br>• O que quer automatizar (ex: follow-up de novos leads, pedidos de review, lembretes)<br>• Quando deve disparar (ex: depois de formulário, depois de agendamento)<br>• Que ações deve fazer (ex: enviar SMS, enviar email)<br><br>Nosso time cria e ativa pra você."
+            en: "Automations are built and managed by our team — that way we make sure everything runs perfectly and nothing breaks. If you need a new automation (like automatic follow-ups, review requests after appointments, welcome sequences for new leads), just send us a message on the <b>WhatsApp group</b> explaining what you'd like. Tell us what should trigger it and what should happen, and we'll set it up for you.",
+            es: "Las automatizaciones las construye y gestiona nuestro equipo — así nos aseguramos de que todo funcione perfecto. Si necesitas una nueva (como follow-ups automáticos, solicitudes de reseñas después de citas, secuencias de bienvenida), solo mándanos un mensaje en el <b>grupo de WhatsApp</b> explicando lo que necesitas. Dinos qué debe activarlo y qué debe pasar, y lo configuramos por ti.",
+            pt: "As automações são criadas e gerenciadas pelo nosso time — assim a gente garante que tudo roda certinho sem nada quebrar. Se você precisa de uma automação nova (tipo follow-up automático, pedido de review depois de atendimento, sequência de boas-vindas pra leads novos), é só mandar uma mensagem no <b>grupo do WhatsApp</b> explicando o que precisa. Diz o que deve disparar e o que deve acontecer, e a gente configura pra você."
         }
     },
     {
@@ -112,9 +112,9 @@ const KNOWLEDGE_BASE = [
         phrases: ['booking calendar', 'set up calendar', 'create calendar', 'appointment reminder', 'configurar calendário', 'criar calendário', 'configurar calendario', 'crear calendario', 'agendar chamada', 'como configuro calendário', 'como crio calendário', 'como configuro agendamento', 'como configuro calendario', 'como creo calendario', 'set up booking', 'create booking page'],
         keywords: ['calendar', 'calendário', 'calendario', 'appointment', 'agendamento', 'booking', 'reminder', 'lembrete', 'disponibilidade', 'availability'],
         answer: {
-            en: "To set up a booking calendar:<br><b>Step 1:</b> Go to <b>Calendars</b> in the left menu<br><b>Step 2:</b> Click <b>+ Create Calendar</b><br><b>Step 3:</b> Choose type (Simple, Round Robin, Service, Class)<br><b>Step 4:</b> Set available days, hours, duration, and buffer time<br><b>Step 5:</b> Customize the booking form<br><b>Step 6:</b> Save and share the booking link<br><br>For reminders: Edit calendar → Notifications → enable SMS/Email reminders (e.g., 24h and 1h before).",
-            es: "Para configurar un calendario de reservas:<br><b>Paso 1:</b> Ve a <b>Calendars</b> en el menú<br><b>Paso 2:</b> Clic en <b>+ Create Calendar</b><br><b>Paso 3:</b> Elige tipo (Simple, Round Robin, Service)<br><b>Paso 4:</b> Configura días, horas, duración y buffer<br><b>Paso 5:</b> Personaliza el formulario<br><b>Paso 6:</b> Guarda y comparte el link<br><br>Recordatorios: Editar calendario → Notifications → activa SMS/Email.",
-            pt: "Pra configurar um calendário de agendamento:<br><b>Passo 1:</b> Vá em <b>Calendars</b> no menu lateral<br><b>Passo 2:</b> Clique em <b>+ Create Calendar</b><br><b>Passo 3:</b> Escolha o tipo (Simple, Round Robin, Service, Class)<br><b>Passo 4:</b> Configure dias, horários, duração e intervalo entre agendamentos<br><b>Passo 5:</b> Personalize o formulário de reserva<br><b>Passo 6:</b> Salve e compartilhe o link<br><br>Pra lembretes: Edite o calendário → Notifications → ative lembretes por SMS/Email (ex: 24h e 1h antes)."
+            en: "Go to <b>Calendars</b> on the left menu. If you need a new one, click <b>+ Create Calendar</b> — you can choose between simple, round robin, or service-based types. Set your available days and hours, how long each slot is, and any buffer time between appointments. Once it's saved, you get a booking link you can share with clients. Want automatic reminders so people don't no-show? Edit the calendar, go to Notifications, and turn on SMS or email reminders — like 24h and 1h before.",
+            es: "Ve a <b>Calendars</b> en el menú izquierdo. Si necesitas uno nuevo, clic en <b>+ Create Calendar</b> — puedes elegir entre simple, round robin o por servicio. Configura los días y horarios disponibles, duración de cada slot, y tiempo buffer entre citas. Una vez guardado, obtienes un link de reserva para compartir con clientes. ¿Quieres recordatorios automáticos? Edita el calendario, ve a Notifications, y activa SMS o email — como 24h y 1h antes.",
+            pt: "Vai em <b>Calendars</b> no menu lateral. Se precisa criar um novo, clica em <b>+ Create Calendar</b> — dá pra escolher entre simples, round robin ou por serviço. Configura os dias e horários disponíveis, quanto tempo dura cada slot, e intervalo entre agendamentos. Depois de salvar, você recebe um link de reserva pra compartilhar com clientes. Quer lembretes automáticos pra evitar faltas? Edita o calendário, vai em Notifications, e ativa lembrete por SMS ou email — tipo 24h e 1h antes."
         }
     },
     {
@@ -122,9 +122,9 @@ const KNOWLEDGE_BASE = [
         phrases: ['edit website', 'edit funnel', 'edit page', 'build funnel', 'connect domain', 'editar site', 'editar funil', 'editar página', 'editar sitio', 'editar embudo', 'conectar domínio', 'conectar dominio', 'como edito site', 'como edito meu site', 'como edito funil', 'como edito página', 'como edito sitio', 'como edito embudo', 'como edito mi sitio', 'como edito mi web', 'mi sitio web', 'meu site', 'change website', 'update website', 'alterar site', 'mudar site', 'editar mi sitio', 'editar meu site'],
         keywords: ['website', 'site', 'sitio', 'funnel', 'funil', 'embudo', 'landing page', 'builder', 'domain', 'domínio', 'dns'],
         answer: {
-            en: "Website and funnel edits are handled by our team. To request changes:<br><br><b>Send a message to our WhatsApp group</b> with:<br>• What page you want to change<br>• What you want to update (text, images, layout, etc.)<br>• Screenshots if possible<br><br>Our team will make the changes and let you know when it's live. This ensures quality and avoids accidental issues on your site.",
-            es: "Las ediciones del sitio web y embudos las maneja nuestro equipo. Para solicitar cambios:<br><br><b>Envía un mensaje a nuestro grupo de WhatsApp</b> con:<br>• Qué página quieres cambiar<br>• Qué quieres actualizar (texto, imágenes, diseño, etc.)<br>• Capturas de pantalla si es posible<br><br>Nuestro equipo hará los cambios y te avisará cuando esté listo.",
-            pt: "As edições de site e funil são feitas pelo nosso time. Pra solicitar alterações:<br><br><b>Mande uma mensagem no grupo do WhatsApp</b> com:<br>• Qual página quer mudar<br>• O que quer atualizar (texto, imagens, layout, etc.)<br>• Prints de tela se possível<br><br>Nosso time faz as alterações e avisa quando estiver no ar. Assim garantimos qualidade e evitamos problemas no seu site."
+            en: "Website and funnel edits are done by our team to make sure everything stays looking great and working properly. Just send a message to our <b>WhatsApp group</b> with what you'd like to change — which page, what text or images you want updated, and a screenshot if you have one. We'll take care of it and let you know when it's live!",
+            es: "Las ediciones del sitio web y embudos las hace nuestro equipo para que todo siga viéndose bien y funcionando correctamente. Solo manda un mensaje al <b>grupo de WhatsApp</b> con lo que quieras cambiar — qué página, qué texto o imágenes actualizar, y una captura si tienes. ¡Nosotros nos encargamos y te avisamos cuando esté listo!",
+            pt: "As edições de site e funil são feitas pelo nosso time pra garantir que tudo continue bonito e funcionando direitinho. É só mandar uma mensagem no <b>grupo do WhatsApp</b> dizendo o que quer mudar — qual página, que texto ou imagem quer atualizar, e um print de tela se tiver. A gente faz e avisa quando estiver no ar!"
         }
     },
     {
@@ -132,9 +132,9 @@ const KNOWLEDGE_BASE = [
         phrases: ['read report', 'check report', 'view dashboard', 'see report', 'attribution report', 'ver relatório', 'ler relatório', 'checar relatório', 'ver reporte', 'leer reporte', 'check ranking', 'ver ranking', 'como leio relatório', 'como leio meus relatórios', 'como vejo relatório', 'como vejo meus relatórios', 'como vejo meu ranking', 'como vejo meu reporte', 'como leo mis reportes', 'como veo mis reportes', 'como veo mi ranking', 'meus relatórios', 'mis reportes', 'my report', 'my dashboard', 'meu dashboard', 'meu painel'],
         keywords: ['report', 'relatório', 'informe', 'reporte', 'dashboard', 'painel', 'analytics', 'attribution', 'ranking', 'performance', 'desempenho'],
         answer: {
-            en: "To read your reports:<br><b>Step 1:</b> Go to <b>Reporting</b> in the left menu<br><b>Step 2:</b> Choose a report type:<br>• <b>Attribution Report</b> — where your leads come from (Google, Facebook, organic, referral)<br>• <b>Google Ads</b> / <b>Facebook Ads</b> — ad performance, spend, conversions<br>• <b>Appointment Report</b> — bookings, no-shows, completed<br>• <b>Call Report</b> — calls received, missed, duration<br><b>Step 3:</b> Filter by date range to see trends<br><br>Start with Attribution to understand which channels bring the most leads.",
-            es: "Para leer tus reportes:<br><b>Paso 1:</b> Ve a <b>Reporting</b> en el menú<br><b>Paso 2:</b> Elige un tipo:<br>• <b>Attribution Report</b> — de dónde vienen tus leads<br>• <b>Google Ads / Facebook Ads</b> — rendimiento de anuncios<br>• <b>Appointment Report</b> — reservas, no-shows<br>• <b>Call Report</b> — llamadas recibidas, perdidas<br><b>Paso 3:</b> Filtra por rango de fechas<br><br>Empieza con Attribution para entender qué canales traen más leads.",
-            pt: "Pra ler seus relatórios:<br><b>Passo 1:</b> Vá em <b>Reporting</b> no menu lateral<br><b>Passo 2:</b> Escolha o tipo de relatório:<br>• <b>Attribution Report</b> — de onde vêm seus leads (Google, Facebook, orgânico, referência)<br>• <b>Google Ads / Facebook Ads</b> — desempenho dos anúncios, gastos, conversões<br>• <b>Appointment Report</b> — agendamentos, faltas, concluídos<br>• <b>Call Report</b> — chamadas recebidas, perdidas, duração<br><b>Passo 3:</b> Filtre por período pra ver tendências<br><br>Comece pelo Attribution pra entender quais canais trazem mais leads."
+            en: "Head over to <b>Reporting</b> on the left menu — that's where all your numbers live. You've got a few different reports there: the <b>Attribution Report</b> shows exactly where your leads are coming from (Google, Facebook, organic, referrals), the <b>Google/Facebook Ads</b> tabs show how your ad budget is performing, <b>Appointment Report</b> tracks bookings and no-shows, and <b>Call Report</b> shows all your call activity. You can filter everything by date range. I'd start with Attribution — it tells you which channels are actually bringing in business.",
+            es: "Ve a <b>Reporting</b> en el menú izquierdo — ahí viven todos tus números. Tienes varios reportes: el <b>Attribution Report</b> muestra exactamente de dónde vienen tus leads (Google, Facebook, orgánico, referencias), las pestañas de <b>Google/Facebook Ads</b> muestran cómo rinde tu presupuesto, <b>Appointment Report</b> rastrea reservas y no-shows, y <b>Call Report</b> muestra toda la actividad de llamadas. Todo se puede filtrar por fechas. Yo empezaría con Attribution — te dice qué canales realmente traen negocio.",
+            pt: "Vai em <b>Reporting</b> no menu lateral — é onde ficam todos os seus números. Tem vários relatórios lá: o <b>Attribution Report</b> mostra exatamente de onde vêm seus leads (Google, Facebook, orgânico, indicações), as abas de <b>Google/Facebook Ads</b> mostram como tá o desempenho do seu investimento em anúncios, o <b>Appointment Report</b> acompanha agendamentos e faltas, e o <b>Call Report</b> mostra toda a atividade de chamadas. Dá pra filtrar tudo por período. Eu começaria pelo Attribution — ele te diz quais canais realmente trazem negócio."
         }
     },
     {
@@ -142,9 +142,9 @@ const KNOWLEDGE_BASE = [
         phrases: ['google business', 'business profile', 'google post', 'google photo', 'add photo gbp', 'foto google', 'post google', 'google meu negócio', 'perfil google', 'perfil de negocio', 'como atualizo google', 'como posto no google', 'como adiciono foto google', 'como actualizo google', 'como publico en google', 'foto no google', 'postar no google', 'meu perfil google', 'mi perfil google', 'update google profile', 'google listing', 'adicionar foto', 'agregar foto', 'add photo'],
         keywords: ['gbp', 'gmb', 'google business', 'business profile', 'foto', 'photo'],
         answer: {
-            en: "For your Google Business Profile:<br><br>• <b>Add photos or posts:</b> Send the photos/text to our <b>WhatsApp group</b> and our team will post them for you<br>• <b>Respond to reviews:</b> Go to <b>Reputation</b> in Bee Pro Hub → click a review → type your reply → click <b>Reply</b><br>• <b>Track performance:</b> Go to <b>Reporting</b> to see how your profile is performing<br>• <b>Edit info (hours, address, categories):</b> Contact our team on WhatsApp<br><br>For reviews, we recommend responding within 24 hours — it improves your local SEO!",
-            es: "Para tu Google Business Profile:<br><br>• <b>Agregar fotos o publicar:</b> Envía las fotos/texto a nuestro <b>grupo de WhatsApp</b> y nuestro equipo los publica por ti<br>• <b>Responder reseñas:</b> Ve a <b>Reputation</b> en Bee Pro Hub → clic en reseña → escribe → <b>Reply</b><br>• <b>Ver rendimiento:</b> Ve a <b>Reporting</b><br>• <b>Editar info (horarios, dirección):</b> Contacta nuestro equipo por WhatsApp<br><br>Recomendamos responder reseñas dentro de 24 horas — ¡mejora tu SEO local!",
-            pt: "Pro seu Google Business Profile:<br><br>• <b>Adicionar fotos ou posts:</b> Mande as fotos/texto no <b>grupo do WhatsApp</b> que nosso time publica pra você<br>• <b>Responder avaliações:</b> Vá em <b>Reputation</b> no Bee Pro Hub → clique na avaliação → escreva sua resposta → clique em <b>Reply</b><br>• <b>Ver desempenho:</b> Vá em <b>Reporting</b><br>• <b>Editar info (horário, endereço, categorias):</b> Fale com nosso time no WhatsApp<br><br>Recomendamos responder avaliações em até 24 horas — melhora seu SEO local!"
+            en: "For your Google Business Profile — if you need to add photos, create posts, or update your business info (hours, address, categories), just send what you need to our <b>WhatsApp group</b> and we'll handle it for you. Now, for <b>reviews</b>, that one you can do yourself! Go to <b>Reputation</b> on the left menu, click on any review, type your reply, and hit Reply. Try to respond within 24 hours — Google loves that and it helps your local ranking. To see how your profile is performing, check <b>Reporting</b>.",
+            es: "Para tu Google Business Profile — si necesitas agregar fotos, crear publicaciones, o actualizar info del negocio (horarios, dirección, categorías), solo manda lo que necesitas al <b>grupo de WhatsApp</b> y nosotros lo hacemos. Ahora, para las <b>reseñas</b>, ¡eso sí puedes hacerlo tú! Ve a <b>Reputation</b> en el menú, haz clic en cualquier reseña, escribe tu respuesta, y dale Reply. Intenta responder en menos de 24 horas — a Google le gusta y ayuda a tu posicionamiento.",
+            pt: "Pro seu Google Business Profile — se precisa adicionar fotos, criar posts, ou atualizar as informações do negócio (horário, endereço, categorias), é só mandar o que precisa no <b>grupo do WhatsApp</b> que a gente faz pra você. Agora, pra <b>avaliações</b>, essa parte você mesmo pode fazer! Vai em <b>Reputation</b> no menu lateral, clica em qualquer avaliação, escreve sua resposta e clica em Reply. Tenta responder em até 24 horas — o Google gosta disso e ajuda no seu posicionamento local. Pra ver como tá o desempenho do perfil, confere em <b>Reporting</b>."
         }
     },
     {
@@ -193,9 +193,9 @@ const KNOWLEDGE_BASE = [
         phrases: ['add team', 'add user', 'add member', 'add employee', 'add staff', 'adicionar pessoa', 'adicionar membro', 'adicionar equipe', 'adicionar usuário', 'agregar persona', 'agregar miembro', 'agregar usuario', 'agregar equipo', 'invite user', 'convidar usuário', 'invitar usuario', 'minha equipe', 'mi equipo', 'my team', 'team member', 'membro da equipe', 'miembro del equipo', 'remove user', 'remover usuário', 'user permissions', 'permissões', 'permisos'],
         keywords: ['team', 'equipe', 'equipo', 'user', 'usuário', 'usuario', 'member', 'membro', 'miembro', 'staff', 'employee', 'funcionário', 'empleado', 'permission', 'permissão', 'permiso', 'role', 'cargo'],
         answer: {
-            en: "To add a team member:<br><b>Step 1:</b> Go to <b>Settings</b> (gear icon, bottom left)<br><b>Step 2:</b> Click <b>My Staff</b> (or <b>Team</b>)<br><b>Step 3:</b> Click <b>+ Add Employee</b><br><b>Step 4:</b> Enter their name, email, and phone<br><b>Step 5:</b> Set their <b>Role</b> (Admin or User) and permissions<br><b>Step 6:</b> Click <b>Save</b> — they'll receive an invite email<br><br>To manage permissions: Edit the user → toggle which sections they can access (Contacts, Conversations, Calendars, etc.).",
-            es: "Para agregar un miembro al equipo:<br><b>Paso 1:</b> Ve a <b>Settings</b> (ícono de engranaje, abajo a la izquierda)<br><b>Paso 2:</b> Clic en <b>My Staff</b> (o <b>Team</b>)<br><b>Paso 3:</b> Clic en <b>+ Add Employee</b><br><b>Paso 4:</b> Ingresa nombre, email y teléfono<br><b>Paso 5:</b> Define el <b>Rol</b> (Admin o User) y permisos<br><b>Paso 6:</b> Clic en <b>Save</b> — recibirán un email de invitación<br><br>Para gestionar permisos: Edita el usuario → activa/desactiva secciones.",
-            pt: "Pra adicionar alguém na equipe:<br><b>Passo 1:</b> Vá em <b>Settings</b> (ícone de engrenagem, canto inferior esquerdo)<br><b>Passo 2:</b> Clique em <b>My Staff</b> (ou <b>Team</b>)<br><b>Passo 3:</b> Clique em <b>+ Add Employee</b><br><b>Passo 4:</b> Preencha nome, email e telefone da pessoa<br><b>Passo 5:</b> Defina o <b>Role</b> (Admin ou User) e as permissões<br><b>Passo 6:</b> Clique em <b>Save</b> — a pessoa recebe um email de convite<br><br>Pra gerenciar permissões: Edite o usuário → ative/desative quais seções ele pode acessar (Contacts, Conversations, Calendars, etc.)."
+            en: "Sure! To add someone to your team, click the <b>Settings</b> gear icon at the bottom left, then go to <b>My Staff</b>. Click <b>+ Add Employee</b>, fill in their name, email, and phone, and choose their role — Admin gets full access, User is more limited. Hit Save and they'll get an invite email to join. You can also control exactly what they can see — edit the user and toggle which sections they have access to (Contacts, Conversations, Calendars, etc.).",
+            es: "¡Claro! Para agregar a alguien al equipo, haz clic en el ícono de <b>Settings</b> (engranaje abajo a la izquierda), luego ve a <b>My Staff</b>. Clic en <b>+ Add Employee</b>, llena nombre, email y teléfono, y elige su rol — Admin tiene acceso total, User es más limitado. Dale Save y recibirán un email de invitación. También puedes controlar exactamente qué pueden ver — edita el usuario y activa/desactiva las secciones.",
+            pt: "Claro! Pra adicionar alguém na equipe, clica no ícone de <b>Settings</b> (engrenagem lá embaixo à esquerda), depois vai em <b>My Staff</b>. Clica em <b>+ Add Employee</b>, preenche o nome, email e telefone da pessoa, e escolhe o cargo — Admin tem acesso total, User é mais limitado. Salva e a pessoa recebe um email de convite pra entrar. Você também pode controlar exatamente o que ela vê — é só editar o usuário e ligar/desligar quais seções ela pode acessar (Contacts, Conversations, Calendars, etc.)."
         }
     },
     // ===== SETTINGS =====
@@ -378,6 +378,7 @@ const KNOWLEDGE_BASE = [
 
     var conversationHistory = [];
     var isSending = false;
+    var lastMatchedTopic = null; // remembers context for follow-ups
 
     function getLang() {
         return localStorage.getItem('galaxy-lang') || 'en';
@@ -385,29 +386,8 @@ const KNOWLEDGE_BASE = [
 
     function getScheduleLink() {
         var lang = getLang();
-        var labels = {
-            en: "Schedule a call with our team",
-            es: "Agenda una llamada con nuestro equipo",
-            pt: "Agende uma chamada com nosso time"
-        };
+        var labels = { en: "schedule a call with our team", es: "agenda una llamada con nuestro equipo", pt: "agende uma chamada com nosso time" };
         return "<a href='#schedule-call' class='chat-cta-link'><i class='fas fa-calendar-check'></i> " + (labels[lang] || labels.en) + "</a>";
-    }
-
-    function getFallbackMessage() {
-        var lang = getLang();
-        var topicNames = {
-            en: ['Contacts & CRM', 'Conversations (SMS/Email/WhatsApp)', 'Calendars & Booking', 'Reports & Dashboards', 'Google Business Profile', 'Reputation & Reviews', 'Payments & Invoicing', 'Templates', 'Team & Users', 'Settings', 'Tags', 'Pipeline', 'Password & Login', 'Plan & Billing', 'Website edits (via WhatsApp)', 'Automations (via WhatsApp)'],
-            es: ['Contactos y CRM', 'Conversaciones (SMS/Email/WhatsApp)', 'Calendarios y Reservas', 'Reportes y Dashboards', 'Google Business Profile', 'Reputación y Reseñas', 'Pagos y Facturación', 'Plantillas', 'Equipo y Usuarios', 'Configuraciones', 'Tags', 'Pipeline', 'Contraseña y Acceso', 'Plan y Facturación', 'Ediciones web (vía WhatsApp)', 'Automatizaciones (vía WhatsApp)'],
-            pt: ['Contatos e CRM', 'Conversas (SMS/Email/WhatsApp)', 'Calendários e Agendamento', 'Relatórios e Dashboards', 'Google Business Profile', 'Reputação e Avaliações', 'Pagamentos e Faturamento', 'Templates', 'Equipe e Usuários', 'Configurações', 'Tags', 'Pipeline', 'Senha e Acesso', 'Plano e Cobrança', 'Edições de site (via WhatsApp)', 'Automações (via WhatsApp)']
-        };
-        var topics = topicNames[lang] || topicNames.en;
-        var topicList = topics.map(function(t) { return '• ' + t; }).join('<br>');
-        var msgs = {
-            en: "I didn't find an exact match, but I can help with these topics:<br><br>" + topicList + "<br><br>Try asking about one of these, or " + getScheduleLink() + " for personalized help.",
-            es: "No encontré una respuesta exacta, pero puedo ayudarte con estos temas:<br><br>" + topicList + "<br><br>Intenta preguntar sobre uno de estos, o " + getScheduleLink() + " para ayuda personalizada.",
-            pt: "Não encontrei uma resposta exata, mas posso ajudar com esses temas:<br><br>" + topicList + "<br><br>Tente perguntar sobre um desses, ou " + getScheduleLink() + " pra ajuda personalizada."
-        };
-        return msgs[lang] || msgs.en;
     }
 
     function scrollChatToBottom() {
@@ -417,20 +397,10 @@ const KNOWLEDGE_BASE = [
     function addMessage(text, sender, isHtml) {
         var bubble = document.createElement('div');
         bubble.className = 'chat-bubble chat-bubble-' + sender;
-
-        if (isHtml) {
-            bubble.innerHTML = text;
-        } else {
-            bubble.textContent = text;
-        }
-
+        if (isHtml) { bubble.innerHTML = text; } else { bubble.textContent = text; }
         chatMessages.appendChild(bubble);
         scrollChatToBottom();
-
-        conversationHistory.push({
-            role: sender === 'user' ? 'user' : 'assistant',
-            content: text
-        });
+        conversationHistory.push({ role: sender === 'user' ? 'user' : 'assistant', content: text });
     }
 
     function showTyping() {
@@ -443,13 +413,12 @@ const KNOWLEDGE_BASE = [
     }
 
     function hideTyping() {
-        var typing = document.getElementById('chatTyping');
-        if (typing) typing.remove();
+        var el = document.getElementById('chatTyping');
+        if (el) el.remove();
     }
 
-    /* ---- Local Knowledge Base Matching ---- */
-    function searchKnowledgeBase(query) {
-        var lang = getLang();
+    /* ---- Intelligent KB Search with context memory ---- */
+    function findTopic(query) {
         var q = query.toLowerCase();
         var bestMatch = null;
         var bestScore = 0;
@@ -457,33 +426,43 @@ const KNOWLEDGE_BASE = [
         for (var i = 0; i < KNOWLEDGE_BASE.length; i++) {
             var entry = KNOWLEDGE_BASE[i];
             var score = 0;
-
-            // Phrases get high score (10 points each) — they're specific
             for (var p = 0; p < entry.phrases.length; p++) {
-                if (q.indexOf(entry.phrases[p].toLowerCase()) !== -1) {
-                    score += 10;
-                }
+                if (q.indexOf(entry.phrases[p].toLowerCase()) !== -1) score += 10;
             }
-
-            // Single keywords get low score (1 point each) — only used as tiebreaker
             for (var k = 0; k < entry.keywords.length; k++) {
-                if (q.indexOf(entry.keywords[k].toLowerCase()) !== -1) {
-                    score += 1;
-                }
+                if (q.indexOf(entry.keywords[k].toLowerCase()) !== -1) score += 1;
             }
-
-            if (score > bestScore) {
-                bestScore = score;
-                bestMatch = entry;
-            }
+            if (score > bestScore) { bestScore = score; bestMatch = entry; }
         }
 
-        // Any match counts — phrases (10pts) win over keywords (1pt)
         if (bestMatch && bestScore >= 1) {
-            return bestMatch.answer[lang] || bestMatch.answer.en;
+            lastMatchedTopic = bestMatch;
+            return bestMatch;
+        }
+
+        // Short follow-up? ("e como?", "como faço?", "me explica", "more details")
+        // Use last topic as context
+        var followUp = /^(e |como |mais |explica|tell me|how do|what|show|me diz|me fala|pode explicar|puedes|dime|y como|más|details|detalh)/i;
+        if (lastMatchedTopic && q.length < 50 && followUp.test(q)) {
+            return lastMatchedTopic;
         }
 
         return null;
+    }
+
+    function getAnswer(topic) {
+        var lang = getLang();
+        return (topic.answer[lang] || topic.answer.en);
+    }
+
+    function getFallbackMessage() {
+        var lang = getLang();
+        var msgs = {
+            en: "Hmm, I'm not sure about that specific question. Here's what I can help you with — just ask naturally:<br><br>• Contacts, leads, tags, Smart Lists, pipeline<br>• Conversations (SMS, email, WhatsApp)<br>• Reports, dashboards, analytics<br>• Google Business Profile, reviews<br>• Calendars, booking, reminders<br>• Payments, invoices, Stripe<br>• Team members, permissions, settings<br>• Templates, tasks, notes<br>• Mobile app, notifications, password<br>• Website edits, automations (via our team)<br><br>Or if you prefer, " + getScheduleLink() + ".",
+            es: "Hmm, no estoy seguro sobre esa pregunta específica. Esto es lo que puedo ayudarte — pregunta naturalmente:<br><br>• Contactos, leads, tags, Smart Lists, pipeline<br>• Conversaciones (SMS, email, WhatsApp)<br>• Reportes, dashboards, analíticas<br>• Google Business Profile, reseñas<br>• Calendarios, reservas, recordatorios<br>• Pagos, facturas, Stripe<br>• Equipo, permisos, configuraciones<br>• Plantillas, tareas, notas<br>• App móvil, notificaciones, contraseña<br>• Ediciones web, automatizaciones (vía nuestro equipo)<br><br>O si prefieres, " + getScheduleLink() + ".",
+            pt: "Hmm, não tenho certeza sobre essa pergunta específica. Aqui está o que posso te ajudar — pode perguntar naturalmente:<br><br>• Contatos, leads, tags, Smart Lists, pipeline<br>• Conversas (SMS, email, WhatsApp)<br>• Relatórios, dashboards, analytics<br>• Google Business Profile, avaliações<br>• Calendários, agendamento, lembretes<br>• Pagamentos, faturas, Stripe<br>• Equipe, permissões, configurações<br>• Templates, tarefas, notas<br>• App no celular, notificações, senha<br>• Edições de site, automações (via nosso time)<br><br>Ou se preferir, " + getScheduleLink() + "."
+        };
+        return msgs[lang] || msgs.en;
     }
 
     /* ---- Send Message ---- */
@@ -498,10 +477,11 @@ const KNOWLEDGE_BASE = [
         addMessage(text, 'user');
         showTyping();
 
-        // Small delay for natural feel
-        await new Promise(function (r) { setTimeout(r, 600); });
+        // Natural delay — varies slightly so it doesn't feel robotic
+        var delay = 400 + Math.floor(Math.random() * 500);
+        await new Promise(function (r) { setTimeout(r, delay); });
 
-        // 1) Try webhook first
+        // 1) Try webhook (Claude API) first
         var replied = false;
         try {
             var controller = new AbortController();
@@ -536,15 +516,15 @@ const KNOWLEDGE_BASE = [
                 }
             }
         } catch (err) {
-            // Webhook failed — fall through to local KB
+            // Webhook unavailable — use local KB
         }
 
-        // 2) Fall back to local knowledge base
+        // 2) Local knowledge base with context
         if (!replied) {
             hideTyping();
-            var localAnswer = searchKnowledgeBase(text);
-            if (localAnswer) {
-                addMessage(localAnswer, 'bot', true);
+            var topic = findTopic(text);
+            if (topic) {
+                addMessage(getAnswer(topic), 'bot', true);
             } else {
                 addMessage(getFallbackMessage(), 'bot', true);
             }
