@@ -65,6 +65,11 @@ const KNOWLEDGE_BASE = [
             en: "Sure! To send review requests, go to <b>Reputation</b> on the left menu, then click the <b>Requests</b> tab. From there, hit <b>Send Request</b>, pick the contacts you want, customize your SMS or email message, and send it off. The cool part? You can automate this — ask our team to set up a workflow that sends review requests automatically after every appointment.",
             es: "¡Claro! Para enviar solicitudes de reseña, ve a <b>Reputation</b> en el menú izquierdo y haz clic en la pestaña <b>Requests</b>. Desde ahí, dale a <b>Send Request</b>, elige los contactos, personaliza el mensaje por SMS o email, y envía. Lo mejor es que esto se puede automatizar — pide a nuestro equipo que configure un workflow que envíe solicitudes automáticas después de cada cita.",
             pt: "Claro! Pra enviar pedidos de avaliação, vai em <b>Reputation</b> no menu lateral e clica na aba <b>Requests</b>. Daí é só clicar em <b>Send Request</b>, escolher os contatos, personalizar a mensagem (pode ser SMS ou email) e enviar. O mais legal é que dá pra automatizar isso — pede pro nosso time configurar um workflow que envia pedidos de review automaticamente depois de cada atendimento."
+        },
+        followup: {
+            en: "You can track which review requests were sent and whether the client opened them right in the <b>Reputation</b> section. If they haven't responded, you can resend it. And if you want a steady flow of reviews coming in without thinking about it, ask our team to automate it — we can set it up so every completed appointment triggers a review request automatically.",
+            es: "Puedes ver qué solicitudes se enviaron y si el cliente las abrió en la sección <b>Reputation</b>. Si no han respondido, puedes reenviar. Y si quieres un flujo constante de reseñas sin pensarlo, pide a nuestro equipo que lo automatice — configuramos un workflow que envía solicitudes automáticas después de cada cita.",
+            pt: "Dá pra acompanhar quais pedidos foram enviados e se o cliente abriu ali mesmo na seção <b>Reputation</b>. Se ainda não responderam, pode reenviar. E se quer um fluxo constante de avaliações sem precisar pensar nisso, pede pro nosso time automatizar — a gente configura um workflow que manda pedido de review automaticamente depois de cada atendimento."
         }
     },
     {
@@ -85,6 +90,11 @@ const KNOWLEDGE_BASE = [
             en: "Your CRM lives in <b>Contacts</b> on the left menu — that's where all your leads are. You can add a new contact by clicking <b>+ Add Contact</b> at the top right, or import a whole list via CSV using the <b>Import</b> button. If you want to organize them, try creating a <b>Smart List</b> — it automatically filters contacts by tags, dates, or pipeline stage. Need to tag people in bulk? Select multiple contacts with the checkboxes, click <b>Actions</b>, then <b>Add Tag</b>. What specifically do you need to do?",
             es: "Tu CRM está en <b>Contacts</b> en el menú izquierdo — ahí están todos tus leads. Puedes agregar un contacto nuevo con <b>+ Add Contact</b> arriba a la derecha, o importar una lista completa por CSV con el botón <b>Import</b>. Para organizarlos, crea una <b>Smart List</b> — filtra automáticamente por tags, fechas o etapa del pipeline. ¿Necesitas poner tags en masa? Selecciona varios contactos, clic en <b>Actions</b> → <b>Add Tag</b>. ¿Qué necesitas hacer específicamente?",
             pt: "Seu CRM fica em <b>Contacts</b> no menu lateral — é onde ficam todos os seus leads. Pra adicionar alguém novo, clica em <b>+ Add Contact</b> no canto superior direito. Pra importar uma lista inteira, usa o botão <b>Import</b> e sobe um CSV. Se quiser organizar, cria uma <b>Smart List</b> — ela filtra os contatos automaticamente por tags, datas ou etapa do pipeline. Precisa colocar tag em vários de uma vez? Seleciona os contatos com as caixinhas, clica em <b>Actions</b> → <b>Add Tag</b>. O que especificamente você precisa fazer?"
+        },
+        followup: {
+            en: "Each contact has a full profile — click on any contact to see their activity: all messages sent/received, emails opened, forms submitted, appointments, notes from your team, and their tags. You can also add custom fields to track whatever matters for your business (like service type or budget). To filter and find specific groups, Smart Lists are your best friend — they auto-update as contacts match your conditions.",
+            es: "Cada contacto tiene un perfil completo — haz clic en cualquiera para ver su actividad: mensajes enviados/recibidos, emails abiertos, formularios enviados, citas, notas del equipo y sus tags. También puedes agregar campos personalizados para rastrear lo que importa (tipo de servicio, presupuesto). Para filtrar y encontrar grupos específicos, las Smart Lists son tu mejor herramienta — se actualizan solas.",
+            pt: "Cada contato tem um perfil completo — clica em qualquer um pra ver a atividade: todas as mensagens enviadas/recebidas, emails abertos, formulários preenchidos, agendamentos, notas da equipe, e as tags. Você também pode criar campos personalizados pra acompanhar o que importa pro seu negócio (tipo de serviço, orçamento, etc.). Pra filtrar e encontrar grupos específicos, as Smart Lists são sua melhor ferramenta — elas se atualizam sozinhas conforme os contatos batem com seus critérios."
         }
     },
     {
@@ -95,6 +105,11 @@ const KNOWLEDGE_BASE = [
             en: "Go to <b>Conversations</b> on the left menu — that's your unified inbox where all messages come in. Search for the contact, then at the bottom you'll see channel options: <b>SMS</b>, <b>Email</b>, or <b>WhatsApp</b>. Pick the one you want, type your message (you can use saved templates too), and hit send. Everything — SMS, email, WhatsApp, Facebook DMs, Instagram DMs — all comes into this one place, so you never miss anything.",
             es: "Ve a <b>Conversations</b> en el menú izquierdo — es tu bandeja unificada donde llegan todos los mensajes. Busca el contacto, y abajo verás las opciones de canal: <b>SMS</b>, <b>Email</b>, o <b>WhatsApp</b>. Elige el que quieras, escribe tu mensaje (puedes usar plantillas guardadas también), y envía. Todo — SMS, email, WhatsApp, Facebook DMs, Instagram DMs — llega a este mismo lugar.",
             pt: "Vai em <b>Conversations</b> no menu lateral — é sua caixa de entrada unificada onde chegam todas as mensagens. Procura o contato, e lá embaixo vai ver as opções de canal: <b>SMS</b>, <b>Email</b>, ou <b>WhatsApp</b>. Escolhe o que quer, escreve sua mensagem (pode usar templates salvos também), e envia. Tudo — SMS, email, WhatsApp, Facebook DMs, Instagram DMs — chega nesse mesmo lugar, então você nunca perde nada."
+        },
+        followup: {
+            en: "To know if the person received/read your message: for <b>emails</b>, you can see open tracking — look for the little eye icon or check in the contact's activity log. For <b>SMS</b>, you'll see a delivery status (sent, delivered). For <b>WhatsApp</b>, the double blue checkmarks mean it was read. All of this is visible right in the conversation thread. If a message bounced or failed, you'll see a red alert on it.",
+            es: "Para saber si la persona recibió/leyó tu mensaje: en <b>emails</b>, puedes ver el tracking de apertura — busca el ícono del ojo o revisa en el log de actividad del contacto. En <b>SMS</b>, verás el estado de entrega (enviado, entregado). En <b>WhatsApp</b>, las dos palomitas azules significan que fue leído. Todo esto es visible en el hilo de la conversación. Si un mensaje rebotó o falló, verás una alerta roja.",
+            pt: "Pra saber se a pessoa recebeu/leu sua mensagem: nos <b>emails</b>, dá pra ver o rastreamento de abertura — procura o ícone de olho ou confere no log de atividade do contato. No <b>SMS</b>, você vê o status de entrega (enviado, entregue). No <b>WhatsApp</b>, as duas marquinhas azuis significam que foi lido. Tudo isso aparece ali mesmo no fio da conversa. Se uma mensagem voltou ou falhou, vai ter um alerta vermelho."
         }
     },
     {
@@ -134,7 +149,12 @@ const KNOWLEDGE_BASE = [
         answer: {
             en: "Head over to <b>Reporting</b> on the left menu — that's where all your numbers live. You've got a few different reports there: the <b>Attribution Report</b> shows exactly where your leads are coming from (Google, Facebook, organic, referrals), the <b>Google/Facebook Ads</b> tabs show how your ad budget is performing, <b>Appointment Report</b> tracks bookings and no-shows, and <b>Call Report</b> shows all your call activity. You can filter everything by date range. I'd start with Attribution — it tells you which channels are actually bringing in business.",
             es: "Ve a <b>Reporting</b> en el menú izquierdo — ahí viven todos tus números. Tienes varios reportes: el <b>Attribution Report</b> muestra exactamente de dónde vienen tus leads (Google, Facebook, orgánico, referencias), las pestañas de <b>Google/Facebook Ads</b> muestran cómo rinde tu presupuesto, <b>Appointment Report</b> rastrea reservas y no-shows, y <b>Call Report</b> muestra toda la actividad de llamadas. Todo se puede filtrar por fechas. Yo empezaría con Attribution — te dice qué canales realmente traen negocio.",
-            pt: "Vai em <b>Reporting</b> no menu lateral — é onde ficam todos os seus números. Tem vários relatórios lá: o <b>Attribution Report</b> mostra exatamente de onde vêm seus leads (Google, Facebook, orgânico, indicações), as abas de <b>Google/Facebook Ads</b> mostram como tá o desempenho do seu investimento em anúncios, o <b>Appointment Report</b> acompanha agendamentos e faltas, e o <b>Call Report</b> mostra toda a atividade de chamadas. Dá pra filtrar tudo por período. Eu começaria pelo Attribution — ele te diz quais canais realmente trazem negócio."
+            pt: "Vai em <b>Reporting</b> no menu lateral — é onde ficam todos os seus números. Tem vários relatórios lá: o <b>Attribution Report</b> mostra exatamente de onde vêm seus leads (Google, Facebook, orgânico, indica��ões), as abas de <b>Google/Facebook Ads</b> mostram como tá o desempenho do seu investimento em anúncios, o <b>Appointment Report</b> acompanha agendamentos e faltas, e o <b>Call Report</b> mostra toda a atividade de chamadas. Dá pra filtrar tudo por período. Eu começaria pelo Attribution — ele te diz quais canais realmente trazem negócio."
+        },
+        followup: {
+            en: "To dig deeper into any report: use the <b>date filter</b> at the top to compare different time periods (like this month vs. last month). The Attribution Report is especially useful — it shows you exactly how many leads came from each source and what they're worth. If the numbers don't look right or you need help interpreting something, just screenshot the report and send it to our <b>WhatsApp group</b> — we'll help you understand what's going on.",
+            es: "Para profundizar: usa el <b>filtro de fechas</b> arriba para comparar períodos (este mes vs. el pasado). El Attribution Report es el más útil — muestra exactamente cuántos leads vinieron de cada fuente. Si los números no cuadran o necesitas ayuda interpretando algo, haz captura y mándala al <b>grupo de WhatsApp</b>.",
+            pt: "Pra aprofundar em qualquer relatório: usa o <b>filtro de data</b> lá em cima pra comparar períodos diferentes (tipo esse mês vs. mês passado). O Attribution Report é o mais útil — mostra exatamente quantos leads vieram de cada fonte e quanto valem. Se os números não tiverem fazendo sentido ou precisar de ajuda pra interpretar alguma coisa, tira um print do relatório e manda no <b>grupo do WhatsApp</b> — a gente te ajuda a entender o que tá acontecendo."
         }
     },
     {
@@ -418,41 +438,66 @@ const KNOWLEDGE_BASE = [
     }
 
     /* ---- Intelligent KB Search with context memory ---- */
-    function findTopic(query) {
+    var lastAnswerText = '';
+
+    function scoreTopic(entry, q) {
+        var score = 0;
+        for (var p = 0; p < entry.phrases.length; p++) {
+            if (q.indexOf(entry.phrases[p].toLowerCase()) !== -1) score += 10;
+        }
+        for (var k = 0; k < entry.keywords.length; k++) {
+            if (q.indexOf(entry.keywords[k].toLowerCase()) !== -1) score += 1;
+        }
+        return score;
+    }
+
+    function findTopicAndAnswer(query) {
+        var lang = getLang();
         var q = query.toLowerCase();
         var bestMatch = null;
         var bestScore = 0;
 
         for (var i = 0; i < KNOWLEDGE_BASE.length; i++) {
-            var entry = KNOWLEDGE_BASE[i];
-            var score = 0;
-            for (var p = 0; p < entry.phrases.length; p++) {
-                if (q.indexOf(entry.phrases[p].toLowerCase()) !== -1) score += 10;
-            }
-            for (var k = 0; k < entry.keywords.length; k++) {
-                if (q.indexOf(entry.keywords[k].toLowerCase()) !== -1) score += 1;
-            }
-            if (score > bestScore) { bestScore = score; bestMatch = entry; }
+            var score = scoreTopic(KNOWLEDGE_BASE[i], q);
+            if (score > bestScore) { bestScore = score; bestMatch = KNOWLEDGE_BASE[i]; }
         }
 
+        // Direct match found
         if (bestMatch && bestScore >= 1) {
+            var answer = bestMatch.answer[lang] || bestMatch.answer.en;
+
+            // If it's the SAME topic as last time, give followup instead of repeating
+            if (lastMatchedTopic && bestMatch.id === lastMatchedTopic.id && answer === lastAnswerText) {
+                if (bestMatch.followup) {
+                    var fu = bestMatch.followup[lang] || bestMatch.followup.en;
+                    lastAnswerText = fu;
+                    return fu;
+                }
+            }
+
             lastMatchedTopic = bestMatch;
-            return bestMatch;
+            lastAnswerText = answer;
+            return answer;
         }
 
-        // Short follow-up? ("e como?", "como faço?", "me explica", "more details")
-        // Use last topic as context
-        var followUp = /^(e |como |mais |explica|tell me|how do|what|show|me diz|me fala|pode explicar|puedes|dime|y como|más|details|detalh)/i;
-        if (lastMatchedTopic && q.length < 50 && followUp.test(q)) {
-            return lastMatchedTopic;
+        // Short/vague follow-up → use context from last topic
+        var isFollowUp = q.length < 60 && /^(e |como |mais |mas |explica|tell|how|what|show|me diz|me fala|pode |puedes|dime|y |más|detail|detalh|but |and |sei |sé |know|receb|entrega|deliver|read|lida|leíd)/i.test(q);
+        if (lastMatchedTopic && isFollowUp) {
+            if (lastMatchedTopic.followup) {
+                var fu2 = lastMatchedTopic.followup[lang] || lastMatchedTopic.followup.en;
+                lastAnswerText = fu2;
+                return fu2;
+            }
+            // No followup defined — give a contextual nudge
+            var nudge = {
+                en: "That's a great follow-up question! For more details on this, I'd suggest reaching out to our team on the <b>WhatsApp group</b> — they can walk you through it step by step.",
+                es: "¡Buena pregunta de seguimiento! Para más detalles sobre esto, te sugiero contactar a nuestro equipo por el <b>grupo de WhatsApp</b> — ellos te pueden guiar paso a paso.",
+                pt: "Boa pergunta! Pra mais detalhes sobre isso, sugiro falar com nosso time no <b>grupo do WhatsApp</b> — eles podem te guiar passo a passo."
+            };
+            return nudge[lang] || nudge.en;
         }
 
         return null;
-    }
-
-    function getAnswer(topic) {
-        var lang = getLang();
-        return (topic.answer[lang] || topic.answer.en);
     }
 
     /* ---- Send Message ---- */
@@ -511,10 +556,10 @@ const KNOWLEDGE_BASE = [
 
         // 2) Local knowledge base with context
         if (!replied) {
-            var topic = findTopic(text);
-            if (topic) {
+            var kbAnswer = findTopicAndAnswer(text);
+            if (kbAnswer) {
                 hideTyping();
-                addMessage(getAnswer(topic), 'bot', true);
+                addMessage(kbAnswer, 'bot', true);
                 replied = true;
             }
         }
