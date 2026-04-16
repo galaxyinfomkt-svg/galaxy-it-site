@@ -5108,5 +5108,11 @@
       "source": "/it-support-exeter-nh",
       "destination": "/cities/it-support-exeter-nh.html"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/client-report?send=true",
+      "schedule": "0 9 1 * *"
+    }
   ]
 }
