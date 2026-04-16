@@ -1,0 +1,278 @@
+{
+  "name": "Galaxy IT — Full Monthly Report (GSC + GA4 + GHL → Email + WhatsApp)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtDay": 1,
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "schedule",
+      "name": "Every 1st at 9AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== EDIT THIS: YOUR 10 CLIENTS =====\nconst clients = [\n  {\n    id: 'client1',\n    name: 'Client 1 Business Name',\n    locationId: 'GHL_LOCATION_ID',\n    email: 'client@email.com',\n    phone: '+15081234567',\n    language: 'en',\n    siteUrl: 'https://clientwebsite.com',  // for Google Search Console\n    gaPropertyId: '123456789'               // GA4 Property ID\n  },\n  // Copy and paste for each client:\n  // {\n  //   id: 'client2',\n  //   name: 'Business Name',\n  //   locationId: 'GHL_LOCATION_ID',\n  //   email: 'email@email.com',\n  //   phone: '+1XXXXXXXXXX',\n  //   language: 'en',\n  //   siteUrl: 'https://website.com',\n  //   gaPropertyId: 'GA4_PROPERTY_ID'\n  // },\n];\n\nreturn clients.map(c => ({ json: c }));"
+      },
+      "id": "client-list",
+      "name": "Client List (EDIT THIS)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [420, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calculate date range: last 30 days\nconst now = new Date();\nconst start = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);\nreturn [{ json: {\n  ...$json,\n  startDate: start.toISOString().split('T')[0],\n  endDate: now.toISOString().split('T')[0],\n  monthName: now.toLocaleString('en-US', { month: 'long', year: 'numeric' })\n}}];"
+      },
+      "id": "set-dates",
+      "name": "Set Date Range",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [640, 500]
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/webmasters/v3/sites/{{ encodeURIComponent($json.siteUrl) }}/searchAnalytics/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"startDate\": \"{{ $json.startDate }}\",\n  \"endDate\": \"{{ $json.endDate }}\",\n  \"dimensions\": [\"query\"],\n  \"rowLimit\": 10\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "gsc-queries",
+      "name": "Google Search Console — Top Queries",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [860, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/webmasters/v3/sites/{{ encodeURIComponent($('Set Date Range').item.json.siteUrl) }}/searchAnalytics/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"startDate\": \"{{ $('Set Date Range').item.json.startDate }}\",\n  \"endDate\": \"{{ $('Set Date Range').item.json.endDate }}\"\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "gsc-totals",
+      "name": "Google Search Console — Totals",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [860, 450]
+    },
+    {
+      "parameters": {
+        "url": "=https://analyticsdata.googleapis.com/v1beta/properties/{{ $('Set Date Range').item.json.gaPropertyId }}:runReport",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"dateRanges\": [{ \"startDate\": \"{{ $('Set Date Range').item.json.startDate }}\", \"endDate\": \"{{ $('Set Date Range').item.json.endDate }}\" }],\n  \"metrics\": [\n    { \"name\": \"sessions\" },\n    { \"name\": \"totalUsers\" },\n    { \"name\": \"newUsers\" },\n    { \"name\": \"screenPageViews\" },\n    { \"name\": \"averageSessionDuration\" },\n    { \"name\": \"bounceRate\" }\n  ],\n  \"dimensions\": [{ \"name\": \"sessionDefaultChannelGroup\" }]\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "ga4-traffic",
+      "name": "Google Analytics — Traffic & Channels",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [860, 600]
+    },
+    {
+      "parameters": {
+        "url": "=https://services.leadconnectorhq.com/contacts/?locationId={{ $('Set Date Range').item.json.locationId }}&limit=100&startAfter={{ new Date(Date.now() - 30*24*60*60*1000).toISOString() }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GHL_API_KEY }}" },
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "options": { "timeout": 15000 }
+      },
+      "id": "ghl-contacts",
+      "name": "GHL — New Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [860, 750]
+    },
+    {
+      "parameters": {
+        "url": "https://services.leadconnectorhq.com/opportunities/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GHL_API_KEY }}" },
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"location_id\": \"{{ $('Set Date Range').item.json.locationId }}\" }",
+        "options": { "timeout": 15000 }
+      },
+      "id": "ghl-opps",
+      "name": "GHL — Pipeline",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [860, 900]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge ALL data sources into one report object\nconst client = $('Set Date Range').item.json;\n\n// Google Search Console\nconst gscQueries = $('Google Search Console — Top Queries').item.json;\nconst gscTotals = $('Google Search Console — Totals').item.json;\nconst topQueries = (gscQueries.rows || []).slice(0, 5).map(r => r.keys[0] + ' (' + r.clicks + ' clicks)');\nconst totalImpressions = gscTotals.rows ? gscTotals.rows.reduce((s, r) => s + r.impressions, 0) : 0;\nconst totalClicks = gscTotals.rows ? gscTotals.rows.reduce((s, r) => s + r.clicks, 0) : 0;\nconst avgCTR = totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(1) : 0;\nconst avgPosition = gscTotals.rows ? (gscTotals.rows.reduce((s, r) => s + r.position, 0) / gscTotals.rows.length).toFixed(1) : 0;\n\n// Google Analytics\nconst ga = $('Google Analytics — Traffic & Channels').item.json;\nconst gaRows = ga.rows || [];\nlet totalSessions = 0, totalUsers = 0, totalPageviews = 0;\nconst channels = {};\ngaRows.forEach(r => {\n  const channel = r.dimensionValues[0].value;\n  const sessions = parseInt(r.metricValues[0].value) || 0;\n  totalSessions += sessions;\n  totalUsers += parseInt(r.metricValues[1].value) || 0;\n  totalPageviews += parseInt(r.metricValues[3].value) || 0;\n  channels[channel] = sessions;\n});\n\n// GHL Contacts\nconst contacts = $('GHL — New Leads').item.json.contacts || [];\nconst sources = {};\ncontacts.forEach(c => {\n  const src = c.source || c.tags?.[0] || 'Direct';\n  sources[src] = (sources[src] || 0) + 1;\n});\n\n// GHL Pipeline\nconst opps = ($('GHL — Pipeline').item.json.opportunities || []);\nlet won = 0, lost = 0, open = 0, value = 0;\nopps.forEach(o => {\n  if (o.status === 'won') { won++; value += (o.monetaryValue || 0); }\n  else if (o.status === 'lost') lost++;\n  else open++;\n});\n\nreturn [{ json: {\n  ...client,\n  // GSC\n  impressions: totalImpressions,\n  clicks: totalClicks,\n  ctr: avgCTR,\n  avgPosition: avgPosition,\n  topQueries: topQueries.join(', ') || 'No data',\n  // GA4\n  sessions: totalSessions,\n  users: totalUsers,\n  pageviews: totalPageviews,\n  trafficChannels: JSON.stringify(channels),\n  // GHL\n  totalLeads: contacts.length,\n  leadSources: JSON.stringify(sources),\n  totalOpps: opps.length,\n  oppsWon: won,\n  oppsLost: lost,\n  oppsOpen: open,\n  pipelineValue: value\n}}];"
+      },
+      "id": "merge-all",
+      "name": "Merge All Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 600]
+    },
+    {
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GROQ_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"You are a marketing agency report writer for Galaxy IT & Marketing. Write a monthly performance report for '{{ $json.name }}'.\\n\\nWrite in {{ $json.language === 'pt' ? 'Brazilian Portuguese' : $json.language === 'es' ? 'Spanish' : 'English' }}.\\n\\nWEBSITE PERFORMANCE (last 30 days, {{ $json.startDate }} to {{ $json.endDate }}):\\n- Google impressions: {{ $json.impressions }}\\n- Google clicks: {{ $json.clicks }}\\n- CTR: {{ $json.ctr }}%\\n- Average position: {{ $json.avgPosition }}\\n- Top search queries: {{ $json.topQueries }}\\n\\nWEBSITE TRAFFIC (Google Analytics):\\n- Sessions: {{ $json.sessions }}\\n- Users: {{ $json.users }}\\n- Pageviews: {{ $json.pageviews }}\\n- Traffic channels: {{ $json.trafficChannels }}\\n\\nLEADS & PIPELINE (GoHighLevel):\\n- New leads: {{ $json.totalLeads }}\\n- Lead sources: {{ $json.leadSources }}\\n- Pipeline: {{ $json.totalOpps }} total ({{ $json.oppsWon }} won, {{ $json.oppsLost }} lost, {{ $json.oppsOpen }} open)\\n- Won value: ${{ $json.pipelineValue }}\\n\\nFORMAT:\\n1. Greeting (1 sentence, use client name)\\n2. Website Visibility (impressions, clicks, top queries, position)\\n3. Traffic Overview (sessions, users, which channels bring most traffic)\\n4. Lead Generation (new leads, sources, conversion)\\n5. Pipeline & Revenue (won/lost/open, value)\\n6. One specific actionable recommendation based on the data\\n7. Sign off as Galaxy IT & Marketing\\n\\nMax 300 words. Professional but warm. Use specific numbers. Compare to benchmarks when possible. If any data shows 0, say 'data being configured' not zero.\"\n  }],\n  \"max_tokens\": 800,\n  \"temperature\": 0.7\n}",
+        "options": { "timeout": 25000 }
+      },
+      "id": "ai-report",
+      "name": "AI — Write Full Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 600]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Merge All Data').item.json;\nconst report = $json.choices[0].message.content;\nconst monthName = client.monthName;\n\nconst reportHtml = report.replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>').replace(/\\*(.*?)\\*/g, '<em>$1</em>');\n\nconst html = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body style=\"font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;\">\n<div style=\"background:linear-gradient(135deg,#0d1b2a,#1a237e);padding:30px;border-radius:12px 12px 0 0;text-align:center;\">\n  <h1 style=\"color:#ffd700;margin:0;font-size:22px;\">Galaxy IT & Marketing</h1>\n  <p style=\"color:rgba(255,255,255,0.7);margin:8px 0 0;font-size:14px;\">Monthly Performance Report — ${monthName}</p>\n</div>\n<div style=\"background:#fff;padding:30px;border:1px solid #e5e5e5;border-top:none;\">\n  <div style=\"display:flex;gap:12px;margin-bottom:24px;text-align:center;\">\n    <div style=\"flex:1;background:#f8f9fa;padding:16px;border-radius:8px;border-top:3px solid #ffd700;\">\n      <div style=\"font-size:24px;font-weight:800;color:#1a237e;\">${client.impressions.toLocaleString()}</div>\n      <div style=\"font-size:11px;color:#888;margin-top:4px;\">Impressions</div>\n    </div>\n    <div style=\"flex:1;background:#f8f9fa;padding:16px;border-radius:8px;border-top:3px solid #2e7d32;\">\n      <div style=\"font-size:24px;font-weight:800;color:#1a237e;\">${client.clicks.toLocaleString()}</div>\n      <div style=\"font-size:11px;color:#888;margin-top:4px;\">Clicks</div>\n    </div>\n    <div style=\"flex:1;background:#f8f9fa;padding:16px;border-radius:8px;border-top:3px solid #1a237e;\">\n      <div style=\"font-size:24px;font-weight:800;color:#1a237e;\">${client.totalLeads}</div>\n      <div style=\"font-size:11px;color:#888;margin-top:4px;\">New Leads</div>\n    </div>\n    <div style=\"flex:1;background:#f8f9fa;padding:16px;border-radius:8px;border-top:3px solid #ffd700;\">\n      <div style=\"font-size:24px;font-weight:800;color:#1a237e;\">$${client.pipelineValue.toLocaleString()}</div>\n      <div style=\"font-size:11px;color:#888;margin-top:4px;\">Revenue</div>\n    </div>\n  </div>\n  <p style=\"font-size:14px;line-height:1.8;\">${reportHtml}</p>\n</div>\n<div style=\"background:#f5f5f5;padding:20px;border-radius:0 0 12px 12px;text-align:center;border:1px solid #e5e5e5;border-top:none;\">\n  <p style=\"margin:0;font-size:12px;color:#888;\">Questions? <a href=\"https://galaxyinfo.us/support\" style=\"color:#1a237e;\">Visit Help Center</a> or reply to this email.</p>\n  <p style=\"margin:8px 0 0;font-size:11px;color:#aaa;\">&copy; 2026 Galaxy IT & Marketing · Worcester, MA</p>\n</div>\n</body></html>`;\n\nlet whatsapp = `📊 *Monthly Report — ${monthName}*\\n\\n`;\nwhatsapp += `🔍 *Google:* ${client.impressions.toLocaleString()} impressions, ${client.clicks} clicks (${client.ctr}% CTR)\\n`;\nwhatsapp += `📈 *Traffic:* ${client.sessions} sessions, ${client.users} visitors\\n`;\nwhatsapp += `👥 *Leads:* ${client.totalLeads} new leads\\n`;\nwhatsapp += `💰 *Pipeline:* ${client.oppsWon} won ($${client.pipelineValue})\\n\\n`;\nwhatsapp += `Full report sent to your email!`;\n\nreturn [{ json: { ...client, report, html, whatsapp, monthName } }];"
+      },
+      "id": "format-output",
+      "name": "Format Email + WhatsApp",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 600]
+    },
+    {
+      "parameters": {
+        "url": "=https://services.leadconnectorhq.com/contacts/search/duplicate?locationId={{ $json.locationId }}&email={{ encodeURIComponent($json.email) }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GHL_API_KEY }}" },
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "find-contact",
+      "name": "GHL — Find Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 600]
+    },
+    {
+      "parameters": {
+        "url": "https://services.leadconnectorhq.com/conversations/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GHL_API_KEY }}" },
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"Email\",\n  \"contactId\": \"{{ $json.contact.id }}\",\n  \"subject\": \"Your Monthly Performance Report — {{ $('Format Email + WhatsApp').item.json.monthName }} | Galaxy IT\",\n  \"html\": {{ JSON.stringify($('Format Email + WhatsApp').item.json.html) }},\n  \"emailFrom\": \"Galaxy IT & Marketing <info@galaxyinfo.us>\"\n}",
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "Send Email Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 500]
+    },
+    {
+      "parameters": {
+        "url": "https://services.leadconnectorhq.com/conversations/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GHL_API_KEY }}" },
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"WhatsApp\",\n  \"contactId\": \"{{ $json.contact.id }}\",\n  \"message\": \"{{ $('Format Email + WhatsApp').item.json.whatsapp }}\"\n}",
+        "options": {}
+      },
+      "id": "send-whatsapp",
+      "name": "Send WhatsApp Summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 700]
+    }
+  ],
+  "connections": {
+    "Every 1st at 9AM": {
+      "main": [[{ "node": "Client List (EDIT THIS)", "type": "main", "index": 0 }]]
+    },
+    "Client List (EDIT THIS)": {
+      "main": [[{ "node": "Set Date Range", "type": "main", "index": 0 }]]
+    },
+    "Set Date Range": {
+      "main": [[
+        { "node": "Google Search Console — Top Queries", "type": "main", "index": 0 },
+        { "node": "Google Search Console — Totals", "type": "main", "index": 0 },
+        { "node": "Google Analytics — Traffic & Channels", "type": "main", "index": 0 },
+        { "node": "GHL — New Leads", "type": "main", "index": 0 },
+        { "node": "GHL — Pipeline", "type": "main", "index": 0 }
+      ]]
+    },
+    "Google Search Console — Top Queries": {
+      "main": [[{ "node": "Merge All Data", "type": "main", "index": 0 }]]
+    },
+    "Google Search Console — Totals": {
+      "main": [[{ "node": "Merge All Data", "type": "main", "index": 0 }]]
+    },
+    "Google Analytics — Traffic & Channels": {
+      "main": [[{ "node": "Merge All Data", "type": "main", "index": 0 }]]
+    },
+    "GHL — New Leads": {
+      "main": [[{ "node": "Merge All Data", "type": "main", "index": 0 }]]
+    },
+    "GHL — Pipeline": {
+      "main": [[{ "node": "Merge All Data", "type": "main", "index": 0 }]]
+    },
+    "Merge All Data": {
+      "main": [[{ "node": "AI — Write Full Report", "type": "main", "index": 0 }]]
+    },
+    "AI — Write Full Report": {
+      "main": [[{ "node": "Format Email + WhatsApp", "type": "main", "index": 0 }]]
+    },
+    "Format Email + WhatsApp": {
+      "main": [[{ "node": "GHL — Find Contact", "type": "main", "index": 0 }]]
+    },
+    "GHL — Find Contact": {
+      "main": [[
+        { "node": "Send Email Report", "type": "main", "index": 0 },
+        { "node": "Send WhatsApp Summary", "type": "main", "index": 0 }
+      ]]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}
