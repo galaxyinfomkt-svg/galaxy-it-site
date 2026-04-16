@@ -1,0 +1,222 @@
+{
+  "name": "Galaxy IT — Monthly Client Reports (Email + WhatsApp)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtDay": 1,
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "schedule",
+      "name": "Every 1st at 9AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== CLIENT LIST — EDIT THIS =====\n// Add your 10 clients here with their GHL location IDs\nconst clients = [\n  { id: 'client1', name: 'Client 1 Business Name', locationId: 'LOCATION_ID_1', email: 'client1@email.com', phone: '+1XXXXXXXXXX', language: 'en' },\n  { id: 'client2', name: 'Client 2 Business Name', locationId: 'LOCATION_ID_2', email: 'client2@email.com', phone: '+1XXXXXXXXXX', language: 'pt' },\n  // { id: 'client3', name: '...', locationId: '...', email: '...', phone: '...', language: 'en' },\n  // { id: 'client4', name: '...', locationId: '...', email: '...', phone: '...', language: 'en' },\n  // { id: 'client5', name: '...', locationId: '...', email: '...', phone: '...', language: 'en' },\n  // { id: 'client6', name: '...', locationId: '...', email: '...', phone: '...', language: 'en' },\n  // { id: 'client7', name: '...', locationId: '...', email: '...', phone: '...', language: 'en' },\n  // { id: 'client8', name: '...', locationId: '...', email: '...', phone: '...', language: 'en' },\n  // { id: 'client9', name: '...', locationId: '...', email: '...', phone: '...', language: 'en' },\n  // { id: 'client10', name: '...', locationId: '...', email: '...', phone: '...', language: 'en' },\n];\n\nreturn clients.map(c => ({ json: c }));"
+      },
+      "id": "client-list",
+      "name": "Client List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "url": "=https://services.leadconnectorhq.com/contacts/?locationId={{ $json.locationId }}&limit=100&startAfter={{ new Date(Date.now() - 30*24*60*60*1000).toISOString() }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GHL_API_KEY }}" },
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "options": { "timeout": 15000 }
+      },
+      "id": "get-contacts",
+      "name": "GHL — Get New Contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://services.leadconnectorhq.com/opportunities/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GHL_API_KEY }}" },
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"location_id\": \"{{ $json.locationId }}\" }",
+        "options": { "timeout": 15000 }
+      },
+      "id": "get-opportunities",
+      "name": "GHL — Get Opportunities",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge GHL data from contacts and opportunities\nconst client = $('Client List').item.json;\nconst contactsData = $('GHL — Get New Contacts').item.json;\nconst oppsData = $('GHL — Get Opportunities').item.json;\n\nconst contacts = contactsData.contacts || [];\nconst opps = oppsData.opportunities || [];\n\n// Count lead sources\nconst sources = {};\ncontacts.forEach(c => {\n  const src = c.source || c.tags?.[0] || 'Direct';\n  sources[src] = (sources[src] || 0) + 1;\n});\n\n// Count opportunity statuses\nlet won = 0, lost = 0, open = 0, value = 0;\nopps.forEach(o => {\n  if (o.status === 'won') { won++; value += (o.monetaryValue || 0); }\n  else if (o.status === 'lost') lost++;\n  else open++;\n});\n\nconst now = new Date();\nconst thirtyAgo = new Date(now.getTime() - 30*24*60*60*1000);\n\nreturn [{\n  json: {\n    ...client,\n    period: thirtyAgo.toISOString().split('T')[0] + ' to ' + now.toISOString().split('T')[0],\n    totalLeads: contacts.length,\n    leadSources: JSON.stringify(sources),\n    totalOpps: opps.length,\n    oppsWon: won,\n    oppsLost: lost,\n    oppsOpen: open,\n    pipelineValue: value,\n    monthName: now.toLocaleString('en-US', { month: 'long', year: 'numeric' })\n  }\n}];"
+      },
+      "id": "merge-data",
+      "name": "Merge & Process Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GROQ_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"You are a marketing agency report writer for Galaxy IT & Marketing. Generate a monthly performance report for client '{{ $json.name }}'.\\n\\nWrite in {{ $json.language === 'pt' ? 'Brazilian Portuguese' : $json.language === 'es' ? 'Spanish' : 'English' }}.\\n\\nDATA (last 30 days, {{ $json.period }}):\\n- New leads: {{ $json.totalLeads }}\\n- Lead sources: {{ $json.leadSources }}\\n- Pipeline: {{ $json.totalOpps }} total ({{ $json.oppsWon }} won, {{ $json.oppsLost }} lost, {{ $json.oppsOpen }} open)\\n- Won value: ${{ $json.pipelineValue }}\\n\\nFORMAT:\\n1. Greeting (1 sentence)\\n2. Key Highlights (3-4 bullets with numbers)\\n3. Lead Performance (sources, trends)\\n4. Pipeline (won/lost/open, value)\\n5. One actionable recommendation\\n6. Sign off as Galaxy IT & Marketing\\n\\nMax 200 words. Professional but warm. If data is 0, say 'data not available this period'.\"\n  }],\n  \"max_tokens\": 600,\n  \"temperature\": 0.7\n}",
+        "options": { "timeout": 20000 }
+      },
+      "id": "ai-report",
+      "name": "AI — Generate Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Merge & Process Data').item.json;\nconst aiResponse = $json;\nconst report = aiResponse.choices[0].message.content;\nconst monthName = client.monthName;\n\n// Build HTML email\nconst reportHtml = report.replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>');\n\nconst html = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body style=\"font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;\">\n<div style=\"background:linear-gradient(135deg,#0d1b2a,#1a237e);padding:30px;border-radius:12px 12px 0 0;text-align:center;\">\n<h1 style=\"color:#ffd700;margin:0;font-size:22px;\">Galaxy IT & Marketing</h1>\n<p style=\"color:rgba(255,255,255,0.7);margin:8px 0 0;font-size:14px;\">Monthly Performance Report — ${monthName}</p>\n</div>\n<div style=\"background:#fff;padding:30px;border:1px solid #e5e5e5;border-top:none;\">\n<p style=\"font-size:14px;line-height:1.8;\">${reportHtml}</p>\n</div>\n<div style=\"background:#f5f5f5;padding:20px;border-radius:0 0 12px 12px;text-align:center;border:1px solid #e5e5e5;border-top:none;\">\n<p style=\"margin:0;font-size:12px;color:#888;\">Questions? <a href=\"https://galaxyinfo.us/support\" style=\"color:#1a237e;\">Visit Help Center</a> or reply to this email.</p>\n<p style=\"margin:8px 0 0;font-size:11px;color:#aaa;\">&copy; 2026 Galaxy IT & Marketing · Worcester, MA</p>\n</div>\n</body></html>`;\n\n// Short version for WhatsApp\nlet whatsappMsg = report.substring(0, 800);\nif (report.length > 800) whatsappMsg += '\\n\\n...Relatório completo enviado por email.';\n\nreturn [{ json: { ...client, report, html, whatsappMsg, monthName } }];"
+      },
+      "id": "format-report",
+      "name": "Format Email + WhatsApp",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "url": "=https://services.leadconnectorhq.com/contacts/search/duplicate?locationId={{ $json.locationId }}&email={{ encodeURIComponent($json.email) }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GHL_API_KEY }}" },
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "find-contact",
+      "name": "GHL — Find Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://services.leadconnectorhq.com/conversations/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GHL_API_KEY }}" },
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"Email\",\n  \"contactId\": \"{{ $json.contact.id }}\",\n  \"subject\": \"Your Monthly Performance Report — {{ $('Format Email + WhatsApp').item.json.monthName }} | Galaxy IT\",\n  \"html\": {{ JSON.stringify($('Format Email + WhatsApp').item.json.html) }},\n  \"emailFrom\": \"Galaxy IT & Marketing <info@galaxyinfo.us>\"\n}",
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "GHL — Send Email Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://services.leadconnectorhq.com/conversations/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GHL_API_KEY }}" },
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"WhatsApp\",\n  \"contactId\": \"{{ $json.contact.id }}\",\n  \"message\": \"📊 *Monthly Performance Report*\\n\\n{{ $('Format Email + WhatsApp').item.json.whatsappMsg }}\"\n}",
+        "options": {}
+      },
+      "id": "send-whatsapp",
+      "name": "GHL — Send WhatsApp Summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 500]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $env.TEAM_EMAIL || 'info@galaxyinfo.us' }}",
+        "subject": "=Reports sent for {{ $('Format Email + WhatsApp').item.json.monthName }}",
+        "emailType": "text",
+        "message": "=Monthly reports sent successfully.\nClient: {{ $('Format Email + WhatsApp').item.json.name }}\nLeads: {{ $('Merge & Process Data').item.json.totalLeads }}\nPipeline Won: {{ $('Merge & Process Data').item.json.oppsWon }} (${{ $('Merge & Process Data').item.json.pipelineValue }})",
+        "options": {}
+      },
+      "id": "notify-team",
+      "name": "Notify Team (internal)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [2000, 400],
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Every 1st at 9AM": {
+      "main": [[{ "node": "Client List", "type": "main", "index": 0 }]]
+    },
+    "Client List": {
+      "main": [[
+        { "node": "GHL — Get New Contacts", "type": "main", "index": 0 },
+        { "node": "GHL — Get Opportunities", "type": "main", "index": 0 }
+      ]]
+    },
+    "GHL — Get New Contacts": {
+      "main": [[{ "node": "Merge & Process Data", "type": "main", "index": 0 }]]
+    },
+    "GHL — Get Opportunities": {
+      "main": [[{ "node": "Merge & Process Data", "type": "main", "index": 0 }]]
+    },
+    "Merge & Process Data": {
+      "main": [[{ "node": "AI — Generate Report", "type": "main", "index": 0 }]]
+    },
+    "AI — Generate Report": {
+      "main": [[{ "node": "Format Email + WhatsApp", "type": "main", "index": 0 }]]
+    },
+    "Format Email + WhatsApp": {
+      "main": [[{ "node": "GHL — Find Contact", "type": "main", "index": 0 }]]
+    },
+    "GHL — Find Contact": {
+      "main": [[
+        { "node": "GHL — Send Email Report", "type": "main", "index": 0 },
+        { "node": "GHL — Send WhatsApp Summary", "type": "main", "index": 0 },
+        { "node": "Notify Team (internal)", "type": "main", "index": 0 }
+      ]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "galaxy-reports" }, { "name": "monthly" }]
+}
