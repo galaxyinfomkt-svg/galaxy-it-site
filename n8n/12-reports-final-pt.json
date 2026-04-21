@@ -1,0 +1,177 @@
+{
+  "name": "Galaxy IT — Relatorios Mensais (v2)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Execute Manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": { "rule": { "interval": [{ "triggerAtDay": 1, "triggerAtHour": 9 }] } },
+      "id": "schedule",
+      "name": "Dia 1 as 9AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "const clients = [\n  { name: 'Alfa Construction Inc.', ghlKey: 'YOUR_GHL_KEY', email: 'info@alfapaintingcarpentry.com', site: 'https://www.alfapaintingcarpentry.com/' },\n  { name: 'Wolfs Siding Inc', ghlKey: 'YOUR_GHL_KEY', email: 'info@wolfs-siding.com', site: 'https://wolfs-siding.com/' },\n  { name: 'RS Development Group', ghlKey: 'YOUR_GHL_KEY', email: 'info@rs-developmentgroup.com', site: 'https://rs-developmentgroup.com/' },\n  { name: 'Mass HVAC', ghlKey: 'YOUR_GHL_KEY', email: 'info@masshvac.net', site: 'https://masshvac.net/' },\n  { name: 'Maia Construction Inc', ghlKey: 'YOUR_GHL_KEY', email: 'contact@maiaconstruction.com', site: 'https://maiaconstruction.com/' },\n  { name: 'JH Painting Services', ghlKey: 'YOUR_GHL_KEY', email: 'contact@jhpaintingservices.com', site: 'https://jhpaintingservices.com/' },\n  { name: 'Dorys Cleaning Services', ghlKey: 'YOUR_GHL_KEY', email: 'contact@doryscleaningservices.com', site: 'https://doryscleaningservices.com/' }\n];\n\nconst TEST_EMAIL = 'galaxyinfomkt@gmail.com';\nclients.forEach(c => { c.originalEmail = c.email; c.email = TEST_EMAIL; });\n\nreturn clients.map(c => ({ json: c }));"
+      },
+      "id": "clients",
+      "name": "Lista de Clientes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [420, 400]
+    },
+    {
+      "parameters": {
+        "url": "=https://rest.gohighlevel.com/v1/contacts/?limit=100&orderByField=dateAdded&orderByDirection=desc",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{ $json.ghlKey }}" }] },
+        "options": { "timeout": 15000 }
+      },
+      "id": "contacts",
+      "name": "GHL - Contatos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Lista de Clientes').item.json;\nconst contactsData = $json;\nconst now = new Date();\n// GSC has 2-3 day data delay; end date = today - 3 days\n// Default GSC range = last 28 days (matches what user sees in UI)\nconst gscEnd = new Date(now.getTime() - 3*24*60*60*1000);\nconst gscStart = new Date(gscEnd.getTime() - 28*24*60*60*1000);\n// Leads range = full 30 days\nconst leadsStart = new Date(now.getTime() - 30*24*60*60*1000);\nreturn [{ json: {\n  ...client,\n  _contactsData: contactsData,\n  startDate: gscStart.toISOString().split('T')[0],\n  endDate: gscEnd.toISOString().split('T')[0],\n  leadsStartDate: leadsStart.toISOString().split('T')[0],\n  leadsEndDate: now.toISOString().split('T')[0]\n}}];"
+      },
+      "id": "pass-to-gsc",
+      "name": "Preparar GSC",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 400]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.googleapis.com/webmasters/v3/sites",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "options": { "timeout": 15000, "response": { "response": { "neverError": true } } }
+      },
+      "id": "gsc-list-sites",
+      "name": "GSC - Listar Sites",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [850, 400],
+      "credentials": {
+        "googleOAuth2Api": { "id": "2QJpqdy7mQVJSshh", "name": "Google OAuth" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Preparar GSC').item.json;\nconst sitesResp = $json;\nconst sites = sitesResp.siteEntry || [];\n\n// Extract domain from client site\nconst clientUrl = client.site.replace(/https?:\\/\\//, '').replace(/\\/$/, '');\nconst clientDomain = clientUrl.replace(/^www\\./, '');\n\n// Find matching site in GSC (prefer domain property, fallback to url-prefix)\nlet matchedSite = null;\nfor (const s of sites) {\n  const url = s.siteUrl || '';\n  if (url === 'sc-domain:' + clientDomain) { matchedSite = url; break; }\n}\nif (!matchedSite) {\n  for (const s of sites) {\n    const url = s.siteUrl || '';\n    const urlClean = url.replace(/https?:\\/\\//, '').replace(/\\/$/, '').replace(/^www\\./, '');\n    if (urlClean === clientDomain) { matchedSite = url; break; }\n  }\n}\n\nreturn [{ json: {\n  ...client,\n  gscSiteUrl: matchedSite || '',\n  gscAvailable: !!matchedSite,\n  allGscSites: sites.map(s => s.siteUrl).join(', ')\n}}];"
+      },
+      "id": "match-gsc",
+      "name": "Encontrar Site no GSC",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [930, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://www.googleapis.com/webmasters/v3/sites/{{ encodeURIComponent($json.gscSiteUrl || 'none') }}/searchAnalytics/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\"startDate\":\"{{ $json.startDate }}\",\"endDate\":\"{{ $json.endDate }}\"}",
+        "options": { "timeout": 15000, "response": { "response": { "neverError": true } } }
+      },
+      "id": "gsc-totals",
+      "name": "GSC - Totais",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1010, 400],
+      "credentials": {
+        "googleOAuth2Api": { "id": "2QJpqdy7mQVJSshh", "name": "Google OAuth" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Encontrar Site no GSC').item.json;\nconst contactsData = client._contactsData || {};\nconst gscData = $json || {};\nconst allContacts = contactsData.contacts || [];\n\nconst now = new Date();\nconst thirtyAgo = new Date(now.getTime() - 30*24*60*60*1000);\nconst thirtyAgoMs = thirtyAgo.getTime();\n\nconst last30 = allContacts.filter(c => {\n  if (!c.dateAdded) return false;\n  return new Date(c.dateAdded).getTime() >= thirtyAgoMs;\n});\n\nconst sources30d = {};\nlast30.forEach(c => { const s = c.source || c.tags?.[0] || 'Direto'; sources30d[s] = (sources30d[s]||0)+1; });\nconst sourcesList = Object.entries(sources30d).sort((a,b)=>b[1]-a[1]);\nconst topSources = sourcesList.slice(0,5).map(([k,v])=>k+' ('+v+')').join(', ') || 'Nenhum lead novo';\nconst sourcesDetailed = sourcesList.map(([k,v])=>'- ' + k + ': ' + v + ' leads').join('\\n') || '- Nenhum lead novo no periodo';\n\n// GSC data processing\nlet impressions = 0, clicks = 0, avgCtr = '0', avgPos = '0';\nconst gscRows = gscData.rows || [];\nif (gscRows.length > 0) {\n  gscRows.forEach(r => { impressions += r.impressions; clicks += r.clicks; });\n  avgCtr = impressions > 0 ? ((clicks/impressions)*100).toFixed(2) : '0';\n  avgPos = (gscRows.reduce((s,r)=>s+r.position,0) / gscRows.length).toFixed(1);\n}\nconst hasGsc = impressions > 0;\nconst gscInfo = hasGsc \n  ? 'Impressoes no Google: ' + impressions + ' | Cliques: ' + clicks + ' | CTR: ' + avgCtr + '% | Posicao media: ' + avgPos\n  : 'Dados do Google Search Console ainda nao disponiveis (site precisa estar verificado no GSC com a conta da agencia)';\n\nconst mesesPT = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];\nconst monthName = mesesPT[now.getMonth()] + ' de ' + now.getFullYear();\nconst startFmt = thirtyAgo.getDate() + '/' + (thirtyAgo.getMonth()+1) + '/' + thirtyAgo.getFullYear();\nconst endFmt = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear();\nconst period = startFmt + ' a ' + endFmt;\n\nconst prompt = 'IMPORTANTE: Escreva APENAS em portugues brasileiro. NUNCA use ingles.\\n\\nVoce e redator de relatorios da Galaxy IT & Marketing.\\n\\nCliente: ' + client.name + '\\nSite: ' + client.site + '\\nPeriodo: ' + period + '\\n\\n=== LEADS (ultimos 30 dias) ===\\nTotal de novos leads: ' + last30.length + '\\n\\nDe onde vieram:\\n' + sourcesDetailed + '\\n\\n=== SITE (Google Search Console) ===\\n' + gscInfo + '\\n\\nESTRUTURA DO RELATORIO:\\n1. \"Ola, equipe da ' + client.name + '!\"\\n2. Destaques: ' + last30.length + ' novos leads + dados do site (se disponiveis)\\n3. De onde vieram os leads: distribuicao por fonte\\n4. Desempenho do site no Google (se tiver dados reais de impressoes)\\n5. Uma recomendacao baseada nos numeros\\n6. \"Abracos, Equipe Galaxy IT & Marketing\"\\n\\nREGRAS:\\n- TUDO em portugues brasileiro\\n- Use os numeros reais acima\\n- Se GSC indisponivel, mencione brevemente e foque em leads\\n- Maximo 220 palavras';\n\nconst body = {\n  model: 'llama-3.3-70b-versatile',\n  messages: [\n    { role: 'system', content: 'Voce e um redator brasileiro. Escreve APENAS em portugues do Brasil. Nunca usa ingles.' },\n    { role: 'user', content: prompt }\n  ],\n  max_tokens: 800,\n  temperature: 0.5\n};\n\nreturn [{ json: {\n  ...client,\n  newContacts: last30.length,\n  topSources,\n  impressions, clicks, avgCtr, avgPos,\n  monthName,\n  period,\n  aiBody: JSON.stringify(body)\n}}];"
+      },
+      "id": "process",
+      "name": "Processar Dados",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer YOUR_GROQ_API_KEY" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.aiBody }}",
+        "options": { "timeout": 25000 }
+      },
+      "id": "ai",
+      "name": "IA - Gerar Relatorio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Processar Dados').item.json;\nconst aiData = $json;\nconst report = aiData.choices?.[0]?.message?.content || 'Erro ao gerar relatorio';\nconst monthName = client.monthName;\nconst rHtml = report.replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>');\nconst subject = '[TESTE - ' + client.name + '] Relatorio Mensal - ' + monthName;\n\nconst impressions = client.impressions || 0;\nconst clicks = client.clicks || 0;\nconst ctr = client.avgCtr || '0';\n\nconst html = '<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body style=\"font-family:Arial,sans-serif;max-width:640px;margin:0 auto;padding:20px;color:#333;background:#f5f5f5;\">' +\n'<div style=\"background:linear-gradient(135deg,#0d1b2a,#1a237e);padding:30px;border-radius:12px 12px 0 0;text-align:center;\">' +\n'<h1 style=\"color:#ffd700;margin:0;font-size:22px;\">Galaxy IT &amp; Marketing</h1>' +\n'<p style=\"color:rgba(255,255,255,0.7);margin:8px 0 0;font-size:14px;\">Relatorio Mensal de Desempenho &mdash; ' + monthName + '</p>' +\n'<p style=\"color:rgba(255,255,255,0.5);margin:4px 0 0;font-size:12px;\">Cliente: ' + client.name + '</p>' +\n'</div>' +\n'<div style=\"background:#fff;padding:30px;border:1px solid #e5e5e5;border-top:none;\">' +\n'<table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin-bottom:20px;\"><tr>' +\n'<td width=\"25%\" style=\"padding:0 4px;text-align:center;\"><div style=\"background:#f8f9fa;padding:16px 8px;border-radius:8px;border-top:3px solid #ffd700;\">' +\n'<div style=\"font-size:24px;font-weight:800;color:#1a237e;\">' + client.newContacts + '</div>' +\n'<div style=\"font-size:9px;color:#888;margin-top:4px;text-transform:uppercase;\">Novos Leads</div>' +\n'</div></td>' +\n'<td width=\"25%\" style=\"padding:0 4px;text-align:center;\"><div style=\"background:#f8f9fa;padding:16px 8px;border-radius:8px;border-top:3px solid #2e7d32;\">' +\n'<div style=\"font-size:24px;font-weight:800;color:#1a237e;\">' + impressions.toLocaleString('pt-BR') + '</div>' +\n'<div style=\"font-size:9px;color:#888;margin-top:4px;text-transform:uppercase;\">Impressoes</div>' +\n'</div></td>' +\n'<td width=\"25%\" style=\"padding:0 4px;text-align:center;\"><div style=\"background:#f8f9fa;padding:16px 8px;border-radius:8px;border-top:3px solid #1a237e;\">' +\n'<div style=\"font-size:24px;font-weight:800;color:#1a237e;\">' + clicks + '</div>' +\n'<div style=\"font-size:9px;color:#888;margin-top:4px;text-transform:uppercase;\">Cliques</div>' +\n'</div></td>' +\n'<td width=\"25%\" style=\"padding:0 4px;text-align:center;\"><div style=\"background:#f8f9fa;padding:16px 8px;border-radius:8px;border-top:3px solid #ffd700;\">' +\n'<div style=\"font-size:24px;font-weight:800;color:#1a237e;\">' + ctr + '%</div>' +\n'<div style=\"font-size:9px;color:#888;margin-top:4px;text-transform:uppercase;\">CTR</div>' +\n'</div></td>' +\n'</tr></table>' +\n'<p style=\"font-size:14px;line-height:1.8;\">' + rHtml + '</p>' +\n'</div>' +\n'<div style=\"background:#f8f9fa;padding:20px;border-radius:0 0 12px 12px;text-align:center;border:1px solid #e5e5e5;border-top:none;\">' +\n'<p style=\"margin:0;font-size:12px;color:#888;\">Duvidas? <a href=\"https://galaxyinfo.us/support\" style=\"color:#1a237e;font-weight:600;\">Central de Ajuda</a></p>' +\n'<p style=\"margin:8px 0 0;font-size:11px;color:#aaa;\">&copy; 2026 Galaxy IT &amp; Marketing &middot; Worcester, MA</p>' +\n'</div></body></html>';\n\nreturn [{ json: { ...client, report, html, subject } }];"
+      },
+      "id": "format",
+      "name": "Formatar Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "fromEmail": "galaxyinfomkt@gmail.com",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "send",
+      "name": "Enviar Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1560, 400],
+      "credentials": {
+        "smtp": { "id": "2ei5OJfzS1oCZZ8e", "name": "Gmail SMTP - Galaxy" }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Manually": { "main": [[{ "node": "Lista de Clientes", "type": "main", "index": 0 }]] },
+    "Dia 1 as 9AM": { "main": [[{ "node": "Lista de Clientes", "type": "main", "index": 0 }]] },
+    "Lista de Clientes": { "main": [[{ "node": "GHL - Contatos", "type": "main", "index": 0 }]] },
+    "GHL - Contatos": { "main": [[{ "node": "Preparar GSC", "type": "main", "index": 0 }]] },
+    "Preparar GSC": { "main": [[{ "node": "GSC - Listar Sites", "type": "main", "index": 0 }]] },
+    "GSC - Listar Sites": { "main": [[{ "node": "Encontrar Site no GSC", "type": "main", "index": 0 }]] },
+    "Encontrar Site no GSC": { "main": [[{ "node": "GSC - Totais", "type": "main", "index": 0 }]] },
+    "GSC - Totais": { "main": [[{ "node": "Processar Dados", "type": "main", "index": 0 }]] },
+    "Processar Dados": { "main": [[{ "node": "IA - Gerar Relatorio", "type": "main", "index": 0 }]] },
+    "IA - Gerar Relatorio": { "main": [[{ "node": "Formatar Email", "type": "main", "index": 0 }]] },
+    "Formatar Email": { "main": [[{ "node": "Enviar Email", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

@@ -1,0 +1,112 @@
+{
+  "name": "Galaxy IT — Monthly Client Reports",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Execute Manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": { "rule": { "interval": [{ "triggerAtDay": 1, "triggerAtHour": 9 }] } },
+      "id": "schedule",
+      "name": "Every 1st at 9AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "const clients = [\n  { name: 'Alfa Construction Inc.', ghlKey: 'YOUR_GHL_KEY', email: 'info@alfapaintingcarpentry.com', site: 'https://www.alfapaintingcarpentry.com/' },\n  { name: 'Wolfs Siding Inc', ghlKey: 'YOUR_GHL_KEY', email: 'info@wolfs-siding.com', site: 'https://wolfs-siding.com/' },\n  { name: 'RS Development Group', ghlKey: 'YOUR_GHL_KEY', email: 'info@rs-developmentgroup.com', site: 'https://rs-developmentgroup.com/' },\n  { name: 'Mass HVAC', ghlKey: 'YOUR_GHL_KEY', email: 'info@masshvac.net', site: 'https://masshvac.net/' },\n  { name: 'Maia Construction Inc', ghlKey: 'YOUR_GHL_KEY', email: 'contact@maiaconstruction.com', site: 'https://maiaconstruction.com/' },\n  { name: 'JH Painting Services', ghlKey: 'YOUR_GHL_KEY', email: 'contact@jhpaintingservices.com', site: 'https://jhpaintingservices.com/' },\n  { name: 'Dorys Cleaning Services', ghlKey: 'YOUR_GHL_KEY', email: 'contact@doryscleaningservices.com', site: 'https://doryscleaningservices.com/' }\n];\n\n// TEST MODE — all emails go to Galaxy IT instead of clients\nconst TEST_MODE = true;\nconst TEST_EMAIL = 'galaxyinfomkt@gmail.com';\nif (TEST_MODE) clients.forEach(c => { c.originalEmail = c.email; c.email = TEST_EMAIL; });\n\nreturn clients.map(c => ({ json: c }));"
+      },
+      "id": "clients",
+      "name": "Client List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [420, 400]
+    },
+    {
+      "parameters": {
+        "url": "=https://rest.gohighlevel.com/v1/contacts/?limit=100",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{ $json.ghlKey }}" }] },
+        "options": { "timeout": 15000 }
+      },
+      "id": "contacts",
+      "name": "GHL — Get Contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Client List').item.json;\nconst data = $json;\nconst contacts = data.contacts || [];\nconst sources = {};\ncontacts.forEach(c => { const s = c.source || c.tags?.[0] || 'Direct'; sources[s] = (sources[s]||0)+1; });\nconst topSources = Object.entries(sources).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>k+': '+v).join(', ') || 'No data';\nconst now = new Date();\nconst thirtyAgo = new Date(now.getTime() - 30*24*60*60*1000);\nreturn [{ json: {\n  ...client,\n  totalContacts: contacts.length,\n  topSources,\n  monthName: now.toLocaleString('en-US', { month: 'long', year: 'numeric' }),\n  period: thirtyAgo.toISOString().split('T')[0] + ' to ' + now.toISOString().split('T')[0]\n}}];"
+      },
+      "id": "merge",
+      "name": "Process Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer YOUR_GROQ_API_KEY" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"You are a marketing report writer for Galaxy IT & Marketing. Write a monthly performance report for '{{ $json.name }}'.\\n\\nDATA ({{ $json.period }}):\\n- Contacts in CRM: {{ $json.totalContacts }}\\n- Lead sources (top): {{ $json.topSources }}\\n- Website: {{ $json.site }}\\n\\nRULES:\\n- Start with 'Hi {{ $json.name }},'\\n- Key Highlights: 3-4 bullets with specific numbers\\n- Lead Analysis: which sources work, which need attention\\n- One specific recommendation\\n- End with 'Best regards, Galaxy IT & Marketing team'\\n- Max 200 words. Professional but friendly.\"\n  }],\n  \"max_tokens\": 600,\n  \"temperature\": 0.7\n}",
+        "options": { "timeout": 25000 }
+      },
+      "id": "ai",
+      "name": "AI — Write Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Process Data').item.json;\nconst report = $json.choices[0].message.content;\nconst monthName = client.monthName;\nconst rHtml = report.replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>');\nconst subjectPrefix = client.originalEmail ? '[TEST → would go to ' + client.originalEmail + '] ' : '';\n\nconst html = '<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body style=\"font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;background:#f5f5f5;\">' +\n'<div style=\"background:linear-gradient(135deg,#0d1b2a,#1a237e);padding:30px;border-radius:12px 12px 0 0;text-align:center;\">' +\n'<h1 style=\"color:#ffd700;margin:0;font-size:22px;\">Galaxy IT &amp; Marketing</h1>' +\n'<p style=\"color:rgba(255,255,255,0.7);margin:8px 0 0;font-size:14px;\">Monthly Performance Report &mdash; ' + monthName + '</p>' +\n'<p style=\"color:rgba(255,255,255,0.5);margin:4px 0 0;font-size:12px;\">Client: ' + client.name + '</p>' +\n'</div>' +\n'<div style=\"background:#fff;padding:30px;border:1px solid #e5e5e5;border-top:none;\">' +\n'<div style=\"text-align:center;background:#f8f9fa;padding:20px;border-radius:8px;border-top:3px solid #ffd700;margin-bottom:20px;\">' +\n'<div style=\"font-size:32px;font-weight:800;color:#1a237e;\">' + client.totalContacts + '</div>' +\n'<div style=\"font-size:11px;color:#888;margin-top:4px;\">Total Contacts in CRM</div>' +\n'</div>' +\n'<p style=\"font-size:14px;line-height:1.8;\">' + rHtml + '</p>' +\n'</div>' +\n'<div style=\"background:#f8f9fa;padding:20px;border-radius:0 0 12px 12px;text-align:center;border:1px solid #e5e5e5;border-top:none;\">' +\n'<p style=\"margin:0;font-size:12px;color:#888;\">Questions? <a href=\"https://galaxyinfo.us/support\" style=\"color:#1a237e;font-weight:600;\">Help Center</a></p>' +\n'<p style=\"margin:8px 0 0;font-size:11px;color:#aaa;\">&copy; 2026 Galaxy IT &amp; Marketing</p>' +\n'</div></body></html>';\n\nreturn [{ json: { ...client, report, html, subject: subjectPrefix + 'Monthly Report — ' + client.name + ' — ' + monthName } }];"
+      },
+      "id": "format",
+      "name": "Format Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "send",
+      "name": "Send Email (Gmail)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1560, 400],
+      "credentials": {
+        "gmailOAuth2": { "id": "VGD8HaHwz6xQeeP9", "name": "Gmail account 4" }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Manually": { "main": [[{ "node": "Client List", "type": "main", "index": 0 }]] },
+    "Every 1st at 9AM": { "main": [[{ "node": "Client List", "type": "main", "index": 0 }]] },
+    "Client List": { "main": [[{ "node": "GHL — Get Contacts", "type": "main", "index": 0 }]] },
+    "GHL — Get Contacts": { "main": [[{ "node": "Process Data", "type": "main", "index": 0 }]] },
+    "Process Data": { "main": [[{ "node": "AI — Write Report", "type": "main", "index": 0 }]] },
+    "AI — Write Report": { "main": [[{ "node": "Format Email", "type": "main", "index": 0 }]] },
+    "Format Email": { "main": [[{ "node": "Send Email (Gmail)", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

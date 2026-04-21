@@ -1,0 +1,118 @@
+{
+  "name": "Galaxy IT — Monthly Client Reports (FINAL)",
+  "nodes": [
+    {
+      "parameters": { "rule": { "interval": [{ "triggerAtDay": 1, "triggerAtHour": 9 }] } },
+      "id": "schedule", "name": "Every 1st at 9AM",
+      "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [200, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const clients = [\n  {\n    name: 'Alfa Construction Inc.',\n    ghlKey: 'YOUR_GHL_KEY',\n    email: 'info@alfapaintingcarpentry.com',\n    phone: '+15085963750',\n    site: 'https://www.alfapaintingcarpentry.com/',\n    language: 'en'\n  },\n  {\n    name: 'Wolfs Siding Inc',\n    ghlKey: 'YOUR_GHL_KEY',\n    email: 'info@wolfs-siding.com',\n    phone: '+17744841895',\n    site: 'https://wolfs-siding.com/',\n    language: 'en'\n  },\n  {\n    name: 'RS Development Group',\n    ghlKey: 'YOUR_GHL_KEY',\n    email: 'info@rs-developmentgroup.com',\n    phone: '+17745123176',\n    site: 'https://rs-developmentgroup.com/',\n    language: 'en'\n  },\n  {\n    name: 'Mass HVAC',\n    ghlKey: 'YOUR_GHL_KEY',\n    email: 'info@masshvac.net',\n    phone: '+15087404113',\n    site: 'https://masshvac.net/',\n    language: 'en'\n  },\n  {\n    name: 'A&M Painter Inc',\n    ghlKey: 'YOUR_GHL_KEY',\n    email: 'ampainter3766@gmail.com',\n    phone: '+17744179689',\n    site: 'https://ampainterinc.com/',\n    language: 'en'\n  },\n  {\n    name: 'Maia Construction Inc',\n    ghlKey: 'YOUR_GHL_KEY',\n    email: 'contact@maiaconstruction.com',\n    phone: '+15088599880',\n    site: 'https://maiaconstruction.com/',\n    language: 'en'\n  },\n  {\n    name: 'JH Painting Services',\n    ghlKey: 'YOUR_GHL_KEY',\n    email: 'contact@jhpaintingservices.com',\n    phone: '+15086908886',\n    site: 'https://jhpaintingservices.com/',\n    language: 'en'\n  },\n  {\n    name: 'Dorys Cleaning Services',\n    ghlKey: 'YOUR_GHL_KEY',\n    email: 'contact@doryscleaningservices.com',\n    phone: '+19783078107',\n    site: 'https://doryscleaningservices.com/',\n    language: 'en'\n  }\n];\n\n// FOR TESTING: send all reports to Galaxy IT email\nconst TEST_MODE = true;\nconst TEST_EMAIL = 'galaxyinfomkt@gmail.com';\n\nif (TEST_MODE) {\n  clients.forEach(c => { c.originalEmail = c.email; c.email = TEST_EMAIL; });\n}\n\nreturn clients.map(c => ({ json: c }));"
+      },
+      "id": "clients", "name": "8 Clients (TEST MODE → galaxyinfomkt)",
+      "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [420, 400]
+    },
+    {
+      "parameters": {
+        "url": "=https://rest.gohighlevel.com/v1/contacts/?limit=100",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{ $json.ghlKey }}" }] },
+        "options": { "timeout": 15000 }
+      },
+      "id": "ghl-contacts", "name": "GHL — Get Contacts",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://rest.gohighlevel.com/v1/pipelines/",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{ $json.ghlKey }}" }] },
+        "options": { "timeout": 15000 }
+      },
+      "id": "ghl-pipes", "name": "GHL — Get Pipelines",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('8 Clients (TEST MODE → galaxyinfomkt)').item.json;\nconst contactsData = $('GHL — Get Contacts').item.json;\nconst pipelinesData = $('GHL — Get Pipelines').item.json;\n\nconst contacts = contactsData.contacts || [];\nconst sources = {};\ncontacts.forEach(c => {\n  const s = c.source || c.tags?.[0] || 'Direct';\n  sources[s] = (sources[s] || 0) + 1;\n});\n\nconst pipelines = pipelinesData.pipelines || [];\nlet totalOpps = 0, won = 0, lost = 0, open = 0;\npipelines.forEach(p => {\n  (p.stages || []).forEach(s => {\n    // Count opportunities per stage if available\n  });\n});\nconst pipeInfo = pipelines.map(p => p.name + ' (' + p.stages.length + ' stages)').join(', ') || 'No pipeline';\n\nconst now = new Date();\nconst thirtyAgo = new Date(now.getTime() - 30*24*60*60*1000);\n\nreturn [{ json: {\n  ...client,\n  totalContacts: contacts.length,\n  leadSources: JSON.stringify(sources),\n  topSources: Object.entries(sources).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>k+': '+v).join(', '),\n  pipelines: pipeInfo,\n  monthName: now.toLocaleString('en-US', { month: 'long', year: 'numeric' }),\n  period: thirtyAgo.toISOString().split('T')[0] + ' to ' + now.toISOString().split('T')[0]\n}}];"
+      },
+      "id": "merge", "name": "Process Data",
+      "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "Authorization", "value": "Bearer YOUR_GROQ_API_KEY" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"You are a marketing report writer for Galaxy IT & Marketing, a digital marketing agency. Write a monthly performance report for the client '{{ $json.name }}'.\\n\\nWrite in {{ $json.language === 'pt' ? 'Brazilian Portuguese' : $json.language === 'es' ? 'Spanish' : 'English' }}.\\n\\nDATA ({{ $json.period }}):\\n- Total contacts in CRM: {{ $json.totalContacts }}\\n- Lead sources (top): {{ $json.topSources }}\\n- Pipeline: {{ $json.pipelines }}\\n- Website: {{ $json.site }}\\n\\nWRITING RULES:\\n- Start with 'Hi [client name],' greeting\\n- Key Highlights: 3-4 bullet points with specific numbers\\n- Lead Analysis: which sources are working, which need attention\\n- One specific recommendation they can act on\\n- End with 'Best regards, Galaxy IT & Marketing team'\\n- Max 200 words total\\n- Professional but friendly tone\\n- Use the actual numbers from the data\"\n  }],\n  \"max_tokens\": 600,\n  \"temperature\": 0.7\n}",
+        "options": { "timeout": 25000 }
+      },
+      "id": "ai", "name": "AI — Write Report",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Process Data').item.json;\nconst report = $json.choices[0].message.content;\nconst monthName = client.monthName;\nconst reportHtml = report.replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>').replace(/\\*(.*?)\\*/g, '<em>$1</em>');\n\nconst html = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head>\n<body style=\"font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;background:#f5f5f5;\">\n<div style=\"background:linear-gradient(135deg,#0d1b2a,#1a237e);padding:30px;border-radius:12px 12px 0 0;text-align:center;\">\n  <h1 style=\"color:#ffd700;margin:0;font-size:22px;\">Galaxy IT & Marketing</h1>\n  <p style=\"color:rgba(255,255,255,0.7);margin:8px 0 0;font-size:14px;\">Monthly Performance Report</p>\n  <p style=\"color:rgba(255,255,255,0.5);margin:4px 0 0;font-size:12px;\">${monthName}</p>\n</div>\n<div style=\"background:#fff;padding:10px 30px;border-left:1px solid #e5e5e5;border-right:1px solid #e5e5e5;\">\n  <div style=\"display:flex;gap:10px;margin:20px 0;text-align:center;\">\n    <div style=\"flex:1;background:#f8f9fa;padding:14px 8px;border-radius:8px;border-top:3px solid #ffd700;\">\n      <div style=\"font-size:22px;font-weight:800;color:#1a237e;\">${client.totalContacts}</div>\n      <div style=\"font-size:10px;color:#888;margin-top:2px;\">Contacts</div>\n    </div>\n    <div style=\"flex:1;background:#f8f9fa;padding:14px 8px;border-radius:8px;border-top:3px solid #2e7d32;\">\n      <div style=\"font-size:22px;font-weight:800;color:#1a237e;\">${client.topSources.split(',')[0]?.split(':')[1]?.trim() || '—'}</div>\n      <div style=\"font-size:10px;color:#888;margin-top:2px;\">Top Source</div>\n    </div>\n  </div>\n</div>\n<div style=\"background:#fff;padding:0 30px 30px;border:1px solid #e5e5e5;border-top:none;\">\n  <p style=\"font-size:14px;line-height:1.8;\">${reportHtml}</p>\n</div>\n<div style=\"background:#f8f9fa;padding:20px;border-radius:0 0 12px 12px;text-align:center;border:1px solid #e5e5e5;border-top:none;\">\n  <p style=\"margin:0;font-size:12px;color:#888;\">Questions? <a href=\"https://galaxyinfo.us/support\" style=\"color:#1a237e;font-weight:600;\">Visit our Help Center</a> or reply to this email.</p>\n  <p style=\"margin:8px 0 0;font-size:11px;color:#aaa;\">&copy; 2026 Galaxy IT & Marketing &middot; Worcester, MA</p>\n</div>\n</body></html>`;\n\nlet wa = '\\ud83d\\udcca *Monthly Report — ' + monthName + '*\\n';\nwa += '*' + client.name + '*\\n\\n';\nwa += '\\ud83d\\udc65 ' + client.totalContacts + ' contacts in CRM\\n';\nwa += '\\ud83d\\udcc8 Top sources: ' + client.topSources + '\\n';\nwa += '\\ud83d\\udcbb Website: ' + client.site + '\\n\\n';\nwa += 'Full report sent to your email!';\n\nreturn [{ json: { ...client, report, html, wa, monthName } }];"
+      },
+      "id": "format", "name": "Format Email + WhatsApp",
+      "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "url": "=https://rest.gohighlevel.com/v1/contacts/lookup?email={{ encodeURIComponent($json.email) }}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{ $json.ghlKey }}" }] },
+        "options": {}
+      },
+      "id": "find", "name": "GHL — Find Contact",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [1560, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://rest.gohighlevel.com/v1/conversations/messages",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{ $('Format Email + WhatsApp').item.json.ghlKey }}" }] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"Email\",\n  \"contactId\": \"{{ $json.contact?.id || $json.contacts?.[0]?.id || '' }}\",\n  \"subject\": \"Your Monthly Performance Report — {{ $('Format Email + WhatsApp').item.json.monthName }} | Galaxy IT & Marketing\",\n  \"html\": {{ JSON.stringify($('Format Email + WhatsApp').item.json.html) }}\n}",
+        "options": {}
+      },
+      "id": "email", "name": "Send Email Report",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://rest.gohighlevel.com/v1/conversations/messages",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{ $('Format Email + WhatsApp').item.json.ghlKey }}" }] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"WhatsApp\",\n  \"contactId\": \"{{ $json.contact?.id || $json.contacts?.[0]?.id || '' }}\",\n  \"message\": \"{{ $('Format Email + WhatsApp').item.json.wa }}\"\n}",
+        "options": {}
+      },
+      "id": "whatsapp", "name": "Send WhatsApp Summary",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [1780, 500],
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Every 1st at 9AM": { "main": [[{ "node": "8 Clients (TEST MODE → galaxyinfomkt)", "type": "main", "index": 0 }]] },
+    "8 Clients (TEST MODE → galaxyinfomkt)": { "main": [[
+      { "node": "GHL — Get Contacts", "type": "main", "index": 0 },
+      { "node": "GHL — Get Pipelines", "type": "main", "index": 0 }
+    ]] },
+    "GHL — Get Contacts": { "main": [[{ "node": "Process Data", "type": "main", "index": 0 }]] },
+    "GHL — Get Pipelines": { "main": [[{ "node": "Process Data", "type": "main", "index": 0 }]] },
+    "Process Data": { "main": [[{ "node": "AI — Write Report", "type": "main", "index": 0 }]] },
+    "AI — Write Report": { "main": [[{ "node": "Format Email + WhatsApp", "type": "main", "index": 0 }]] },
+    "Format Email + WhatsApp": { "main": [[{ "node": "GHL — Find Contact", "type": "main", "index": 0 }]] },
+    "GHL — Find Contact": { "main": [[
+      { "node": "Send Email Report", "type": "main", "index": 0 },
+      { "node": "Send WhatsApp Summary", "type": "main", "index": 0 }
+    ]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

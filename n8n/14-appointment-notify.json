@@ -1,0 +1,100 @@
+{
+  "name": "Galaxy IT — Notificacao de Agendamento (Help Center)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "help-appointment",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook - Novo Agendamento",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "webhookId": "help-appointment"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nconst client = {\n  name: body.contact_name || body.first_name || 'Cliente',\n  email: body.email || body.contact_email || '',\n  phone: body.phone || body.contact_phone || '',\n  date: body.appointment_start_time || body.date || '',\n  duration: body.duration || body.appointment_duration || '30 min',\n  notes: body.notes || body.issue || body.message || 'Sem notas',\n  type: body.appointment_type || 'Suporte',\n  calendar: body.calendar_name || 'Help Center'\n};\n\nconst now = new Date();\nreturn [{ json: {\n  ...client,\n  receivedAt: now.toISOString(),\n  aiPrompt: 'Resumo rapido da situacao do cliente para a equipe antes da chamada:\\n\\nCliente: ' + client.name + '\\nTipo: ' + client.type + '\\nNotas/Problema: ' + client.notes + '\\n\\nEm 2-3 frases em portugues, faca um briefing claro: o que o cliente precisa e o que a equipe deve preparar antes da chamada.'\n}}];"
+      },
+      "id": "extract",
+      "name": "Extrair Dados",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [420, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer YOUR_GROQ_API_KEY" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: 'Voce faz briefings curtos em portugues brasileiro para equipe de suporte. 2-3 frases, direto ao ponto.' }, { role: 'user', content: $json.aiPrompt }], max_tokens: 300, temperature: 0.5 }) }}",
+        "options": { "timeout": 20000 }
+      },
+      "id": "ai-summary",
+      "name": "IA - Gerar Briefing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [640, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $('Extrair Dados').item.json;\nconst briefing = $json.choices?.[0]?.message?.content || data.notes;\n\nconst html = '<!DOCTYPE html><html><body style=\"font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;\">' +\n'<div style=\"background:#1a237e;padding:20px;color:#fff;text-align:center;border-radius:8px 8px 0 0;\">' +\n'<h2 style=\"margin:0;color:#ffd700;\">Novo Agendamento - Help Center</h2>' +\n'</div>' +\n'<div style=\"background:#fff;padding:24px;border:1px solid #e5e5e5;\">' +\n'<h3 style=\"margin-top:0;color:#1a237e;\">Briefing da IA:</h3>' +\n'<p style=\"background:#fffbeb;padding:14px;border-left:4px solid #ffd700;font-size:14px;line-height:1.7;\">' + briefing + '</p>' +\n'<h3 style=\"color:#1a237e;\">Detalhes do Cliente:</h3>' +\n'<table style=\"width:100%;font-size:14px;\">' +\n'<tr><td style=\"padding:6px 0;\"><b>Nome:</b></td><td>' + data.name + '</td></tr>' +\n'<tr><td style=\"padding:6px 0;\"><b>Email:</b></td><td>' + data.email + '</td></tr>' +\n'<tr><td style=\"padding:6px 0;\"><b>Telefone:</b></td><td>' + data.phone + '</td></tr>' +\n'<tr><td style=\"padding:6px 0;\"><b>Data/Hora:</b></td><td>' + data.date + '</td></tr>' +\n'<tr><td style=\"padding:6px 0;\"><b>Duracao:</b></td><td>' + data.duration + '</td></tr>' +\n'<tr><td style=\"padding:6px 0;vertical-align:top;\"><b>Notas:</b></td><td>' + data.notes + '</td></tr>' +\n'</table>' +\n'</div></body></html>';\n\nreturn [{ json: { ...data, briefing, html, subject: 'Nova chamada agendada - ' + data.name + ' (' + data.date + ')' } }];"
+      },
+      "id": "format",
+      "name": "Formatar Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 400]
+    },
+    {
+      "parameters": {
+        "fromEmail": "galaxyinfomkt@gmail.com",
+        "toEmail": "galaxyinfomkt@gmail.com",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "email",
+      "name": "Enviar Email para Time",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1080, 400],
+      "credentials": {
+        "smtp": { "id": "2ei5OJfzS1oCZZ8e", "name": "Gmail SMTP - Galaxy" }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'ok', briefing: $('Formatar Email').item.json.briefing }) }}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Responder OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1300, 400]
+    }
+  ],
+  "connections": {
+    "Webhook - Novo Agendamento": { "main": [[{ "node": "Extrair Dados", "type": "main", "index": 0 }]] },
+    "Extrair Dados": { "main": [[{ "node": "IA - Gerar Briefing", "type": "main", "index": 0 }]] },
+    "IA - Gerar Briefing": { "main": [[{ "node": "Formatar Email", "type": "main", "index": 0 }]] },
+    "Formatar Email": { "main": [[{ "node": "Enviar Email para Time", "type": "main", "index": 0 }]] },
+    "Enviar Email para Time": { "main": [[{ "node": "Responder OK", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

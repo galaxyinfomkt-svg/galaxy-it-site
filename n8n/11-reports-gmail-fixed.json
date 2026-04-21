@@ -1,0 +1,115 @@
+{
+  "name": "Galaxy IT — Monthly Client Reports",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Execute Manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": { "rule": { "interval": [{ "triggerAtDay": 1, "triggerAtHour": 9 }] } },
+      "id": "schedule",
+      "name": "Every 1st at 9AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "const clients = [\n  { name: 'Alfa Construction Inc.', ghlKey: 'YOUR_GHL_KEY', email: 'info@alfapaintingcarpentry.com', site: 'https://www.alfapaintingcarpentry.com/' },\n  { name: 'Wolfs Siding Inc', ghlKey: 'YOUR_GHL_KEY', email: 'info@wolfs-siding.com', site: 'https://wolfs-siding.com/' },\n  { name: 'RS Development Group', ghlKey: 'YOUR_GHL_KEY', email: 'info@rs-developmentgroup.com', site: 'https://rs-developmentgroup.com/' },\n  { name: 'Mass HVAC', ghlKey: 'YOUR_GHL_KEY', email: 'info@masshvac.net', site: 'https://masshvac.net/' },\n  { name: 'Maia Construction Inc', ghlKey: 'YOUR_GHL_KEY', email: 'contact@maiaconstruction.com', site: 'https://maiaconstruction.com/' },\n  { name: 'JH Painting Services', ghlKey: 'YOUR_GHL_KEY', email: 'contact@jhpaintingservices.com', site: 'https://jhpaintingservices.com/' },\n  { name: 'Dorys Cleaning Services', ghlKey: 'YOUR_GHL_KEY', email: 'contact@doryscleaningservices.com', site: 'https://doryscleaningservices.com/' }\n];\n\n// TEST MODE\nconst TEST_MODE = true;\nconst TEST_EMAIL = 'galaxyinfomkt@gmail.com';\nif (TEST_MODE) clients.forEach(c => { c.originalEmail = c.email; c.email = TEST_EMAIL; });\n\nreturn clients.map(c => ({ json: c }));"
+      },
+      "id": "clients",
+      "name": "Client List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [420, 400]
+    },
+    {
+      "parameters": {
+        "url": "=https://rest.gohighlevel.com/v1/contacts/?limit=100&orderByField=dateAdded&orderByDirection=desc",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{ $json.ghlKey }}" }] },
+        "options": { "timeout": 15000 }
+      },
+      "id": "contacts",
+      "name": "GHL — Get Contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Client List').item.json;\nconst data = $json;\nconst allContacts = data.contacts || [];\n\n// Filter ONLY last 30 days by dateAdded\nconst now = new Date();\nconst thirtyAgo = new Date(now.getTime() - 30*24*60*60*1000);\nconst thirtyAgoMs = thirtyAgo.getTime();\n\nconst contacts = allContacts.filter(c => {\n  if (!c.dateAdded) return false;\n  return new Date(c.dateAdded).getTime() >= thirtyAgoMs;\n});\n\nconst sources = {};\ncontacts.forEach(c => { const s = c.source || c.tags?.[0] || 'Direct'; sources[s] = (sources[s]||0)+1; });\nconst topSources = Object.entries(sources).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>k+': '+v).join(', ') || 'Sem dados';\n\nconst period = thirtyAgo.toISOString().split('T')[0] + ' a ' + now.toISOString().split('T')[0];\nconst mesesPT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];\nconst monthName = mesesPT[now.getMonth()] + ' ' + now.getFullYear();\n\nconst prompt = \"Você é um redator de relatórios de marketing da Galaxy IT & Marketing. Escreva um relatório mensal de desempenho para o cliente '\" + client.name + \"' EM PORTUGUÊS DO BRASIL.\\n\\nDADOS REAIS (últimos 30 dias — \" + period + \"):\\n- Novos contatos/leads nos últimos 30 dias: \" + contacts.length + \"\\n- Total de contatos na base (histórico): \" + allContacts.length + \"\\n- Principais fontes de leads do mês: \" + topSources + \"\\n- Site: \" + client.site + \"\\n\\nREGRAS:\\n- Comece com 'Olá, time da \" + client.name + \"!'\\n- Destaques do mês: 3-4 bullets com números específicos\\n- Análise das fontes de leads: quais canais trouxeram mais leads, quais precisam de atenção\\n- Uma recomendação específica e acionável\\n- Termine com 'Abraços, Equipe Galaxy IT & Marketing'\\n- Máximo 200 palavras, tom profissional mas amigável\\n- IMPORTANTE: escreva tudo em português brasileiro, não em inglês\\n- Use os NÚMEROS REAIS dos dados acima, não invente nada\";\n\nconst body = {\n  model: 'llama-3.3-70b-versatile',\n  messages: [{ role: 'user', content: prompt }],\n  max_tokens: 700,\n  temperature: 0.7\n};\n\nreturn [{ json: {\n  ...client,\n  newContacts: contacts.length,\n  totalContactsHistorical: allContacts.length,\n  topSources,\n  monthName,\n  period,\n  aiBody: JSON.stringify(body)\n}}];"
+      },
+      "id": "merge",
+      "name": "Process Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer YOUR_GROQ_API_KEY" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.aiBody }}",
+        "options": { "timeout": 25000 }
+      },
+      "id": "ai",
+      "name": "AI — Write Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Process Data').item.json;\nconst aiData = $json;\nconst report = aiData.choices?.[0]?.message?.content || 'Erro ao gerar relatório';\nconst monthName = client.monthName;\nconst rHtml = report.replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>');\nconst subjectPrefix = client.originalEmail ? '[TESTE → enviaria para ' + client.originalEmail + '] ' : '';\n\nconst html = '<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body style=\"font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;background:#f5f5f5;\">' +\n'<div style=\"background:linear-gradient(135deg,#0d1b2a,#1a237e);padding:30px;border-radius:12px 12px 0 0;text-align:center;\">' +\n'<h1 style=\"color:#ffd700;margin:0;font-size:22px;\">Galaxy IT &amp; Marketing</h1>' +\n'<p style=\"color:rgba(255,255,255,0.7);margin:8px 0 0;font-size:14px;\">Relatório Mensal de Desempenho &mdash; ' + monthName + '</p>' +\n'<p style=\"color:rgba(255,255,255,0.5);margin:4px 0 0;font-size:12px;\">Cliente: ' + client.name + '</p>' +\n'</div>' +\n'<div style=\"background:#fff;padding:30px;border:1px solid #e5e5e5;border-top:none;\">' +\n'<div style=\"display:flex;gap:12px;margin-bottom:20px;text-align:center;\">' +\n'<div style=\"flex:1;background:#f8f9fa;padding:18px;border-radius:8px;border-top:3px solid #ffd700;\">' +\n'<div style=\"font-size:28px;font-weight:800;color:#1a237e;\">' + client.newContacts + '</div>' +\n'<div style=\"font-size:10px;color:#888;margin-top:4px;\">Novos Leads (30 dias)</div>' +\n'</div>' +\n'<div style=\"flex:1;background:#f8f9fa;padding:18px;border-radius:8px;border-top:3px solid #2e7d32;\">' +\n'<div style=\"font-size:28px;font-weight:800;color:#1a237e;\">' + client.totalContactsHistorical + '</div>' +\n'<div style=\"font-size:10px;color:#888;margin-top:4px;\">Total na Base</div>' +\n'</div>' +\n'</div>' +\n'<p style=\"font-size:14px;line-height:1.8;\">' + rHtml + '</p>' +\n'</div>' +\n'<div style=\"background:#f8f9fa;padding:20px;border-radius:0 0 12px 12px;text-align:center;border:1px solid #e5e5e5;border-top:none;\">' +\n'<p style=\"margin:0;font-size:12px;color:#888;\">Dúvidas? <a href=\"https://galaxyinfo.us/support\" style=\"color:#1a237e;font-weight:600;\">Central de Ajuda</a></p>' +\n'<p style=\"margin:8px 0 0;font-size:11px;color:#aaa;\">&copy; 2026 Galaxy IT &amp; Marketing &middot; Worcester, MA</p>' +\n'</div></body></html>';\n\nreturn [{ json: { ...client, report, html, subject: subjectPrefix + 'Relatório Mensal — ' + client.name + ' — ' + monthName } }];"
+      },
+      "id": "format",
+      "name": "Format Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "fromEmail": "galaxyinfomkt@gmail.com",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "send",
+      "name": "Send Email (SMTP)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1560, 400],
+      "credentials": {
+        "smtp": { "id": "2ei5OJfzS1oCZZ8e", "name": "Gmail SMTP - Galaxy" }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Manually": { "main": [[{ "node": "Client List", "type": "main", "index": 0 }]] },
+    "Every 1st at 9AM": { "main": [[{ "node": "Client List", "type": "main", "index": 0 }]] },
+    "Client List": { "main": [[{ "node": "GHL — Get Contacts", "type": "main", "index": 0 }]] },
+    "GHL — Get Contacts": { "main": [[{ "node": "Process Data", "type": "main", "index": 0 }]] },
+    "Process Data": { "main": [[{ "node": "AI — Write Report", "type": "main", "index": 0 }]] },
+    "AI — Write Report": { "main": [[{ "node": "Format Email", "type": "main", "index": 0 }]] },
+    "Format Email": { "main": [[{ "node": "Send Email (SMTP)", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

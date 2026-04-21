@@ -1,0 +1,65 @@
+{
+  "name": "Galaxy IT — Pedido de Avaliacao Automatico (apos servico)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "request-review",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook - Servico Concluido",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "webhookId": "request-review"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\n// Expected GHL fields\nconst data = {\n  clientGhlKey: body.clientGhlKey || body.ghlKey || '',\n  contactId: body.contactId || body.contact_id || '',\n  contactName: body.contact_name || body.firstName || 'Cliente',\n  contactEmail: body.contact_email || body.email || '',\n  contactPhone: body.contact_phone || body.phone || '',\n  businessName: body.business_name || body.location_name || 'Nosso negocio',\n  reviewLink: body.review_link || body.google_review_link || ''\n};\n\n// Build message in Portuguese\nconst message = 'Oi, ' + data.contactName.split(' ')[0] + '! Obrigado por confiar na ' + data.businessName + '. Sua opiniao faz muita diferenca pra gente. Pode dar 1 minutinho e deixar uma avaliacao no Google? ' + (data.reviewLink || 'Responde esse SMS com uma nota de 1 a 5 que eu te mando o link.');\n\nreturn [{ json: { ...data, message } }];"
+      },
+      "id": "prepare",
+      "name": "Preparar Mensagem",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [420, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rest.gohighlevel.com/v1/contacts/{{ $json.contactId }}/tasks",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{ $json.clientGhlKey }}" }] },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ title: 'Enviar pedido de avaliacao (automatico)', body: $json.message, dueDate: new Date().toISOString() }) }}",
+        "options": { "timeout": 15000, "response": { "response": { "neverError": true } } }
+      },
+      "id": "create-task",
+      "name": "GHL - Criar Tarefa",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [640, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'ok', message: $('Preparar Mensagem').item.json.message }) }}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Responder OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [860, 400]
+    }
+  ],
+  "connections": {
+    "Webhook - Servico Concluido": { "main": [[{ "node": "Preparar Mensagem", "type": "main", "index": 0 }]] },
+    "Preparar Mensagem": { "main": [[{ "node": "GHL - Criar Tarefa", "type": "main", "index": 0 }]] },
+    "GHL - Criar Tarefa": { "main": [[{ "node": "Responder OK", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}
