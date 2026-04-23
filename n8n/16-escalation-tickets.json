@@ -1,0 +1,100 @@
+{
+  "name": "Galaxy IT — Escalacao de Tickets (Help Center)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "help-escalation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook - Ticket Escalado",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "webhookId": "help-escalation"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nconst ticketId = 'GX-' + Math.floor(Date.now() / 1000).toString(36).toUpperCase();\n\nconst ticket = {\n  ticketId,\n  clientName: body.clientName || body.name || 'Cliente',\n  clientEmail: body.clientEmail || body.email || '',\n  clientPhone: body.clientPhone || body.phone || '',\n  issue: body.issue || body.message || body.summary || 'Sem descricao',\n  category: body.category || 'general',\n  priority: body.priority || 'normal',\n  chatHistory: body.chatHistory || body.history || 'Sem historico',\n  language: body.language || 'pt',\n  receivedAt: new Date().toISOString()\n};\n\n// Build AI prompt for categorization\nticket.aiPrompt = 'Classifique e faca briefing deste ticket de suporte em portugues:\\n\\nProblema: ' + ticket.issue + '\\nHistorico: ' + ticket.chatHistory + '\\n\\nResponda em JSON:\\n{\\n  \"categoria\": \"urgent|site|ghl|billing|general\",\\n  \"prioridade\": \"alta|media|baixa\",\\n  \"resumo\": \"1-2 frases do problema\",\\n  \"acao_sugerida\": \"o que a equipe deve fazer\"\\n}';\n\nreturn [{ json: ticket }];"
+      },
+      "id": "extract",
+      "name": "Criar Ticket ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [420, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer YOUR_GROQ_API_KEY" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: 'Voce e um classificador de tickets. Responda APENAS em JSON valido, em portugues brasileiro.' }, { role: 'user', content: $json.aiPrompt }], max_tokens: 400, temperature: 0.3, response_format: { type: 'json_object' } }) }}",
+        "options": { "timeout": 20000 }
+      },
+      "id": "ai",
+      "name": "IA - Classificar Ticket",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [640, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const ticket = $('Criar Ticket ID').item.json;\nconst aiText = $json.choices?.[0]?.message?.content || '{}';\nlet ai;\ntry { ai = JSON.parse(aiText); } catch(e) { ai = { categoria: 'general', prioridade: 'media', resumo: ticket.issue, acao_sugerida: 'Revisar manualmente' }; }\n\nconst isUrgent = ai.categoria === 'urgent' || ai.prioridade === 'alta' || (ticket.priority||'').toLowerCase() === 'urgent';\n\nconst html = '<!DOCTYPE html><html><body style=\"font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;\">' +\n'<div style=\"background:' + (isUrgent ? '#dc2626' : '#1a237e') + ';padding:20px;color:#fff;text-align:center;border-radius:8px 8px 0 0;\">' +\n'<h2 style=\"margin:0;color:#ffd700;\">' + (isUrgent ? 'TICKET URGENTE' : 'Novo Ticket de Suporte') + '</h2>' +\n'<p style=\"margin:8px 0 0;font-size:13px;opacity:0.9;\">ID: ' + ticket.ticketId + '</p>' +\n'</div>' +\n'<div style=\"background:#fff;padding:24px;border:1px solid #e5e5e5;\">' +\n'<div style=\"display:flex;gap:10px;margin-bottom:20px;\">' +\n'<span style=\"background:#fef3c7;color:#78350f;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;\">Categoria: ' + ai.categoria + '</span>' +\n'<span style=\"background:' + (isUrgent ? '#fee2e2;color:#991b1b' : '#dbeafe;color:#1e40af') + ';padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;\">Prioridade: ' + ai.prioridade + '</span>' +\n'</div>' +\n'<h3 style=\"margin-top:0;color:#1a237e;\">Resumo do problema:</h3>' +\n'<p style=\"background:#f8f9fa;padding:14px;border-left:4px solid #ffd700;\">' + ai.resumo + '</p>' +\n'<h3 style=\"color:#1a237e;\">Acao sugerida:</h3>' +\n'<p style=\"background:#f0f9ff;padding:14px;border-left:4px solid #1a237e;\">' + ai.acao_sugerida + '</p>' +\n'<h3 style=\"color:#1a237e;\">Detalhes do cliente:</h3>' +\n'<table style=\"width:100%;font-size:14px;\">' +\n'<tr><td style=\"padding:6px 0;\"><b>Nome:</b></td><td>' + ticket.clientName + '</td></tr>' +\n'<tr><td style=\"padding:6px 0;\"><b>Email:</b></td><td>' + ticket.clientEmail + '</td></tr>' +\n'<tr><td style=\"padding:6px 0;\"><b>Telefone:</b></td><td>' + ticket.clientPhone + '</td></tr>' +\n'<tr><td style=\"padding:6px 0;vertical-align:top;\"><b>Problema completo:</b></td><td>' + ticket.issue + '</td></tr>' +\n'</table>' +\n'<details style=\"margin-top:20px;\"><summary style=\"cursor:pointer;color:#6b7280;\">Ver historico do chat</summary>' +\n'<pre style=\"background:#f8f9fa;padding:12px;border-radius:4px;font-size:12px;overflow-x:auto;\">' + ticket.chatHistory + '</pre>' +\n'</details>' +\n'</div></body></html>';\n\nconst subject = (isUrgent ? '[URGENTE] ' : '') + 'Ticket ' + ticket.ticketId + ' - ' + ai.categoria + ' - ' + ticket.clientName;\n\nreturn [{ json: { ...ticket, ...ai, isUrgent, html, subject } }];"
+      },
+      "id": "format",
+      "name": "Formatar Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 400]
+    },
+    {
+      "parameters": {
+        "fromEmail": "galaxyinfomkt@gmail.com",
+        "toEmail": "galaxyinfomkt@gmail.com",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "email",
+      "name": "Enviar Email para Time",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1080, 400],
+      "credentials": {
+        "smtp": { "id": "2ei5OJfzS1oCZZ8e", "name": "Gmail SMTP - Galaxy" }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'ok', ticketId: $('Formatar Email').item.json.ticketId, categoria: $('Formatar Email').item.json.categoria, prioridade: $('Formatar Email').item.json.prioridade }) }}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Responder Ticket Criado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1300, 400]
+    }
+  ],
+  "connections": {
+    "Webhook - Ticket Escalado": { "main": [[{ "node": "Criar Ticket ID", "type": "main", "index": 0 }]] },
+    "Criar Ticket ID": { "main": [[{ "node": "IA - Classificar Ticket", "type": "main", "index": 0 }]] },
+    "IA - Classificar Ticket": { "main": [[{ "node": "Formatar Email", "type": "main", "index": 0 }]] },
+    "Formatar Email": { "main": [[{ "node": "Enviar Email para Time", "type": "main", "index": 0 }]] },
+    "Enviar Email para Time": { "main": [[{ "node": "Responder Ticket Criado", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}
