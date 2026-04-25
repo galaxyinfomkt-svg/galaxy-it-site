@@ -12,32 +12,108 @@ const GALAXY_ASSIST_CONFIG = {
 CRITICAL RULES — FOLLOW THESE STRICTLY:
 1. NEVER invent features, buttons, or menu options that don't exist in GoHighLevel. If you're not 100% sure a feature exists, say so honestly.
 2. If you don't know the exact answer, say: "I'm not 100% sure about that specific feature. Let me suggest you contact our team on the WhatsApp group for a precise answer."
-3. NEVER guess menu paths. Only mention paths you are certain exist in GHL (e.g., Settings > My Staff, Contacts, Conversations, Opportunities, Reputation, Reporting, Marketing > Social Planner, Sites > Funnels/Websites, Payments, Calendars, Automation > Workflows, Memberships).
+3. NEVER guess menu paths. Only mention paths you are certain exist in GHL.
 4. Be honest when something is NOT available in GHL. For example: digital signatures are only available in Documents & Contracts, NOT in Estimates/Invoices.
 5. Keep answers short — 2 to 4 sentences max. Be conversational, not robotic.
 6. Answer in the same language the user writes (English, Spanish, or Portuguese).
 7. Don't use "Step 1, Step 2" format. Write naturally like a knowledgeable friend explaining something.
 
-THINGS HANDLED BY OUR TEAM (not self-service):
-- Website/funnel edits → "Send what you need to our WhatsApp group"
-- Automations/workflows → "Tell our team what you want to automate via WhatsApp"
-- Google Business Profile photos/posts → "Send the photos to our WhatsApp group"
-- GBP info changes (hours, address) → "Contact our team on WhatsApp"
+GHL / BEE PRO HUB MENU MAP (left sidebar — these are CONFIRMED locations):
+- Dashboard — overview metrics
+- Conversations — unified inbox: SMS, Email, WhatsApp, FB Messenger, IG DMs, GBP messages, Webchat. Quick replies via "/" snippets.
+- Calendars — appointments, calendar settings, services, group calendars, equipment booking
+- Contacts — contact list, Smart Lists, bulk actions, import (CSV via Import button), export, manage tags, Companies, Bulk Actions
+- Opportunities — pipelines, kanban view, deal stages (open/won/lost/abandoned)
+- Payments — Invoices, Estimates, Subscriptions (recurring), Products, Coupons, Transactions, Orders, Documents & Contracts (e-signature)
+- Marketing — Social Planner (FB, IG, GBP, LinkedIn, TikTok), Email Campaigns, Trigger Links, Templates, Affiliate Manager, Brand Boards
+- Automation — Workflows (triggers + actions), Triggers (legacy), Campaigns
+- Sites — Funnels, Websites, Forms, Surveys, Chat Widget, QR codes, URL Redirects, Blogs, Client Portal
+- Memberships — courses, products, member access
+- Reputation — Reviews list, Reply to reviews, Send Requests (email/SMS review request), Listings (multi-platform)
+- Reporting — Google Ads Reporting, Facebook Ads Reporting, Attribution, Call Reporting, Appointment Reports, Agent Reporting
+- App Marketplace — connect external apps (Stripe, QuickBooks, Zapier, etc.)
+- Settings — Business Profile, My Staff (team), Team Roles, Phone Numbers (A2P 10DLC, voicemail, recording), Email Services, Domains, URL Redirects, Custom Fields, Custom Values, Snippets (saved replies), Tags, Pipelines, Calendars settings, Conversation AI, Integrations (Stripe, QuickBooks, Google, Facebook), API Keys, Audit Logs
+
+CRM SPECIFICS:
+- Tags: free-form labels on contacts. Manage all tags in Settings > Tags or add to a contact via Contacts > open contact > Tags
+- Custom Fields: extra data fields on contacts. Settings > Custom Fields. Used in forms, workflows, merge fields
+- Custom Values: account-wide variables (your phone, your address) for use in templates. Settings > Custom Values
+- Companies: parent record for grouping multiple contacts under one organization
+- Smart Lists: saved filters in Contacts. Auto-update as new matches come in. Filter by anything: tag, source, date, custom field, opportunity stage, etc.
+
+CONVERSATIONS SPECIFICS:
+- Channels: SMS, Email, WhatsApp (needs Business API setup), Facebook Messenger, Instagram DM, Google Business Profile, Webchat (chat widget on website)
+- Snippets (saved replies): type "/" while composing → list of saved messages. Manage in Settings > Snippets
+- Conversation AI: GHL's bot that auto-replies. Configure in Settings > Conversation AI (intents, persona, knowledge base)
+- Internal notes: notes on a contact visible only to your team
+- Call recording, voicemail: configured per phone number in Settings > Phone Numbers
+
+WORKFLOWS / AUTOMATION SPECIFICS:
+- Triggers: Form submitted, Contact created, Opportunity stage changed, Tag added, Appointment booked/canceled, Trigger Link clicked, Customer replied, etc.
+- Actions: Send SMS/Email/WhatsApp, Add/remove tag, Create opportunity, Move pipeline stage, Wait, If/Else (conditions), Send to webhook, Update custom field, Create task, Notify team
+- Workflows are async — events fire, then actions cascade. Use Wait actions for delays (5 min, 1 day, etc.)
+- Goal events let you exit a workflow when a positive thing happens (e.g., contact replies)
+
+CALENDAR SPECIFICS:
+- Event types: Standard (1-on-1), Round Robin (assigned to team), Class booking (group), Service booking (with assigned resource)
+- Booking link: each calendar has a public URL clients use to book themselves
+- Notifications: confirmation email/SMS, reminders (e.g., 24h + 1h before), follow-ups
+- Custom availability: per team member, with buffers and meeting limits
+
+PAYMENTS SPECIFICS:
+- Need Stripe (or PayPal/Authorize.net/Square) connected first via Settings > Integrations
+- Invoices = one-time bill. Estimates = quote that converts to invoice. Subscriptions = recurring billing
+- Documents & Contracts is the ONLY place with e-signature. Estimates/Invoices have no signature field
+
+REPORTING SPECIFICS:
+- Reporting includes: Google Ads, Facebook Ads, Call Reporting, Appointment Reports, Attribution (which campaign got which lead), Agent Reporting (per team member)
+- Dashboards on the Dashboard tab can be customized with widgets (count contacts by source, opportunities by stage, revenue, etc.)
+
+A2P 10DLC (US SMS COMPLIANCE):
+- Required to send SMS to US numbers. Without it, messages may be blocked or rate-limited
+- Requires business EIN, address, sample message
+- Galaxy team handles this registration — clients shouldn't try alone
+
+MOBILE APP:
+- Called "LeadConnector" on App Store / Google Play (or your white-labeled name)
+- Supports: Conversations, Contacts, Opportunities, Calendar, Notifications, Make/receive calls
+
+THINGS HANDLED BY GALAXY TEAM (not self-service) — redirect to WhatsApp group:
+- Website/funnel building or design edits
+- Workflow / automation setup or changes
+- WhatsApp Business API verification & connection
+- Google Business Profile photos, posts, info changes
+- A2P 10DLC SMS registration
+- Email DNS / domain authentication (SPF, DKIM, DMARC)
+- Snapshot installation / account setup
+- Stripe/payment processor connection (initial setup)
+- Custom integrations / API work
 
 THINGS CLIENTS CAN DO THEMSELVES:
-- View and reply to conversations (Conversations)
-- View contacts, add tags, create Smart Lists (Contacts)
-- Respond to Google reviews (Reputation > click review > Reply)
-- View reports and dashboards (Reporting)
-- Manage calendar availability (Calendars)
-- Add team members (Settings > My Staff)
-- Send review requests (Reputation > Requests > Send Request)
+- View/reply to all conversations (Conversations)
+- View contacts, add tags, create Smart Lists, import CSV (Contacts)
+- Respond to Google reviews (Reputation > Reviews > Reply)
+- Send review requests one-by-one or in bulk (Reputation > Requests)
+- View reports and dashboards (Reporting / Dashboard)
+- Manage calendar availability and event types (Calendars)
+- Add/remove team members (Settings > My Staff)
+- Cancel/reschedule appointments (Calendars > Appointments)
 - View and send invoices (Payments > Invoices)
-- Use the mobile app (search "LeadConnector" on App Store/Play Store)
-- Change password (Profile icon > Profile > Change Password)
+- Set up subscriptions (Payments > Subscriptions)
+- Use the mobile app (LeadConnector)
+- Change password & enable 2FA (Profile icon > Profile)
+- Manage saved replies/snippets (Settings > Snippets)
+- Export contacts (Contacts > 3-dot menu > Export)
+- Use Trigger Links (Marketing > Trigger Links)
 
 WHEN UNSURE:
-Say "I'm not entirely sure about that — our team can give you the exact steps. Just send a message to the WhatsApp group and they'll help you right away." This is MUCH better than guessing wrong.`
+Say "I'm not entirely sure about that specific thing — let me suggest you send a message in the WhatsApp group, our team can confirm and help you right away." This is MUCH better than guessing wrong.
+
+NEVER:
+- Say a feature exists if you're not certain
+- Invent menu paths
+- Promise something the platform doesn't do
+- Recommend third-party tools when GHL has the feature built in`
 };
 
 /* ---- Built-in Knowledge Base ---- */
@@ -357,6 +433,141 @@ const KNOWLEDGE_BASE = [
             en: "About your plan:<br>• All clients have <b>unlimited access to Galaxy Assist</b> (this AI) 24/7<br>• <b>Pro</b> and <b>Complete</b> plan clients can also schedule <b>1-on-1 calls</b> with our team<br><br>To check your plan or discuss changes, contact our team:<br>• <b>WhatsApp group</b> — for quick questions<br>• <b>Email:</b> info@galaxyinfo.us<br>• Or <a href='#schedule-call'>schedule a call</a> if you're on Pro/Complete",
             es: "Sobre tu plan:<br>• Todos los clientes tienen <b>acceso ilimitado a Galaxy Assist</b> (esta IA) 24/7<br>• Clientes <b>Pro</b> y <b>Complete</b> también pueden agendar <b>llamadas 1-a-1</b> con nuestro equipo<br><br>Para consultar tu plan o cambios, contacta nuestro equipo por <b>WhatsApp</b> o email: info@galaxyinfo.us",
             pt: "Sobre seu plano:<br>• Todos os clientes têm <b>acesso ilimitado ao Galaxy Assist</b> (essa IA) 24/7<br>• Clientes dos planos <b>Pro</b> e <b>Complete</b> também podem agendar <b>chamadas 1-a-1</b> com nosso time<br><br>Pra consultar seu plano ou discutir mudanças, fale com nosso time:<br>• <b>Grupo do WhatsApp</b> — pra perguntas rápidas<br>• <b>Email:</b> info@galaxyinfo.us<br>• Ou <a href='#schedule-call'>agende uma chamada</a> se está no Pro/Complete"
+        }
+    },
+    // ===== WHATSAPP =====
+    {
+        id: 'whatsapp',
+        phrases: ['whatsapp', 'whats app', 'wa', 'integrate whatsapp', 'connect whatsapp', 'whatsapp business', 'integrar whatsapp', 'conectar whatsapp', 'enviar whatsapp', 'send whatsapp', 'usar whatsapp', 'mensagem whatsapp', 'wpp', 'zap'],
+        keywords: ['whatsapp', 'wpp', 'zap', 'wa'],
+        team: true,
+        answer: {
+            en: "WhatsApp in Bee Pro Hub uses the official WhatsApp Business API. Once connected, you can send and receive WhatsApp messages right inside <b>Conversations</b>, alongside SMS and email — same inbox.<br><br>Setup needs Galaxy team to handle the WhatsApp Business verification (Meta requires a business account + phone number). Send a message to our WhatsApp group and we'll start the connection process.",
+            es: "WhatsApp en Bee Pro Hub usa la API oficial de WhatsApp Business. Una vez conectado, envías y recibes mensajes de WhatsApp directo en <b>Conversations</b>, junto con SMS y email — mismo inbox.<br><br>La configuración necesita que el equipo Galaxy maneje la verificación de WhatsApp Business (Meta exige cuenta empresarial + número). Mándanos un mensaje en el grupo de WhatsApp y empezamos el proceso.",
+            pt: "WhatsApp no Bee Pro Hub usa a API oficial do WhatsApp Business. Conectado, você envia e recebe mensagens de WhatsApp direto em <b>Conversations</b>, junto com SMS e email — mesmo inbox.<br><br>A configuração precisa que o time Galaxy faça a verificação no WhatsApp Business (Meta exige conta empresarial + número). Manda mensagem no grupo do WhatsApp e a gente começa o processo de conexão."
+        }
+    },
+    // ===== SMART LISTS / FILTERS =====
+    {
+        id: 'smart-lists',
+        phrases: ['smart list', 'smart lists', 'filter contact', 'filter contacts', 'segmentar contato', 'segmentar contatos', 'criar lista', 'create list', 'lista inteligente', 'lista filtrada', 'crear lista inteligente', 'segment contact', 'segment'],
+        keywords: ['smart', 'list', 'filter', 'segment', 'lista', 'filtrar', 'segmentar'],
+        answer: {
+            en: "Smart Lists let you save filtered views of contacts. In <b>Contacts</b>, click <b>+ Add Filter</b>, pick the conditions (tag, source, date added, custom field, etc.), then save it as a Smart List with a name. The list updates automatically as new contacts match.<br><br>You can use Smart Lists for bulk actions — send SMS, email, or add tags to everyone in the list at once.",
+            es: "Las Smart Lists guardan vistas filtradas de contactos. En <b>Contacts</b>, clic <b>+ Add Filter</b>, elige las condiciones (tag, fuente, fecha, campo personalizado, etc.), guarda con un nombre. La lista se actualiza sola cuando entran nuevos contactos.<br><br>Puedes usar Smart Lists para acciones masivas — enviar SMS, email o agregar tags a todos a la vez.",
+            pt: "Smart Lists salvam visualizações filtradas de contatos. Em <b>Contacts</b>, clica <b>+ Add Filter</b>, escolhe as condições (tag, fonte, data, campo personalizado, etc.), salva com um nome. A lista atualiza sozinha quando entram contatos novos.<br><br>Dá pra usar Smart Lists pra ações em massa — enviar SMS, email ou adicionar tag pra todo mundo da lista de uma vez."
+        }
+    },
+    // ===== IMPORT CONTACTS =====
+    {
+        id: 'import-contacts',
+        phrases: ['import contact', 'import contacts', 'importar contato', 'importar contatos', 'upload csv', 'csv import', 'bulk import', 'subir contactos', 'cargar contactos', 'importar planilha', 'importar excel'],
+        keywords: ['import', 'csv', 'upload', 'bulk', 'importar', 'planilha', 'excel'],
+        answer: {
+            en: "To import contacts from a spreadsheet:<br>Go to <b>Contacts</b> → click <b>Import</b> (top right) → upload your CSV file → match each column to a Bee Pro Hub field (name, phone, email, tags, etc.) → confirm.<br><br>Tips:<br>• File must be CSV (export your Excel as .csv)<br>• Phone numbers should include country code (+1 for US)<br>• You can add a tag to all imported contacts at once",
+            es: "Para importar contactos de una hoja de cálculo:<br>Ve a <b>Contacts</b> → clic en <b>Import</b> (arriba a la derecha) → sube el CSV → mapea cada columna a un campo de Bee Pro Hub (nombre, teléfono, email, tags) → confirma.<br><br>Tips:<br>• Debe ser CSV (exporta tu Excel como .csv)<br>• Teléfonos con código de país (+1 EE.UU.)<br>• Puedes agregar un tag a todos los importados a la vez",
+            pt: "Pra importar contatos de uma planilha:<br>Vai em <b>Contacts</b> → clica <b>Import</b> (canto superior direito) → sobe o arquivo CSV → mapeia cada coluna pra um campo do Bee Pro Hub (nome, telefone, email, tags) → confirma.<br><br>Dicas:<br>• Tem que ser CSV (exporta seu Excel como .csv)<br>• Telefones com código do país (+1 pros EUA)<br>• Dá pra adicionar uma tag em todos os importados de uma vez"
+        }
+    },
+    // ===== EXPORT DATA =====
+    {
+        id: 'export-data',
+        phrases: ['export contact', 'export contacts', 'exportar contato', 'exportar contatos', 'download contact', 'baixar contato', 'export data', 'exportar dados', 'download csv', 'descargar contactos', 'exportar contactos', 'export opportunity', 'exportar opportunity'],
+        keywords: ['export', 'download', 'exportar', 'baixar', 'descargar'],
+        answer: {
+            en: "To export contacts: Go to <b>Contacts</b>, optionally apply filters, click the <b>3-dot menu</b> at the top, then <b>Export</b>. You'll get a CSV emailed to you with all visible contacts.<br><br>For opportunities, go to <b>Opportunities</b>, pick a pipeline, then use the export option in the same 3-dot menu.",
+            es: "Para exportar contactos: Ve a <b>Contacts</b>, aplica filtros si quieres, clic en el <b>menú de 3 puntos</b> arriba, luego <b>Export</b>. Te llega por email un CSV con los contactos visibles.<br><br>Para oportunidades, ve a <b>Opportunities</b>, elige un pipeline, y usa la opción de export en el mismo menú.",
+            pt: "Pra exportar contatos: Vai em <b>Contacts</b>, aplica filtros se quiser, clica no <b>menu de 3 pontinhos</b> em cima, depois <b>Export</b>. Chega um CSV no seu email com todos os contatos visíveis.<br><br>Pra oportunidades, vai em <b>Opportunities</b>, escolhe um pipeline, e usa a opção de export no mesmo menu."
+        }
+    },
+    // ===== DOCUMENTS & CONTRACTS =====
+    {
+        id: 'documents-contracts',
+        phrases: ['document', 'documents', 'contract', 'contracts', 'digital signature', 'e-signature', 'esign', 'sign document', 'assinar contrato', 'contrato digital', 'assinatura digital', 'firmar contrato', 'firma digital', 'documento'],
+        keywords: ['document', 'contract', 'signature', 'esign', 'assinatura', 'contrato', 'firma'],
+        answer: {
+            en: "For digital signatures, use <b>Documents & Contracts</b> in the left menu. Create a contract template, drop in fields like signature, date, name, then send to a contact for signing — they get an email/SMS with a link.<br><br>Note: e-signatures only work in Documents & Contracts. <b>Estimates and Invoices don't have signature fields</b> — if a client needs to sign before paying, send them a contract first.",
+            es: "Para firmas digitales, usa <b>Documents & Contracts</b> en el menú izquierdo. Crea una plantilla de contrato, agrega campos como firma, fecha, nombre, y envíalo al contacto — recibe email/SMS con el link.<br><br>Nota: las firmas digitales solo funcionan en Documents & Contracts. <b>Estimates e Invoices NO tienen campo de firma</b> — si necesita firmar antes de pagar, mándale primero un contrato.",
+            pt: "Pra assinatura digital, usa <b>Documents & Contracts</b> no menu esquerdo. Cria um template de contrato, coloca campos como assinatura, data, nome, e envia pro contato — ele recebe email/SMS com o link pra assinar.<br><br>Importante: assinatura digital só funciona em Documents & Contracts. <b>Estimates e Invoices não têm campo de assinatura</b> — se o cliente precisa assinar antes de pagar, manda um contrato primeiro."
+        }
+    },
+    // ===== SUBSCRIPTIONS / RECURRING PAYMENTS =====
+    {
+        id: 'subscriptions',
+        phrases: ['subscription', 'subscriptions', 'recurring payment', 'recurring', 'monthly billing', 'cobrança recorrente', 'mensalidade', 'assinatura', 'cobrança mensal', 'pago recurrente', 'suscripción', 'mensualidad'],
+        keywords: ['subscription', 'recurring', 'recorrente', 'mensalidade', 'assinatura', 'suscripción', 'mensualidad'],
+        answer: {
+            en: "Recurring billing is set up in <b>Payments</b> → <b>Subscriptions</b>. Create a product with a recurring price (monthly, yearly, etc.), then send the payment link to your client — they enter their card and get charged automatically every cycle.<br><br>Manage active subscriptions, see who paid, pause or cancel from the same Subscriptions screen.",
+            es: "La facturación recurrente se configura en <b>Payments</b> → <b>Subscriptions</b>. Crea un producto con precio recurrente (mensual, anual, etc.), envía el link de pago al cliente — ingresa su tarjeta y se cobra solo cada ciclo.<br><br>Gestiona suscripciones activas, ve quién pagó, pausa o cancela desde la misma pantalla.",
+            pt: "Cobrança recorrente é configurada em <b>Payments</b> → <b>Subscriptions</b>. Cria um produto com preço recorrente (mensal, anual, etc.), manda o link de pagamento pro cliente — ele coloca o cartão e a cobrança acontece sozinha todo ciclo.<br><br>Gerencia assinaturas ativas, vê quem pagou, pausa ou cancela na mesma tela de Subscriptions."
+        }
+    },
+    // ===== TRIGGER LINKS =====
+    {
+        id: 'trigger-links',
+        phrases: ['trigger link', 'trigger links', 'smart link', 'tracked link', 'rastrear link', 'link rastreável', 'link com rastreamento', 'enlace rastreado', 'link inteligente'],
+        keywords: ['trigger link', 'tracked', 'rastreado', 'rastreável', 'inteligente'],
+        answer: {
+            en: "Trigger Links are short URLs that track who clicked them and can fire automations. Create them in <b>Marketing</b> → <b>Trigger Links</b>. Paste the original URL, get a short tracked version, drop it in your SMS/email/WhatsApp.<br><br>You can build a workflow: when someone clicks a Trigger Link → add a tag, send a follow-up, move them in the pipeline, etc.",
+            es: "Los Trigger Links son URLs cortas que rastrean clics y disparan automatizaciones. Créalos en <b>Marketing</b> → <b>Trigger Links</b>. Pega la URL original, obtén la versión corta rastreada, úsala en tu SMS/email/WhatsApp.<br><br>Puedes crear un workflow: cuando alguien hace clic en un Trigger Link → agregar tag, enviar follow-up, mover en el pipeline, etc.",
+            pt: "Trigger Links são URLs curtas que rastreiam quem clicou e podem disparar automações. Cria em <b>Marketing</b> → <b>Trigger Links</b>. Cola a URL original, pega a versão curta rastreada, usa no seu SMS/email/WhatsApp.<br><br>Dá pra montar workflow: quando alguém clica num Trigger Link → adiciona tag, manda follow-up, move no pipeline, etc."
+        }
+    },
+    // ===== AUTOMATED REVIEW REQUESTS WORKFLOW =====
+    {
+        id: 'auto-review-workflow',
+        phrases: ['automate review', 'automatic review', 'auto review request', 'send review automatically', 'pedido review automático', 'avaliação automática', 'review automático', 'reseña automática', 'enviar reseña auto'],
+        keywords: ['automate review', 'auto review', 'review auto', 'avaliação automática'],
+        team: true,
+        answer: {
+            en: "We can automate review requests so they go out automatically after every appointment or project completion. Our team sets up the workflow once — pick the trigger (appointment status = completed, opportunity moved to \"Won\", or a tag added) and we configure SMS + email sequences with smart follow-up if the client doesn't respond.<br><br>Send a message in the WhatsApp group and we'll set it up for your account.",
+            es: "Podemos automatizar las solicitudes de reseña para que se envíen automáticamente después de cada cita o proyecto. Nuestro equipo configura el workflow una vez — eliges el disparador (estado de cita = completada, oportunidad ganada, o tag agregado) y armamos las secuencias SMS + email con follow-up inteligente.<br><br>Mándanos un mensaje en el grupo de WhatsApp y lo configuramos.",
+            pt: "A gente automatiza os pedidos de avaliação pra saírem sozinhos depois de cada atendimento ou projeto fechado. Nosso time configura o workflow uma vez — você escolhe o gatilho (status do atendimento = concluído, oportunidade ganha, ou tag adicionada) e a gente monta as sequências de SMS + email com follow-up inteligente se o cliente não responder.<br><br>Manda mensagem no grupo do WhatsApp e a gente configura pra sua conta."
+        }
+    },
+    // ===== A2P / 10DLC SMS COMPLIANCE (US) =====
+    {
+        id: 'a2p-sms',
+        phrases: ['a2p', '10dlc', 'sms compliance', 'sms registration', 'register sms', 'registrar sms', 'cadastro a2p', 'sms cadastro', 'verify sms', 'sms not sending', 'sms nao envia', 'sms no envia'],
+        keywords: ['a2p', '10dlc', 'compliance', 'registration', 'cadastro'],
+        team: true,
+        answer: {
+            en: "To send SMS to US numbers, your account needs to be registered with carriers (A2P 10DLC). Without registration, SMS may be blocked or rate-limited. This requires your business EIN, business address, and a sample message. <br><br>Our team handles the A2P registration for you. If your SMS aren't going through or you need to register, send us a message in the WhatsApp group.",
+            es: "Para enviar SMS a números de EE.UU., tu cuenta debe estar registrada con los carriers (A2P 10DLC). Sin registro, los SMS pueden ser bloqueados. Necesitas EIN del negocio, dirección y mensaje de ejemplo. <br><br>Nuestro equipo se encarga del registro A2P. Si tus SMS no llegan o necesitas registrarte, mándanos un mensaje en el grupo de WhatsApp.",
+            pt: "Pra mandar SMS pra números americanos, sua conta precisa estar registrada com as operadoras (A2P 10DLC). Sem registro, os SMS podem ser bloqueados ou ter limite. Precisa do EIN do negócio, endereço e mensagem de exemplo. <br><br>Nosso time faz o registro A2P pra você. Se seus SMS não estão chegando ou precisa registrar, manda mensagem no grupo do WhatsApp."
+        }
+    },
+    // ===== SAVED REPLIES / CANNED RESPONSES =====
+    {
+        id: 'saved-replies',
+        phrases: ['saved reply', 'saved replies', 'canned response', 'quick reply', 'resposta salva', 'resposta rápida', 'snippet', 'respuesta rápida', 'respuesta guardada'],
+        keywords: ['saved reply', 'canned', 'snippet', 'quick reply', 'salva', 'rápida'],
+        answer: {
+            en: "Quick replies (snippets) save text you send often, so you don't retype. In <b>Conversations</b>, when typing a message, type <b>/</b> and a list of saved replies pops up — click one to insert.<br><br>Manage them in <b>Settings</b> → <b>Snippets</b>: create new ones, edit, organize by category. Great for FAQ answers, scheduling links, pricing info.",
+            es: "Las respuestas rápidas (snippets) guardan texto que envías seguido. En <b>Conversations</b>, al escribir, pon <b>/</b> y aparece la lista de respuestas guardadas — clic para insertar.<br><br>Las gestionas en <b>Settings</b> → <b>Snippets</b>: crea nuevas, edita, organiza por categoría. Útiles para FAQs, links de agendamiento, precios.",
+            pt: "Respostas rápidas (snippets) salvam textos que você envia com frequência, pra não digitar de novo. Em <b>Conversations</b>, quando estiver digitando, põe <b>/</b> e aparece a lista de respostas salvas — clica pra inserir.<br><br>Gerencia em <b>Settings</b> → <b>Snippets</b>: cria novas, edita, organiza por categoria. Bom pra resposta de FAQ, link de agendamento, preços."
+        }
+    },
+    // ===== TWO-FACTOR AUTH =====
+    {
+        id: 'two-factor',
+        phrases: ['2fa', 'two factor', 'two-factor', 'authentication', 'verificação em duas etapas', 'duas etapas', 'autenticação dupla', 'verificación en dos pasos', 'dos pasos', 'autenticación de dos factores', 'enable 2fa', 'ativar 2fa'],
+        keywords: ['2fa', 'mfa', 'two factor', 'autenticação', 'verificación', 'duas etapas'],
+        answer: {
+            en: "Enable two-factor authentication for extra account security: Click your <b>profile icon</b> (top right) → <b>Profile</b> → scroll to <b>Security</b> → toggle <b>2-Factor Authentication</b> on. Choose SMS or authenticator app (Google Authenticator, Authy, etc.).<br><br>Highly recommended — protects against unauthorized access even if your password leaks.",
+            es: "Activa la autenticación de dos factores para más seguridad: Clic en tu <b>ícono de perfil</b> (arriba derecha) → <b>Profile</b> → baja a <b>Security</b> → activa <b>2-Factor Authentication</b>. Elige SMS o app autenticadora (Google Authenticator, Authy, etc.).<br><br>Muy recomendado — protege incluso si tu contraseña se filtra.",
+            pt: "Ative a verificação em duas etapas pra mais segurança: Clica no seu <b>ícone de perfil</b> (canto superior direito) → <b>Profile</b> → desce até <b>Security</b> → ativa <b>2-Factor Authentication</b>. Escolhe SMS ou app autenticador (Google Authenticator, Authy, etc.).<br><br>Muito recomendado — protege mesmo se sua senha vazar."
+        }
+    },
+    // ===== APPOINTMENT CANCELLATION / RESCHEDULE =====
+    {
+        id: 'appointment-manage',
+        phrases: ['cancel appointment', 'reschedule appointment', 'cancelar agendamento', 'remarcar agendamento', 'reagendar', 'cancelar cita', 'reagendar cita', 'mover agendamento', 'change appointment time'],
+        keywords: ['cancel', 'reschedule', 'reagendar', 'remarcar', 'cancelar agendamento'],
+        answer: {
+            en: "To cancel or reschedule an appointment: Go to <b>Calendars</b> → <b>Appointments</b>, find the appointment, click it, and choose <b>Cancel</b> or <b>Reschedule</b>. The contact gets an automatic notification.<br><br>The contact can also self-cancel/reschedule using the booking confirmation link sent by email or SMS — saves you time.",
+            es: "Para cancelar o reagendar una cita: Ve a <b>Calendars</b> → <b>Appointments</b>, encuentra la cita, clic, elige <b>Cancel</b> o <b>Reschedule</b>. El contacto recibe notificación automática.<br><br>El contacto también puede cancelar/reagendar solo con el link de confirmación que recibió por email o SMS — te ahorra tiempo.",
+            pt: "Pra cancelar ou remarcar um agendamento: Vai em <b>Calendars</b> → <b>Appointments</b>, acha o agendamento, clica e escolhe <b>Cancel</b> ou <b>Reschedule</b>. O contato recebe notificação automática.<br><br>O contato também pode cancelar/remarcar sozinho pelo link de confirmação que recebeu por email ou SMS — economiza seu tempo."
         }
     },
     // ===== GREETINGS =====
