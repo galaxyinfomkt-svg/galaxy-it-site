@@ -81,9 +81,11 @@ module.exports = async function handler(req, res) {
       } else {
         var errBody = await antResp.text();
         console.error('Anthropic non-OK:', antResp.status, errBody.substring(0, 200));
+        globalThis.__lastErr = 'ant_' + antResp.status + ': ' + errBody.substring(0, 300);
       }
     } catch (e) {
       console.error('Anthropic error:', e.message);
+      globalThis.__lastErr = 'ant_exception: ' + e.message;
     }
   }
 
@@ -109,11 +111,15 @@ module.exports = async function handler(req, res) {
         var groqData = await groqResp.json();
         var groqText = groqData.choices && groqData.choices[0] && groqData.choices[0].message && groqData.choices[0].message.content;
         if (groqText) return res.status(200).json({ text: groqText });
+      } else {
+        var gErr = await groqResp.text();
+        globalThis.__lastErr = (globalThis.__lastErr || '') + ' | groq_' + groqResp.status + ': ' + gErr.substring(0, 300);
       }
     } catch (e) {
       console.error('Groq error:', e.message);
+      globalThis.__lastErr = (globalThis.__lastErr || '') + ' | groq_exception: ' + e.message;
     }
   }
 
-  return res.status(502).json({ error: 'AI unavailable' });
+  return res.status(502).json({ error: 'AI unavailable', debug: globalThis.__lastErr || null });
 };
