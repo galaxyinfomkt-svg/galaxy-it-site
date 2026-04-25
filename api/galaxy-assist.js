@@ -1,5 +1,6 @@
 // Galaxy Assist — Vercel Serverless Function
-// Tries Groq (free) first, falls back to Anthropic
+// Primary: Claude Sonnet with live web_search restricted to GHL docs
+// Fallback: Groq (free, fast, no live search)
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,7 +17,7 @@ module.exports = async function handler(req, res) {
 
   if (!message) return res.status(400).json({ error: 'Message required' });
 
-  // Build messages
+  // Build conversation messages
   var messages = [];
   try {
     var parsed = typeof history === 'string' ? JSON.parse(history) : (history || []);
@@ -31,7 +32,62 @@ module.exports = async function handler(req, res) {
   } catch (e) {}
   messages.push({ role: 'user', content: message });
 
-  // 1) Try Groq (free, fast)
+  // 1) PRIMARY: Claude Sonnet with web_search restricted to GHL docs
+  var anthropicKey = process.env.ANTHROPIC_API_KEY;
+  if (anthropicKey) {
+    try {
+      var searchAugmentedPrompt = systemPrompt + '\n\n==============================================\nLIVE DOCUMENTATION ACCESS\n==============================================\nYou have access to a web_search tool. USE IT whenever the question is about a GHL feature, setup step, troubleshooting, or anything where the answer might be in the official documentation. Search queries should include terms like "GoHighLevel" or "highlevel" to land on official docs. Prefer results from gohighlevel.com, help.gohighlevel.com, support.gohighlevel.com, ideas.gohighlevel.com, marketplace.gohighlevel.com.\n\nWhen you find an answer in the docs, write it naturally in the user\'s language (do not just paste raw search results). Cite the source URL at the end as "Fonte: <URL>" / "Source: <URL>" / "Fuente: <URL>".\n\nDo NOT search for: greetings, password help, basic FAQ that you already know from the reference above.';
+
+      var antResp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': anthropicKey,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-5',
+          max_tokens: 1500,
+          system: searchAugmentedPrompt,
+          messages: messages,
+          tools: [{
+            type: 'web_search_20250305',
+            name: 'web_search',
+            max_uses: 3,
+            allowed_domains: [
+              'gohighlevel.com',
+              'help.gohighlevel.com',
+              'support.gohighlevel.com',
+              'ideas.gohighlevel.com',
+              'marketplace.gohighlevel.com',
+              'highlevel.com'
+            ]
+          }]
+        })
+      });
+
+      if (antResp.ok) {
+        var antData = await antResp.json();
+        // Extract text from any text blocks (search-augmented responses can have multiple blocks)
+        var antText = '';
+        if (antData.content && Array.isArray(antData.content)) {
+          for (var j = 0; j < antData.content.length; j++) {
+            if (antData.content[j].type === 'text' && antData.content[j].text) {
+              antText += antData.content[j].text;
+            }
+          }
+        }
+        if (antText) return res.status(200).json({ text: antText });
+      } else {
+        var errBody = await antResp.text();
+        console.error('Anthropic non-OK:', antResp.status, errBody.substring(0, 200));
+      }
+    } catch (e) {
+      console.error('Anthropic error:', e.message);
+    }
+  }
+
+  // 2) FALLBACK: Groq (no live search, but fast and free)
   var groqKey = process.env.GROQ_API_KEY;
   if (groqKey) {
     try {
@@ -59,35 +115,5 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // 2) Fallback to Anthropic (paid)
-  var anthropicKey = process.env.ANTHROPIC_API_KEY;
-  if (anthropicKey) {
-    try {
-      var antResp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'x-api-key': anthropicKey,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1024,
-          system: systemPrompt,
-          messages: messages
-        })
-      });
-
-      if (antResp.ok) {
-        var antData = await antResp.json();
-        var antText = (antData.content && antData.content[0] && antData.content[0].text) || '';
-        if (antText) return res.status(200).json({ text: antText });
-      }
-    } catch (e) {
-      console.error('Anthropic error:', e.message);
-    }
-  }
-
-  // No API key configured or both failed
   return res.status(502).json({ error: 'AI unavailable' });
 };
