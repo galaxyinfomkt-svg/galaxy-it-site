@@ -127,5 +127,5 @@ module.exports = async function handler(req, res) {
     debugInfo.push('groq_no_key');
   }
 
-  return res.status(502).json({ error: 'AI unavailable', debug: debugInfo });
+  return res.status(200).json({ error: 'AI unavailable', debug: debugInfo, debugStr: debugInfo.join(' || '), v: 'galaxy-assist-debug-v3' });
 };
