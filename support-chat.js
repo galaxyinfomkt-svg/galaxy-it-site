@@ -7,113 +7,210 @@
 const GALAXY_ASSIST_CONFIG = {
     webhookUrl: '/api/galaxy-assist',
     timeoutMs: 15000,
-    systemPrompt: `You are Galaxy Assist, the AI support agent for Galaxy IT & Marketing (Worcester, MA). You help clients use Bee Pro Hub — a white-labeled GoHighLevel (GHL) platform.
+    systemPrompt: `You are Galaxy Assist, the AI support agent for Galaxy IT & Marketing (Worcester, MA). You help clients use Bee Pro Hub — a white-labeled GoHighLevel (GHL) platform. You are an EXPERT on every feature of GoHighLevel and answer questions accurately and helpfully.
 
-CRITICAL RULES — FOLLOW THESE STRICTLY:
-1. NEVER invent features, buttons, or menu options that don't exist in GoHighLevel. If you're not 100% sure a feature exists, say so honestly.
-2. If you don't know the exact answer, say: "I'm not 100% sure about that specific feature. Let me suggest you contact our team on the WhatsApp group for a precise answer."
-3. NEVER guess menu paths. Only mention paths you are certain exist in GHL.
-4. Be honest when something is NOT available in GHL. For example: digital signatures are only available in Documents & Contracts, NOT in Estimates/Invoices.
-5. Keep answers short — 2 to 4 sentences max. Be conversational, not robotic.
-6. Answer in the same language the user writes (English, Spanish, or Portuguese).
-7. Don't use "Step 1, Step 2" format. Write naturally like a knowledgeable friend explaining something.
+==============================================
+RULES OF ENGAGEMENT
+==============================================
+1. Answer in the same language the user writes (English, Spanish, or Portuguese — auto-detect).
+2. Keep answers conversational and concise (2-5 sentences for simple questions, longer ONLY when the user needs full setup steps).
+3. Be direct and helpful — like a knowledgeable friend, not a robot.
+4. NEVER invent features that don't exist. If unsure, say "I'm not 100% sure about that specific thing — best to confirm with the Galaxy team on the WhatsApp group" instead of guessing.
+5. If a question is about something the Galaxy team handles for the client (see GALAXY-TEAM-MANAGED list below), point them there cheerfully.
+6. Use simple <b>bold</b> for menu paths (e.g., <b>Settings → My Staff</b>) and bullet lists with <br> when listing steps.
+7. Don't use "Step 1, Step 2" labeling — write naturally.
 
-GHL / BEE PRO HUB MENU MAP (left sidebar — these are CONFIRMED locations):
-- Dashboard — overview metrics
-- Conversations — unified inbox: SMS, Email, WhatsApp, FB Messenger, IG DMs, GBP messages, Webchat. Quick replies via "/" snippets.
-- Calendars — appointments, calendar settings, services, group calendars, equipment booking
-- Contacts — contact list, Smart Lists, bulk actions, import (CSV via Import button), export, manage tags, Companies, Bulk Actions
-- Opportunities — pipelines, kanban view, deal stages (open/won/lost/abandoned)
-- Payments — Invoices, Estimates, Subscriptions (recurring), Products, Coupons, Transactions, Orders, Documents & Contracts (e-signature)
-- Marketing — Social Planner (FB, IG, GBP, LinkedIn, TikTok), Email Campaigns, Trigger Links, Templates, Affiliate Manager, Brand Boards
-- Automation — Workflows (triggers + actions), Triggers (legacy), Campaigns
-- Sites — Funnels, Websites, Forms, Surveys, Chat Widget, QR codes, URL Redirects, Blogs, Client Portal
-- Memberships — courses, products, member access
-- Reputation — Reviews list, Reply to reviews, Send Requests (email/SMS review request), Listings (multi-platform)
-- Reporting — Google Ads Reporting, Facebook Ads Reporting, Attribution, Call Reporting, Appointment Reports, Agent Reporting
-- App Marketplace — connect external apps (Stripe, QuickBooks, Zapier, etc.)
-- Settings — Business Profile, My Staff (team), Team Roles, Phone Numbers (A2P 10DLC, voicemail, recording), Email Services, Domains, URL Redirects, Custom Fields, Custom Values, Snippets (saved replies), Tags, Pipelines, Calendars settings, Conversation AI, Integrations (Stripe, QuickBooks, Google, Facebook), API Keys, Audit Logs
+==============================================
+COMPLETE GHL / BEE PRO HUB FEATURE REFERENCE
+==============================================
 
-CRM SPECIFICS:
-- Tags: free-form labels on contacts. Manage all tags in Settings > Tags or add to a contact via Contacts > open contact > Tags
-- Custom Fields: extra data fields on contacts. Settings > Custom Fields. Used in forms, workflows, merge fields
-- Custom Values: account-wide variables (your phone, your address) for use in templates. Settings > Custom Values
-- Companies: parent record for grouping multiple contacts under one organization
-- Smart Lists: saved filters in Contacts. Auto-update as new matches come in. Filter by anything: tag, source, date, custom field, opportunity stage, etc.
+LEFT SIDEBAR MENU (these ARE the menu items — never invent others):
 
-CONVERSATIONS SPECIFICS:
-- Channels: SMS, Email, WhatsApp (needs Business API setup), Facebook Messenger, Instagram DM, Google Business Profile, Webchat (chat widget on website)
-- Snippets (saved replies): type "/" while composing → list of saved messages. Manage in Settings > Snippets
-- Conversation AI: GHL's bot that auto-replies. Configure in Settings > Conversation AI (intents, persona, knowledge base)
-- Internal notes: notes on a contact visible only to your team
-- Call recording, voicemail: configured per phone number in Settings > Phone Numbers
+>> DASHBOARD
+- Customizable widgets: contact count, opportunity value, conversion funnel, source breakdown, calendar activity, payment totals
+- Add widgets via the gear icon → Add Widget. Drag to rearrange.
 
-WORKFLOWS / AUTOMATION SPECIFICS:
-- Triggers: Form submitted, Contact created, Opportunity stage changed, Tag added, Appointment booked/canceled, Trigger Link clicked, Customer replied, etc.
-- Actions: Send SMS/Email/WhatsApp, Add/remove tag, Create opportunity, Move pipeline stage, Wait, If/Else (conditions), Send to webhook, Update custom field, Create task, Notify team
-- Workflows are async — events fire, then actions cascade. Use Wait actions for delays (5 min, 1 day, etc.)
-- Goal events let you exit a workflow when a positive thing happens (e.g., contact replies)
+>> CONVERSATIONS (unified inbox)
+- All channels in one view: SMS, Email, WhatsApp, Facebook Messenger, Instagram DM, Google Business Profile messages, Webchat (chat widget)
+- Filters by channel, unread, assigned, starred
+- Compose: type "/" to insert saved Snippets (canned replies). Use {{merge_fields}} for personalization
+- Internal notes: yellow note pad — visible only to team
+- AI Suggestions: GHL can suggest replies based on conversation context (Settings → Conversation AI)
+- Manual takeover: pause a workflow when a human is replying
+- Schedule a message: click the clock icon to send later
 
-CALENDAR SPECIFICS:
-- Event types: Standard (1-on-1), Round Robin (assigned to team), Class booking (group), Service booking (with assigned resource)
-- Booking link: each calendar has a public URL clients use to book themselves
-- Notifications: confirmation email/SMS, reminders (e.g., 24h + 1h before), follow-ups
-- Custom availability: per team member, with buffers and meeting limits
+>> CALENDARS
+- Event Types: Standard (1-on-1), Round Robin (rotates among team), Class Booking (group session), Service Booking (with resource), Collective (multiple required attendees)
+- Calendar settings per event: duration, buffer, max bookings/day, custom availability windows
+- Each calendar has a public booking page URL (share with clients)
+- Notifications per calendar: confirmation, reminders (e.g., 24h + 1h before), no-show follow-up, post-appointment review request
+- Cancel/reschedule: clients self-serve via the link in their confirmation email/SMS, or staff can do it from Calendars → Appointments
+- Sync with external: Google Calendar, Outlook, iCloud (per user, in Profile)
 
-PAYMENTS SPECIFICS:
-- Need Stripe (or PayPal/Authorize.net/Square) connected first via Settings > Integrations
-- Invoices = one-time bill. Estimates = quote that converts to invoice. Subscriptions = recurring billing
-- Documents & Contracts is the ONLY place with e-signature. Estimates/Invoices have no signature field
+>> CONTACTS
+- Add contact: top right "+ Add Contact"
+- Smart Lists: filtered views that auto-update. Filter by tag, source, custom field, last activity, opportunity stage, etc. Save with a name to reuse
+- Bulk Actions: select multiple contacts → Send SMS/Email, Add Tag, Add to Workflow, Export, Delete
+- Import: top right Import button → CSV upload → map columns (name, phone, email, tags, custom fields) → optionally add a tag to all
+- Export: 3-dot menu → Export → CSV emailed to you
+- Companies: parent records that group multiple contacts (e.g., a business with 3 employee contacts)
+- Manage Tags: Settings → Tags. Tags are free-form labels for segmentation
+- Merge Duplicates: Bulk Actions → Merge
 
-REPORTING SPECIFICS:
-- Reporting includes: Google Ads, Facebook Ads, Call Reporting, Appointment Reports, Attribution (which campaign got which lead), Agent Reporting (per team member)
-- Dashboards on the Dashboard tab can be customized with widgets (count contacts by source, opportunities by stage, revenue, etc.)
+>> OPPORTUNITIES (Pipelines)
+- Kanban view: drag-drop deals between stages
+- Status: Open, Won, Lost, Abandoned (different from stage which is just where in the pipeline)
+- Each opportunity links to one contact and has: monetary value, owner (assigned to), pipeline, stage, source, lost reason
+- Create new pipeline: Settings → Pipelines → + New Pipeline. Add stages with names like "New Lead", "Qualified", "Proposal Sent", "Won"
+- Pipeline reports: see opportunities by source, stage, owner; conversion rate per stage; deal velocity
 
-A2P 10DLC (US SMS COMPLIANCE):
-- Required to send SMS to US numbers. Without it, messages may be blocked or rate-limited
-- Requires business EIN, address, sample message
-- Galaxy team handles this registration — clients shouldn't try alone
+>> PAYMENTS
+- Connect Stripe (or PayPal, Authorize.net, NMI, Square) first: Settings → Integrations → Payment Processors
+- Products: define what you sell — one-time, recurring, with pricing tiers
+- Invoices: one-time bill. Send via email/SMS with payment link
+- Estimates: quote that the client can accept and convert to invoice. NO e-signature field on Estimates
+- Subscriptions: recurring billing. Manage in Payments → Subscriptions. Pause, cancel, change card from there
+- Coupons: discount codes for products
+- Transactions: history of all payments with status (paid, failed, refunded)
+- Orders: list of completed sales
+- Documents & Contracts: separate menu inside Payments. ONLY place with e-signature. Create template, drop signature/date/text fields, send for signing
 
-MOBILE APP:
-- Called "LeadConnector" on App Store / Google Play (or your white-labeled name)
-- Supports: Conversations, Contacts, Opportunities, Calendar, Notifications, Make/receive calls
+>> MARKETING
+- Social Planner: schedule posts to Facebook, Instagram, Google Business Profile, LinkedIn, TikTok, Twitter/X. Connect each via Settings → Integrations
+- Email Campaigns: drag-drop email builder, send to lists, track opens/clicks, A/B test
+- Email Templates: reusable designs
+- SMS Campaigns: bulk SMS with personalization
+- Trigger Links: short URLs that track clicks AND can fire workflows when clicked. Build at Marketing → Trigger Links
+- Affiliate Manager: invite affiliates, give commission, track referrals
+- Brand Boards: white-label color/logo presets
 
-THINGS HANDLED BY GALAXY TEAM (not self-service) — redirect to WhatsApp group:
-- Website/funnel building or design edits
-- Workflow / automation setup or changes
-- WhatsApp Business API verification & connection
-- Google Business Profile photos, posts, info changes
+>> AUTOMATION
+- Workflows: visual builder with Triggers + Actions
+- Common triggers: Form Submitted, Contact Created, Tag Added, Opportunity Stage Changed, Appointment Booked/Cancelled/Status Changed, Trigger Link Clicked, Customer Replied, Email Opened, Date Reached, Webhook
+- Common actions: Send SMS / Email / WhatsApp, Add/Remove Tag, Create/Update Opportunity, Move Stage, Assign Owner, Wait (5 min, 1 day, until specific time), If/Else (branch on conditions), Send to Webhook, Update Custom Field, Create Task, Notify User, AI Reply
+- Goal events: exit conditions (e.g., "exit if contact replies")
+- Wait actions for delays — workflows can span days/weeks
+- Test mode: dry run a workflow without sending real messages
+- Re-enrollment: control whether a contact can enter the same workflow twice
+
+>> SITES
+- Funnels: multi-step landing pages with conversion focus
+- Websites: full multi-page sites
+- Forms: standalone or embedded forms — feed contacts into pipelines/workflows
+- Surveys: multi-page question flows (different from forms)
+- Chat Widget: embeddable chat bubble for the website
+- QR Codes: generate QR codes pointing anywhere (Trigger Links, calendar booking, etc.)
+- URL Redirects: short links and redirects
+- Blogs: simple blog/CMS
+- Client Portal: gated area for paying members
+
+>> MEMBERSHIPS
+- Courses: video lessons organized into modules
+- Products: digital downloads
+- Member access: tied to payment (one-time or subscription)
+- Drip content: release lessons over time
+
+>> REPUTATION
+- Reviews list: shows all reviews from connected sources (Google Business Profile, Facebook). Reply directly from here
+- Send Requests: bulk or individual review request via SMS or email. Templates editable
+- Listings: manage business info across multiple directories (Yelp, Bing, etc.) — paid add-on
+- Auto-trigger review requests via workflow (after appointment completed, opportunity won, tag added)
+
+>> REPORTING
+- Google Ads Reporting: connect Google Ads → see spend, impressions, clicks, conversions
+- Facebook Ads Reporting: similar for Meta Ads
+- Attribution Report: which source brought which contact and revenue
+- Call Reporting: call history, duration, recordings, who answered
+- Appointment Reports: booked vs no-show, by team member
+- Agent Reporting: messages sent, replies, response time per team member
+
+>> SETTINGS (left sidebar gear icon)
+- Business Profile: name, address, timezone, logo
+- My Staff: add/remove team members, set roles (Admin, User), per-user permissions
+- Team Roles: define custom permission sets
+- Phone Numbers: buy numbers, configure A2P 10DLC, voicemail greeting, call recording, missed-call text-back
+- Email Services: configure sending email (Mailgun, SendGrid, or GHL's built-in), domain authentication
+- Domains: connect custom domains for funnels/websites
+- URL Redirects: short links
+- Custom Fields: define extra contact data fields (text, number, date, dropdown, multi-select, file upload)
+- Custom Values: account-wide variables ({{custom_value.business_phone}}, etc.) for templates
+- Snippets: saved canned replies (used in Conversations with "/")
+- Tags: manage all contact tags
+- Pipelines: create/edit pipelines and stages
+- Conversation AI: configure the auto-reply bot
+- Integrations: connect Stripe, QuickBooks, Google, Facebook, Zapier, Make, etc.
+- API Keys: for developers
+- Audit Logs: who did what, when
+
+==============================================
+COMMON CLIENT QUESTIONS & ACCURATE ANSWERS
+==============================================
+
+Q: "How do I see where my leads came from?"
+→ Open the contact in Contacts and check the Source field on the right panel. For an overview, go to Reporting → Attribution Report. Galaxy's monthly email report also includes source breakdown.
+
+Q: "My emails are going to spam, what do I do?"
+→ This is usually missing domain authentication (SPF/DKIM/DMARC). The Galaxy team sets this up — send your domain in the WhatsApp group.
+
+Q: "Can I send WhatsApp from Bee Pro Hub?"
+→ Yes, via the official WhatsApp Business API. Setup requires Meta verification of a business account + phone number — Galaxy team handles this.
+
+Q: "How do I get more reviews automatically?"
+→ Galaxy team can build a workflow that sends review requests after appointments are completed or opportunities are won. Send the request in WhatsApp.
+
+Q: "Can I add a digital signature to my invoice?"
+→ No, Estimates and Invoices don't have signature fields. For e-signatures, use Documents & Contracts (in the Payments menu) — create a contract template with signature fields and send for signing.
+
+Q: "How do I connect Stripe?"
+→ Settings → Integrations → Payment Processors → Stripe → Connect. You'll be redirected to Stripe to authorize.
+
+Q: "Why aren't my SMS sending to US numbers?"
+→ Probably A2P 10DLC registration is missing or pending. Galaxy team registers your business with US carriers — without it, SMS get blocked. Send a WhatsApp asking us to register.
+
+Q: "How do I see who clicked my email?"
+→ Open the contact → Activity tab. Or Marketing → Email Campaigns → click a campaign → see opens/clicks.
+
+Q: "Can I bulk-send SMS to all my contacts?"
+→ Yes. Contacts → filter or use Smart List → Bulk Actions → Send SMS. Use {{contact.first_name}} for personalization. (Needs A2P registration for US numbers.)
+
+Q: "How do I cancel a customer's subscription?"
+→ Payments → Subscriptions → find the subscription → click → Cancel.
+
+Q: "How do I change my password?"
+→ Profile icon (top right) → Profile → Security → Change Password. Same place to enable 2FA.
+
+Q: "How do I add my team to the account?"
+→ Settings → My Staff → + Add Employee. Set name, email, role (Admin or User), permissions.
+
+Q: "Where do I see all my appointments?"
+→ Calendars → Appointments. Filter by calendar, status, team member, date.
+
+Q: "What's the difference between a workflow and a trigger?"
+→ Workflows are the modern visual builder (Automation → Workflows) — recommended. Triggers are the legacy system, still works but harder to maintain. Use Workflows for new automations.
+
+Q: "Can I see calls and call recordings?"
+→ Reporting → Call Reporting. Or open a contact → Activity tab to see calls with that specific contact. Recordings playable inline if recording was enabled per number.
+
+==============================================
+GALAXY-TEAM-MANAGED (redirect to WhatsApp group cheerfully)
+==============================================
+- Website / funnel design or content edits
+- New workflow / automation creation or major edits
+- Google Business Profile changes (hours, address, photos, posts)
+- WhatsApp Business API verification
 - A2P 10DLC SMS registration
 - Email DNS / domain authentication (SPF, DKIM, DMARC)
-- Snapshot installation / account setup
-- Stripe/payment processor connection (initial setup)
+- Stripe / payment processor initial connection
+- Snapshot installation
 - Custom integrations / API work
+- Conversation AI persona setup
 
-THINGS CLIENTS CAN DO THEMSELVES:
-- View/reply to all conversations (Conversations)
-- View contacts, add tags, create Smart Lists, import CSV (Contacts)
-- Respond to Google reviews (Reputation > Reviews > Reply)
-- Send review requests one-by-one or in bulk (Reputation > Requests)
-- View reports and dashboards (Reporting / Dashboard)
-- Manage calendar availability and event types (Calendars)
-- Add/remove team members (Settings > My Staff)
-- Cancel/reschedule appointments (Calendars > Appointments)
-- View and send invoices (Payments > Invoices)
-- Set up subscriptions (Payments > Subscriptions)
-- Use the mobile app (LeadConnector)
-- Change password & enable 2FA (Profile icon > Profile)
-- Manage saved replies/snippets (Settings > Snippets)
-- Export contacts (Contacts > 3-dot menu > Export)
-- Use Trigger Links (Marketing > Trigger Links)
+==============================================
+WHEN YOU GENUINELY DON'T KNOW
+==============================================
+Don't guess. Say something like: "Honestly not 100% sure on that specific thing — the Galaxy team can give you the exact answer. Drop a message in the WhatsApp group and they'll help you right away."
 
-WHEN UNSURE:
-Say "I'm not entirely sure about that specific thing — let me suggest you send a message in the WhatsApp group, our team can confirm and help you right away." This is MUCH better than guessing wrong.
-
-NEVER:
-- Say a feature exists if you're not certain
-- Invent menu paths
-- Promise something the platform doesn't do
-- Recommend third-party tools when GHL has the feature built in`
+This is MUCH better than inventing a wrong answer that the client will then try and fail with.`
 };
 
 /* ---- Built-in Knowledge Base ---- */
@@ -568,6 +665,142 @@ const KNOWLEDGE_BASE = [
             en: "To cancel or reschedule an appointment: Go to <b>Calendars</b> → <b>Appointments</b>, find the appointment, click it, and choose <b>Cancel</b> or <b>Reschedule</b>. The contact gets an automatic notification.<br><br>The contact can also self-cancel/reschedule using the booking confirmation link sent by email or SMS — saves you time.",
             es: "Para cancelar o reagendar una cita: Ve a <b>Calendars</b> → <b>Appointments</b>, encuentra la cita, clic, elige <b>Cancel</b> o <b>Reschedule</b>. El contacto recibe notificación automática.<br><br>El contacto también puede cancelar/reagendar solo con el link de confirmación que recibió por email o SMS — te ahorra tiempo.",
             pt: "Pra cancelar ou remarcar um agendamento: Vai em <b>Calendars</b> → <b>Appointments</b>, acha o agendamento, clica e escolhe <b>Cancel</b> ou <b>Reschedule</b>. O contato recebe notificação automática.<br><br>O contato também pode cancelar/remarcar sozinho pelo link de confirmação que recebeu por email ou SMS — economiza seu tempo."
+        }
+    },
+    // ===== CONVERSATION AI / CHATBOT =====
+    {
+        id: 'conversation-ai',
+        phrases: ['chatbot', 'chat bot', 'conversation ai', 'ai bot', 'auto reply', 'automatic reply', 'responder automatico', 'resposta automatica', 'bot que responde', 'ia que responde', 'chatbot do site', 'bot conversation', 'asistente automatico'],
+        keywords: ['chatbot', 'bot', 'conversation ai', 'ia chat', 'automatic reply', 'auto reply'],
+        team: true,
+        answer: {
+            en: "Bee Pro Hub has a built-in <b>Conversation AI</b> that auto-replies to leads 24/7 — handles common questions, qualifies leads, books appointments. Configured in <b>Settings</b> → <b>Conversation AI</b> with an intent map (what questions trigger which answer) and a persona.<br><br>This is a setup our team handles for you so the bot sounds natural and matches your business. Send a WhatsApp message describing what you want the bot to handle and we'll set it up.",
+            es: "Bee Pro Hub tiene una <b>Conversation AI</b> integrada que responde a leads 24/7 — maneja preguntas comunes, califica leads, agenda citas. Se configura en <b>Settings</b> → <b>Conversation AI</b> con mapa de intenciones y persona.<br><br>Nuestro equipo maneja la configuración para que el bot suene natural. Mándanos un WhatsApp diciendo qué quieres que el bot resuelva y lo configuramos.",
+            pt: "O Bee Pro Hub tem uma <b>Conversation AI</b> integrada que responde leads 24/7 — atende perguntas comuns, qualifica leads, agenda atendimentos. Configurada em <b>Settings</b> → <b>Conversation AI</b> com mapa de intenções (que pergunta dispara que resposta) e uma persona.<br><br>Esse setup o nosso time faz pra você, pra o bot soar natural e combinar com seu negócio. Manda um WhatsApp dizendo o que você quer que o bot resolva e a gente configura."
+        }
+    },
+    // ===== LEAD SOURCE / WHERE LEAD CAME FROM =====
+    {
+        id: 'lead-source',
+        phrases: ['where lead came from', 'lead source', 'origem do lead', 'origem dos leads', 'de onde veio lead', 'fonte do lead', 'fuente del lead', 'origen del lead', 'de donde vino', 'how lead found me', 'como lead encontrou', 'lead attribution', 'attribution', 'atribuicao'],
+        keywords: ['source', 'origem', 'fuente', 'origen', 'attribution', 'atribuicao', 'de onde'],
+        answer: {
+            en: "To see where a lead came from: open the contact in <b>Contacts</b> and look at the <b>Source</b> field on the right panel. It shows things like \"Website Form\", \"Phone Call\", \"WhatsApp\", \"Facebook Ad\", etc.<br><br>For a full picture across all leads, check <b>Reporting</b> → <b>Attribution Report</b> — shows which channels brought in the most contacts, opportunities, and revenue. The monthly Galaxy report (sent by email) also includes this breakdown.",
+            es: "Para ver de dónde vino un lead: abre el contacto en <b>Contacts</b> y mira el campo <b>Source</b> en el panel derecho. Muestra cosas como \"Website Form\", \"Phone Call\", \"WhatsApp\", \"Facebook Ad\", etc.<br><br>Para visión completa, ve a <b>Reporting</b> → <b>Attribution Report</b> — muestra qué canales trajeron más contactos, oportunidades e ingresos. El reporte mensual de Galaxy (que llega por email) también trae este breakdown.",
+            pt: "Pra ver de onde veio um lead: abre o contato em <b>Contacts</b> e olha o campo <b>Source</b> no painel direito. Mostra coisas como \"Website Form\", \"Phone Call\", \"WhatsApp\", \"Facebook Ad\", etc.<br><br>Pra visão completa, vai em <b>Reporting</b> → <b>Attribution Report</b> — mostra quais canais trouxeram mais contatos, oportunidades e receita. O relatório mensal da Galaxy (que chega por email) também traz esse breakdown."
+        }
+    },
+    // ===== BULK SMS / BULK EMAIL =====
+    {
+        id: 'bulk-messaging',
+        phrases: ['bulk sms', 'bulk email', 'send mass sms', 'send mass email', 'mass message', 'mensagem em massa', 'sms em massa', 'email em massa', 'enviar para todos', 'send to all', 'mensaje masivo', 'sms masivo', 'email masivo'],
+        keywords: ['bulk', 'mass', 'massa', 'masivo', 'todos', 'all contacts'],
+        answer: {
+            en: "To send a message to many contacts at once: Go to <b>Contacts</b>, filter or use a Smart List to pick the right group, click <b>Bulk Actions</b>, then choose <b>Send SMS</b> or <b>Send Email</b>. Compose your message (use merge fields like {{contact.first_name}} for personalization) and send.<br><br>For US numbers, you need A2P 10DLC registration first (our team sets this up). Email blasts work right away.",
+            es: "Para enviar un mensaje a muchos contactos: Ve a <b>Contacts</b>, filtra o usa una Smart List, clic en <b>Bulk Actions</b>, elige <b>Send SMS</b> o <b>Send Email</b>. Escribe el mensaje (usa merge fields como {{contact.first_name}} para personalizar) y envía.<br><br>Para números de EE.UU., necesitas registro A2P 10DLC primero (nuestro equipo lo gestiona). Los emails masivos funcionan al toque.",
+            pt: "Pra mandar mensagem pra muitos contatos: Vai em <b>Contacts</b>, filtra ou usa uma Smart List pra pegar o grupo certo, clica em <b>Bulk Actions</b>, escolhe <b>Send SMS</b> ou <b>Send Email</b>. Escreve a mensagem (usa merge fields tipo {{contact.first_name}} pra personalizar) e envia.<br><br>Pra números americanos, precisa do registro A2P 10DLC antes (nosso time configura). Email em massa funciona na hora."
+        }
+    },
+    // ===== EMAIL DELIVERABILITY / SPAM =====
+    {
+        id: 'email-deliverability',
+        phrases: ['email spam', 'email caiu spam', 'email no spam', 'email not delivered', 'email nao chegou', 'email no llega', 'why email spam', 'porque email spam', 'mejorar entrega email', 'melhorar entrega email', 'spf dkim dmarc', 'autenticar email'],
+        keywords: ['spam', 'deliverability', 'entrega', 'spf', 'dkim', 'dmarc', 'autenticacao'],
+        team: true,
+        answer: {
+            en: "If emails are landing in spam, the cause is usually missing domain authentication (SPF, DKIM, DMARC) or sending from an unverified domain. Bee Pro Hub needs DNS records added to your domain so email providers trust the messages.<br><br>This is a one-time setup our team handles — send us your domain in the WhatsApp group and we'll add the records and verify everything. After that, deliverability improves dramatically.",
+            es: "Si los emails caen en spam, normalmente es por falta de autenticación de dominio (SPF, DKIM, DMARC) o por enviar desde un dominio no verificado. Bee Pro Hub necesita registros DNS en tu dominio para que los proveedores confíen en los mensajes.<br><br>Es un setup único que nuestro equipo hace — mándanos tu dominio en el grupo de WhatsApp y agregamos los registros. Después, la entrega mejora muchísimo.",
+            pt: "Se emails estão caindo no spam, geralmente é falta de autenticação de domínio (SPF, DKIM, DMARC) ou envio de domínio não verificado. O Bee Pro Hub precisa de registros DNS no seu domínio pra os provedores confiarem nas mensagens.<br><br>É um setup único que o nosso time faz — manda seu domínio no grupo do WhatsApp e a gente adiciona os registros e verifica tudo. Depois disso, a entrega melhora muito."
+        }
+    },
+    // ===== FORM TROUBLESHOOTING =====
+    {
+        id: 'form-not-receiving',
+        phrases: ['form not working', 'form no funciona', 'formulario nao funciona', 'lead nao chegou', 'lead no llega', 'lead not received', 'form submission', 'envio do formulario nao chega', 'cliente preencheu mas nao chegou', 'form lost', 'leads perdidos'],
+        keywords: ['form not', 'no funciona', 'nao funciona', 'lost', 'perdido', 'not received'],
+        answer: {
+            en: "If a lead filled out the form but didn't show up:<br>• Check <b>Contacts</b> — search by phone or email, the lead may be there with a duplicate handler<br>• Check <b>Conversations</b> — sometimes a notification went to the inbox<br>• Verify the form is connected to the right pipeline/automation in <b>Sites</b> → <b>Forms</b><br><br>If you confirm the lead is missing, send the form name and approximate time to our WhatsApp — we can check the form logs and fix it.",
+            es: "Si un lead llenó el formulario pero no apareció:<br>• Revisa <b>Contacts</b> — busca por teléfono o email, puede estar con un handler duplicado<br>• Revisa <b>Conversations</b> — a veces la notificación fue al inbox<br>• Verifica que el formulario esté conectado al pipeline/automatización en <b>Sites</b> → <b>Forms</b><br><br>Si confirmas que falta, mándanos el nombre del formulario y la hora aproximada por WhatsApp — revisamos los logs y arreglamos.",
+            pt: "Se um lead preencheu o form mas não apareceu:<br>• Confere <b>Contacts</b> — busca por telefone ou email, pode estar lá com handler duplicado<br>• Confere <b>Conversations</b> — às vezes a notificação foi pro inbox<br>• Verifica se o form está conectado no pipeline/automação certa em <b>Sites</b> → <b>Forms</b><br><br>Se confirmar que está faltando, manda o nome do form e a hora aproximada pro nosso WhatsApp — a gente confere os logs do form e arruma."
+        }
+    },
+    // ===== ROUND ROBIN / AGENT ASSIGNMENT =====
+    {
+        id: 'agent-assignment',
+        phrases: ['round robin', 'assign agent', 'distribute leads', 'distribuir leads', 'atribuir vendedor', 'asignar vendedor', 'turnar leads', 'rodizio leads', 'ronda comerciais', 'auto assign'],
+        keywords: ['round robin', 'assign', 'distribute', 'atribuir', 'distribuir', 'asignar'],
+        team: true,
+        answer: {
+            en: "To distribute leads automatically across team members (round robin): set up a <b>Round Robin Calendar</b> for booking distribution, OR use a workflow that assigns contacts to team members in rotation when a new lead comes in.<br><br>Our team can set up a workflow that auto-assigns each new lead to the next available salesperson, with rules like \"skip people who are off today\" or \"only assign to senior reps for high-value leads\". Send your assignment rules via WhatsApp.",
+            es: "Para distribuir leads entre el equipo (round robin): configura un <b>Round Robin Calendar</b> para distribuir reservas, O un workflow que asigne contactos por rotación cuando llega un lead nuevo.<br><br>Nuestro equipo configura el workflow que auto-asigna cada lead al siguiente vendedor disponible, con reglas como \"saltar quien está libre hoy\" o \"solo senior para leads grandes\". Mándanos las reglas por WhatsApp.",
+            pt: "Pra distribuir leads automaticamente entre o time (round robin): configura um <b>Round Robin Calendar</b> pra distribuir agendamentos, OU um workflow que atribui contatos pra membros do time em rotação quando chega lead novo.<br><br>O nosso time configura um workflow que auto-atribui cada lead novo pro próximo vendedor disponível, com regras tipo \"pula quem está de folga hoje\" ou \"só atribui pra senior se for lead grande\". Manda as regras de atribuição pelo WhatsApp."
+        }
+    },
+    // ===== PIPELINE / OPPORTUNITY STAGES =====
+    {
+        id: 'pipeline-stages',
+        phrases: ['create pipeline', 'add stage', 'edit pipeline', 'criar pipeline', 'adicionar stage', 'editar pipeline', 'mover oportunidade', 'move opportunity', 'kanban', 'pipeline stages', 'estagios pipeline', 'etapas pipeline', 'etapa', 'estagio'],
+        keywords: ['pipeline', 'stage', 'estagio', 'etapa', 'kanban'],
+        answer: {
+            en: "To manage your pipeline: Go to <b>Settings</b> → <b>Pipelines</b>. Create new pipelines (e.g., \"Sales\", \"Projects\") and add stages (e.g., \"New Lead\", \"Estimate Sent\", \"Won\"). Each stage has a status (open, won, lost, abandoned).<br><br>To move opportunities, open <b>Opportunities</b>, drag-and-drop deals between columns in the kanban view. Or open an opportunity and change the stage from the dropdown.",
+            es: "Para gestionar tu pipeline: Ve a <b>Settings</b> → <b>Pipelines</b>. Crea nuevos pipelines (ej. \"Ventas\", \"Proyectos\") y agrega etapas (ej. \"Nuevo Lead\", \"Cotización Enviada\", \"Ganado\"). Cada etapa tiene un status (abierto, ganado, perdido, abandonado).<br><br>Para mover oportunidades, abre <b>Opportunities</b>, arrastra entre columnas en la vista kanban. O abre una oportunidad y cambia la etapa desde el dropdown.",
+            pt: "Pra gerenciar seu pipeline: Vai em <b>Settings</b> → <b>Pipelines</b>. Cria novos pipelines (ex: \"Vendas\", \"Projetos\") e adiciona estágios (ex: \"Novo Lead\", \"Orçamento Enviado\", \"Ganho\"). Cada estágio tem um status (aberto, ganho, perdido, abandonado).<br><br>Pra mover oportunidades, abre <b>Opportunities</b>, arrasta os cards entre colunas na visão kanban. Ou abre uma oportunidade e muda o estágio pelo dropdown."
+        }
+    },
+    // ===== EMAIL OPEN TRACKING =====
+    {
+        id: 'email-tracking',
+        phrases: ['email opened', 'email open tracking', 'cliente abriu email', 'tracking email', 'rastrear email', 'see email opens', 'who opened email', 'quien abrio email', 'rastreo email'],
+        keywords: ['email open', 'tracking', 'rastrear', 'rastreo', 'opened', 'abriu', 'abrio'],
+        answer: {
+            en: "Bee Pro Hub tracks email opens and clicks automatically. To see if a contact opened your email: Open the contact, go to the <b>Activity</b> tab — you'll see events like \"Email Opened\", \"Link Clicked\", with timestamps.<br><br>For an overview of all email campaigns, go to <b>Marketing</b> → <b>Email Campaigns</b> → click a campaign → see open rate, click rate, who specifically opened.",
+            es: "Bee Pro Hub rastrea aperturas y clics automáticamente. Para ver si un contacto abrió tu email: abre el contacto, ve a la pestaña <b>Activity</b> — verás eventos como \"Email Opened\", \"Link Clicked\", con horas.<br><br>Para vista general de campañas, ve a <b>Marketing</b> → <b>Email Campaigns</b> → clic en una campaña → ver tasa de apertura, clic, quién específicamente abrió.",
+            pt: "O Bee Pro Hub rastreia aberturas e cliques de email automaticamente. Pra ver se um contato abriu seu email: abre o contato, vai na aba <b>Activity</b> — vai ver eventos tipo \"Email Opened\", \"Link Clicked\", com horários.<br><br>Pra visão geral das campanhas, vai em <b>Marketing</b> → <b>Email Campaigns</b> → clica numa campanha → vê taxa de abertura, taxa de clique, quem especificamente abriu."
+        }
+    },
+    // ===== GBP POSTS =====
+    {
+        id: 'gbp-posts',
+        phrases: ['google post', 'google posts', 'gbp post', 'post on google', 'postar no google', 'publicar en google', 'google business post', 'publicacao google', 'publicacion google'],
+        keywords: ['google post', 'gbp post', 'postar google', 'publicar google'],
+        team: true,
+        answer: {
+            en: "Posting to your Google Business Profile (offers, news, events) is part of our service. Just send the photo, text, and any link/CTA to our WhatsApp group and we'll publish it on your GBP — usually goes live within hours.<br><br>If you want a regular schedule (e.g., weekly post about a service), tell us once and we'll keep it consistent.",
+            es: "Publicar en tu Google Business Profile (ofertas, novedades, eventos) es parte de nuestro servicio. Mándanos la foto, texto y link/CTA en el grupo de WhatsApp y lo publicamos en tu GBP — normalmente queda live en horas.<br><br>Si quieres un calendario fijo (ej. publicación semanal de un servicio), dinos una vez y lo mantenemos.",
+            pt: "Postar no seu Google Business Profile (ofertas, novidades, eventos) faz parte do nosso serviço. Manda a foto, texto e link/CTA pro nosso grupo do WhatsApp que a gente publica no seu GBP — normalmente fica no ar em horas.<br><br>Se quer um cronograma fixo (ex: post semanal de um serviço), avisa uma vez e a gente mantém constante."
+        }
+    },
+    // ===== GBP INSIGHTS =====
+    {
+        id: 'gbp-insights',
+        phrases: ['google insights', 'gbp insights', 'gbp performance', 'google business performance', 'desempenho google business', 'estatisticas google', 'estadisticas google', 'how many calls google', 'ligacoes do google', 'visualizacoes google'],
+        keywords: ['insights', 'performance', 'desempenho', 'estatisticas', 'estadisticas', 'gbp views', 'gbp calls'],
+        answer: {
+            en: "Your Google Business Profile shows performance data (views, searches, calls, direction requests, website clicks) directly inside Google. Open <b>business.google.com</b> → pick your business → <b>Performance</b>.<br><br>Galaxy's monthly report (the one that comes by email) also includes a summary of GBP performance combined with website Search Console data, so you don't have to log in if you don't want.",
+            es: "Tu Google Business Profile muestra datos de rendimiento (vistas, búsquedas, llamadas, direcciones, clics al sitio) directamente en Google. Abre <b>business.google.com</b> → elige tu negocio → <b>Performance</b>.<br><br>El reporte mensual de Galaxy (que llega por email) también trae un resumen del desempeño del GBP junto con datos del Search Console, así no tienes que loguearte si no quieres.",
+            pt: "Seu Google Business Profile mostra dados de desempenho (visualizações, buscas, ligações, pedidos de rota, cliques no site) direto no Google. Abre <b>business.google.com</b> → escolhe seu negócio → <b>Performance</b>.<br><br>O relatório mensal da Galaxy (que chega por email) também traz um resumo do desempenho do GBP junto com dados do Search Console, então não precisa logar se não quiser."
+        }
+    },
+    // ===== TIMEZONE / WORKING HOURS =====
+    {
+        id: 'timezone',
+        phrases: ['timezone', 'fuso horario', 'horario errado', 'wrong timezone', 'time zone', 'change timezone', 'mudar fuso', 'change time zone', 'huso horario', 'cambiar zona horaria'],
+        keywords: ['timezone', 'time zone', 'fuso', 'huso'],
+        answer: {
+            en: "To set your account timezone: <b>Settings</b> → <b>Business Profile</b> → <b>Timezone</b> dropdown. This affects when reports run, when scheduled SMS go out, and appointment times.<br><br>Each user can also have their own timezone (Profile icon → Profile → Timezone). And each calendar can have its own timezone if you serve clients in different regions.",
+            es: "Para configurar zona horaria: <b>Settings</b> → <b>Business Profile</b> → <b>Timezone</b>. Afecta cuándo corren reportes, cuándo salen SMS programados y horas de citas.<br><br>Cada usuario también puede tener su zona (Profile → Profile → Timezone). Y cada calendario puede tener su zona si atiendes clientes en distintas regiones.",
+            pt: "Pra configurar o fuso horário: <b>Settings</b> → <b>Business Profile</b> → <b>Timezone</b>. Afeta quando os relatórios rodam, quando saem SMS agendados e horários de agendamentos.<br><br>Cada usuário também pode ter o próprio fuso (Profile icon → Profile → Timezone). E cada calendário pode ter um fuso próprio se você atende clientes em regiões diferentes."
+        }
+    },
+    // ===== CONTACT TEAM / GET HELP =====
+    {
+        id: 'contact-team',
+        phrases: ['contact team', 'speak to human', 'falar com pessoa', 'falar com alguem', 'falar com humano', 'preciso de ajuda', 'ayuda humana', 'hablar con persona', 'help human', 'team contact', 'whatsapp galaxy', 'numero galaxy'],
+        keywords: ['team', 'human', 'humano', 'persona', 'speak', 'falar', 'ayuda humana'],
+        answer: {
+            en: "To talk to the Galaxy team directly:<br>• <b>WhatsApp group</b> — fastest for urgent stuff (everyone on the team is in there)<br>• <b>Email:</b> info@galaxyinfo.us<br>• <b>Schedule a call</b> — if you're on Pro or Complete plan, <a href='#schedule-call'>book a time here</a><br><br>For anything not in this chat (workflow setup, GBP changes, website edits, etc.), the team is the right path — they handle the things that need a human touch.",
+            es: "Para hablar con el equipo Galaxy directamente:<br>• <b>Grupo de WhatsApp</b> — lo más rápido para urgencias (todo el equipo está ahí)<br>• <b>Email:</b> info@galaxyinfo.us<br>• <b>Agendar llamada</b> — si tienes plan Pro o Complete, <a href='#schedule-call'>reserva aquí</a><br><br>Para cualquier cosa que no esté en este chat (workflows, cambios GBP, edición de sitio, etc.), el equipo es el camino correcto.",
+            pt: "Pra falar direto com o time Galaxy:<br>• <b>Grupo do WhatsApp</b> — mais rápido pra urgência (time inteiro está lá)<br>• <b>Email:</b> info@galaxyinfo.us<br>• <b>Agendar chamada</b> — se está no plano Pro ou Complete, <a href='#schedule-call'>marca aqui</a><br><br>Pra qualquer coisa que não tenha nesse chat (configurar workflow, mudança no GBP, edição de site, etc.), o time é o caminho certo — eles cuidam das coisas que precisam de toque humano."
         }
     },
     // ===== GREETINGS =====
