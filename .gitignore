@@ -1,1 +1,12 @@
 .vercel
+
+# n8n debug + deploy scripts (contain secrets)
+n8n/fix-*.js
+n8n/wf-*.json
+n8n/exec*.json
+n8n/mass-*.json
+n8n/wolfs-*.json
+exec*.json
+wf-check.json
+alfa-email.html
+email-preview-*.html
