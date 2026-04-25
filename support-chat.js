@@ -21,6 +21,44 @@ RULES OF ENGAGEMENT
 7. Don't use "Step 1, Step 2" labeling — write naturally.
 
 ==============================================
+HOW TO HANDLE ANY MESSAGE STYLE
+==============================================
+Clients write however they want — be ready for ALL of these and ALWAYS give a useful answer:
+
+**Typos / abbreviations / slang (Portuguese, Spanish, English):**
+- PT: "vc"=você, "oq"=o que, "td"=tudo, "blz"=beleza, "kk"/"kkk"=laughing, "ne"=né, "tbm"=também, "msm"=mesmo, "qd"=quando, "pq"=porque, "p"=para, "n"=não, "vlw"=valeu, "obg"=obrigado, "tipo assim", "saca?", "cara"
+- ES: "q"=que, "xq"=por qué, "tb"=también, "x"=por, "salu2"=saludos
+- EN: "u"=you, "ur"=your, "rn"=right now, "tho"=though, "lol", "thx"=thanks
+- Mistyped GHL terms: "wokflow"=workflow, "calendario"=calendar, "auntomatizar"=automatizar, "go higlevel"=gohighlevel
+→ Mentally fix the typo and answer the real question.
+
+**Just a keyword or fragment:** Examples: "whatsapp", "calendario", "report", "automatizar", "spam"
+→ Pick the most likely topic and give a focused answer + offer to go deeper. Don't ask "could you clarify?" — that's annoying.
+
+**Vague / "doesn't work" complaints:** "nao funciona", "ta dando erro", "nao consigo", "como faz?"
+→ Ask ONE specific clarifying question (which feature/screen are you on?) AND offer the 2 most likely fixes. Don't make them play 20 questions.
+
+**Multi-question messages:** "como configuro x e tambem como vejo y e o z?"
+→ Answer all in order, separated by clear breaks. Keep each part tight.
+
+**Frustrated / emotional:** "nao consigo!!", "isso ta muito ruim", "to perdendo tempo"
+→ Acknowledge the frustration warmly first ("entendo, vamos resolver"), then give the answer. Don't be defensive about the platform.
+
+**Voice-to-text (long, no punctuation):** "oi cara queria saber como faço pra mandar uma mensagem pro meu cliente que pediu orçamento ontem mas eu n sei se ele recebeu o email"
+→ Find the actual question buried in there and answer it directly. Reference what they're trying to do.
+
+**Off-topic but related to running the business:** "vale a pena anunciar no facebook?", "qual o melhor horario pra postar?"
+→ Give a quick honest take, then route to the Galaxy team for strategy specifics ("nosso time pode te ajudar a planejar isso direitinho").
+
+**Completely off-topic** (e.g. asking about politics, weather, unrelated tech):
+→ Politely redirect: "Sou especializado no Bee Pro Hub — pra essa pergunta um Google ajuda mais. Posso te ajudar com algo do seu CRM?"
+
+**One-word "sim", "não", "ok", "tá":**
+→ This is a follow-up to your previous answer. Continue the thread naturally — offer the next step or related help.
+
+ALWAYS RETURN AN ANSWER. Never say "I don't understand" — even if the message is unclear, infer the most likely intent and respond. If genuinely lost, give the WhatsApp group as the answer ("não captei 100% — o time consegue te ajudar mais rápido pelo grupo do WhatsApp").
+
+==============================================
 COMPLETE GHL / BEE PRO HUB FEATURE REFERENCE
 ==============================================
 
@@ -1017,14 +1055,14 @@ const KNOWLEDGE_BASE = [
             }
         }
 
-        // 4) Fallback
+        // 4) Fallback — should be rare now that AI has live web_search
         if (!replied) {
             hideTyping();
             var lang = getLang();
             var noAnswer = {
-                en: "I wasn't able to find a specific answer for that. This might be something our team can help with directly — just send a message to the <b>WhatsApp group</b> describing what you need, or " + getScheduleLink() + " and we'll figure it out together.",
-                es: "No pude encontrar una respuesta específica para eso. Esto puede ser algo que nuestro equipo pueda ayudarte directamente — manda un mensaje al <b>grupo de WhatsApp</b> describiendo lo que necesitas, o " + getScheduleLink() + " y lo resolvemos juntos.",
-                pt: "Não consegui encontrar uma resposta específica pra isso. Pode ser algo que nosso time consiga te ajudar diretamente — manda uma mensagem no <b>grupo do WhatsApp</b> descrevendo o que precisa, ou " + getScheduleLink() + " e a gente resolve junto."
+                en: "Hmm, I'm having trouble pulling that one — possibly a momentary connection issue with the AI. Try rephrasing in a different way, or if it's urgent, our team is super fast on the <b>WhatsApp group</b> (they have full access to your account and can solve anything in minutes). " + getScheduleLink() + " also works if you'd rather chat live.",
+                es: "Hmm, tuve problema para responder eso — puede ser un problema momentáneo de conexión con la IA. Intenta reformular o, si es urgente, nuestro equipo es súper rápido en el <b>grupo de WhatsApp</b> (tienen acceso completo a tu cuenta y resuelven en minutos). " + getScheduleLink() + " también funciona si prefieres hablar en vivo.",
+                pt: "Hmm, deu uma travada pra responder essa — pode ter sido uma conexão momentânea com a IA. Tenta reformular de outro jeito ou, se for urgente, nosso time é super rápido no <b>grupo do WhatsApp</b> (eles têm acesso completo à sua conta e resolvem em minutos). " + getScheduleLink() + " também funciona se preferir falar ao vivo."
             };
             addMessage(noAnswer[lang] || noAnswer.en, 'bot', true);
         }
