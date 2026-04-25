@@ -32,6 +32,7 @@ module.exports = async function handler(req, res) {
   } catch (e) {}
   messages.push({ role: 'user', content: message });
 
+  var debugInfo = [];
   // 1) PRIMARY: Claude Sonnet with web_search restricted to GHL docs
   var anthropicKey = process.env.ANTHROPIC_API_KEY;
   if (anthropicKey) {
@@ -78,15 +79,18 @@ module.exports = async function handler(req, res) {
           }
         }
         if (antText) return res.status(200).json({ text: antText });
+        debugInfo.push('ant_ok_no_text: ' + JSON.stringify(antData).substring(0, 300));
       } else {
         var errBody = await antResp.text();
         console.error('Anthropic non-OK:', antResp.status, errBody.substring(0, 200));
-        globalThis.__lastErr = 'ant_' + antResp.status + ': ' + errBody.substring(0, 300);
+        debugInfo.push('ant_' + antResp.status + ': ' + errBody.substring(0, 400));
       }
     } catch (e) {
       console.error('Anthropic error:', e.message);
-      globalThis.__lastErr = 'ant_exception: ' + e.message;
+      debugInfo.push('ant_exception: ' + e.message);
     }
+  } else {
+    debugInfo.push('ant_no_key');
   }
 
   // 2) FALLBACK: Groq (no live search, but fast and free)
@@ -113,13 +117,15 @@ module.exports = async function handler(req, res) {
         if (groqText) return res.status(200).json({ text: groqText });
       } else {
         var gErr = await groqResp.text();
-        globalThis.__lastErr = (globalThis.__lastErr || '') + ' | groq_' + groqResp.status + ': ' + gErr.substring(0, 300);
+        debugInfo.push('groq_' + groqResp.status + ': ' + gErr.substring(0, 400));
       }
     } catch (e) {
       console.error('Groq error:', e.message);
-      globalThis.__lastErr = (globalThis.__lastErr || '') + ' | groq_exception: ' + e.message;
+      debugInfo.push('groq_exception: ' + e.message);
     }
+  } else {
+    debugInfo.push('groq_no_key');
   }
 
-  return res.status(502).json({ error: 'AI unavailable', debug: globalThis.__lastErr || null });
+  return res.status(502).json({ error: 'AI unavailable', debug: debugInfo });
 };
